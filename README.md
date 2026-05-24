@@ -1,10 +1,14 @@
+<p align="center">
+  <img src="./assets/header.svg" alt="claude-cold-email — Cold email & outreach craft for B2B operators" width="100%">
+</p>
+
 # claude-cold-email
 
 > Replace an $80K SDR with the JMC framework + ~$130/mo in tools.
 > Cold email & outreach craft for B2B founders, as a Claude Code skill pack.
 
 The full **JMC Cold Email & Outreach Craft course** as a skill pack —
-11 sub-skills, 2 specialist agents, 4 deterministic Python/Bash
+11 sub-skills, 2 specialist agents, 5 deterministic Python/Bash
 scripts, brand-config-driven so it sounds like *you*, not Jay, not
 ChatGPT.
 
@@ -12,9 +16,12 @@ No LLM calls inside the skill itself. No paid APIs. No vendor
 lock-in. Bring your own model; bring your own sending stack.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Skills: 11 sub-skills + 2 agents](https://img.shields.io/badge/Sub--skills-11-blue)
-![Scripts: 4 deterministic Python/Bash](https://img.shields.io/badge/Scripts-4-green)
+[![GitHub stars](https://img.shields.io/github/stars/cmj-hub/claude-cold-email?style=social)](https://github.com/cmj-hub/claude-cold-email)
+![Sub-skills](https://img.shields.io/badge/Sub--skills-11-blue)
+![Scripts](https://img.shields.io/badge/Scripts-5-green)
 ![No LLM inside](https://img.shields.io/badge/LLM--inside-no-success)
+
+> **Demo GIF coming soon** — install + onboarding + first cold-email draft + reply-scoring walkthrough.
 
 ## What it does
 
