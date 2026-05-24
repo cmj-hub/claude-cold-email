@@ -1,0 +1,83 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/brand-config.schema.json",
+
+  "operator": {
+    "name": "Your Name",
+    "title": "Founder",
+    "company": "Acme Cloud",
+    "calendar_url": "https://cal.com/yourname/intro"
+  },
+
+  "icp": {
+    "segment": "Series-B SaaS, $20-50M ARR, PLG motion, US/EU",
+    "role_targets": ["VP Demand Gen", "Head of Growth", "CRO"],
+    "exclusion_criteria": ["Pre-PMF (<$2M ARR)", "Enterprise-only ACV >$100k", "Government/regulated industries"]
+  },
+
+  "psp": {
+    "signal_anchors": [
+      "Posted Demand Gen / Growth Lead role ≤14 days",
+      "Announced Series B ≤30 days",
+      "Shipped enterprise tier ≤45 days"
+    ],
+    "primary_pain": "Pipeline gap; existing demand-gen motion isn't producing enough SQLs",
+    "timing_trigger": "new-exec",
+    "felt_pain_role": "VP Demand Gen",
+    "vocabulary": [
+      "pipeline gap",
+      "SDR ramp",
+      "we keep closing wrong-fit logos",
+      "demand-gen motion isn't producing"
+    ]
+  },
+
+  "evp": {
+    "tier": 3,
+    "primary": "For Series-B SaaS in a pipeline gap, we ship 14+ SQLs/month without hiring 2 more SDRs.",
+    "outcome": "14+ SQLs per month",
+    "tradeoff": "without hiring 2 more SDRs",
+    "proof": "Series-B SaaS company hit 14 SQLs in 30 days from a PSP rewrite. Case study: jaymountconsulting.com/case-studies/series-b-saas-14-sqls"
+  },
+
+  "tone": {
+    "register": "direct, conversational, founder-voice",
+    "banned_phrases": [
+      "Hope you're well",
+      "Just bumping this",
+      "Let me know your thoughts",
+      "Happy to chat whenever",
+      "Quick question"
+    ],
+    "preferred_phrases": [
+      "Worth 15 minutes?",
+      "Should I send the case study?"
+    ],
+    "first_person_singular_ok": true,
+    "swearing_ok": false,
+    "emoji_in_subject": false,
+    "emoji_in_body": false
+  },
+
+  "infrastructure": {
+    "sending_domain": "outreach.acmecloud.com",
+    "inbox_provider": "smartlead",
+    "warm_up_status": "ramped (60+ days, 80/day per mailbox)",
+    "deliverability_last_audited": "2026-05-20",
+    "dmarc_policy": "quarantine"
+  },
+
+  "operations": {
+    "weekly_cadence": {
+      "monday": "New PSP signals + list refresh",
+      "wednesday": "Sequence ship + reply triage",
+      "friday": "Score replies + adjust"
+    },
+    "reply_routing": {
+      "buy_signal": "Slack #pipeline + create HS deal",
+      "positive": "Reply within 4 hours",
+      "neutral": "Add to nurture stream",
+      "not_interested": "Suppress + log reason"
+    },
+    "experiment_log_path": "./experiments.md"
+  }
+}
