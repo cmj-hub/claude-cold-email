@@ -21,7 +21,9 @@ lock-in. Bring your own model; bring your own sending stack.
 ![Scripts](https://img.shields.io/badge/Scripts-5-green)
 ![No LLM inside](https://img.shields.io/badge/LLM--inside-no-success)
 
-> **Demo GIF coming soon** — install + onboarding + first cold-email draft + reply-scoring walkthrough.
+<p align="center">
+  <img src="./assets/demo.gif" alt="claude-cold-email — terminal demo of the adaptive kickoff flow" width="100%">
+</p>
 
 ## What it does
 
