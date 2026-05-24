@@ -1,8 +1,8 @@
 {
   "name": "cold-email",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Cold email & outreach craft skill for Claude Code. Signal-anchored openers, 3-touch sequences, 30-point audits, 5-email nurtures, 15-point deliverability checklist, and 25 subject-line patterns. Based on the JMC Cold Email & Outreach Craft course.",
-  "author": "Jay Mount Consulting",
+  "author": { "name": "Jay Mount Consulting" },
   "license": "MIT",
   "homepage": "https://github.com/cmj-hub/claude-cold-email"
 }

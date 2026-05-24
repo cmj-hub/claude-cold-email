@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.1] — 2026-05-24
+
+Marketplace-submission compliance pass. No functional changes.
+
+### Fixed
+- `plugin.json` `author` field now an object `{ "name": "..." }` per Claude Code plugin manifest schema (was a string).
+- `skills/cold-email-spam-lint/SKILL.md` frontmatter `description` now quoted so the embedded `fake-Re:` colon-space pattern parses cleanly under YAML.
+
+Both gates required for submission to the `claude-community` marketplace via [claude.ai/settings/plugins/submit](https://claude.ai/settings/plugins/submit). `claude plugin validate` now passes.
+
 ## [0.2.0] — 2026-05-23
 
 Substantial polish pass. Adds onboarding + adaptive routing + deterministic
