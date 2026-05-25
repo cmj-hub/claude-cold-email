@@ -1,4 +1,5 @@
 {
+  "renderer_version": 2,
   "title": "Cold Email Craft",
   "subtitle": "Replace an $80K SDR with the JMC framework",
   "accent_color": "#00D4FF",
@@ -8,16 +9,16 @@
   "response_lines": [
     "Loading brand voice + ICP config...",
     "Mining PSP vocabulary phrases (8 found)",
-    "Drafting 4-touch sequence (specific → wedge → proof → walk)",
+    "Drafting 4-touch sequence (specific \u2192 wedge \u2192 proof \u2192 walk)",
     "Running spam-lint...",
-    "Sequence ready · spam-score 0.4 / 10"
+    "Sequence ready \u00b7 spam-score 0.4 / 10"
   ],
   "artifact": {
     "label": "sequences/cto-enterprise.md",
     "lines": [
       "subject: re: your Q3 migration",
       "opener: noticed you posted 4 platform-eng",
-      "        roles in 30 days — usually means",
+      "        roles in 30 days \u2014 usually means",
       "        consolidation pressure from above."
     ]
   }
