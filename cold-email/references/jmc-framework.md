@@ -63,7 +63,7 @@ The pain line is **one sentence, in their language, not yours**.
 
 ### 3. EVP (your one-line value prop)
 
-EVP = Existential Value Proposition. It's not a feature list. It's the
+EVP = Early Value Proposition. It's not a feature list. It's the
 single sentence that says: *"For people in this pain, we're the one
 team that does <specific outcome> without <obvious tradeoff>."*
 
