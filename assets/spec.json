@@ -1,12 +1,24 @@
 {
   "title": "Cold Email Craft",
-  "subtitle": "Replace an $80K SDR with the JMC outreach framework",
+  "subtitle": "Replace an $80K SDR with the JMC framework",
   "accent_color": "#00D4FF",
   "tagline_top": "JMC Skill Pack",
-  "demo_steps": [
-    { "duration_ms": 1200, "title": "Profile",     "body": "Public-signal pain mapping from PSP" },
-    { "duration_ms": 1200, "title": "Craft",       "body": "Three-bullet body with offer-aware angle" },
-    { "duration_ms": 1200, "title": "Verify",      "body": "SPF, DKIM, DMARC, reverse DNS" },
-    { "duration_ms": 1200, "title": "Ship",        "body": "Sequence cadence tuned to reply velocity" }
-  ]
+  "command": "/cold-email",
+  "user_prompt": "draft a CTO enterprise sequence",
+  "response_lines": [
+    "Loading brand voice + ICP config...",
+    "Mining PSP vocabulary phrases (8 found)",
+    "Drafting 4-touch sequence (specific → wedge → proof → walk)",
+    "Running spam-lint...",
+    "Sequence ready · spam-score 0.4 / 10"
+  ],
+  "artifact": {
+    "label": "sequences/cto-enterprise.md",
+    "lines": [
+      "subject: re: your Q3 migration",
+      "opener: noticed you posted 4 platform-eng",
+      "        roles in 30 days — usually means",
+      "        consolidation pressure from above."
+    ]
+  }
 }
