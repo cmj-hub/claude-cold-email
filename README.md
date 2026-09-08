@@ -1,20 +1,18 @@
 <p align="center">
-  <img src="./assets/header.svg" alt="claude-cold-email — signal-anchored cold email for B2B operators" width="100%">
+  <img src="./assets/header.svg" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
 </p>
 
 # claude-cold-email
 
-> Four jobs. Under 90 words. A job post is a signal. A job title is not.
+> "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
 
 A JMC cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.
 
-"VP of Marketing at Series B SaaS" is a costume.
-"Posted Demand Gen Lead four days ago" is something they did.
+You have seen the other kind. Hope you're well. Just bumping this. Let me know if you'd like to learn more. That email is a search query wearing a name. This pack will not write it.
 
-The sample T1 in this repo lints at **100**.
-`URGENT! ACT NOW 🚀 FREE` is rejected.
+The mechanism is Signal → Pain → EVP → Ask. Every line has to do one of those four jobs. If it does not, it gets cut. The linter is Python, not a vibe: spam lexicon, ALL CAPS, emoji, fake threading, link pile-ups.
 
-The lexicon is Python. No LLM. No paid API.
+The sample T1 in `examples/t1.email.md` lints at **100**. `URGENT! ACT NOW 🚀 FREE` is rejected. No LLM. No paid API.
 
 The build guide teaches the framework to a human. This pack teaches the same framework to an agent.
 
@@ -24,12 +22,16 @@ The build guide teaches the framework to a human. This pack teaches the same fra
 ![Install](https://img.shields.io/badge/install-npx%20skills-blue)
 
 <p align="center">
-  <img src="./assets/demo.gif" alt="claude-cold-email — terminal demo of the kickoff and lint loop" width="100%">
+  <img src="./assets/demo.gif" alt="claude-cold-email — linting a signal-anchored T1 versus a spam-laden draft" width="100%">
 </p>
+
+## What this replaces
+
+The drafting stack an $80K SDR owns on a slow week — not the send, not the domain warm, not the close. Framework plus ~$130/mo in sending tools is the rest of the motion you already have.
 
 ## Install
 
-Two commands. Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, OpenCode, and the rest of the [skills CLI](https://skills.sh) list.
+Two commands. Works in Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, OpenCode, and the rest of the [skills CLI](https://skills.sh) list.
 
 ```bash
 npx skills add cmj-hub/claude-cold-email --all -g --full-depth
@@ -57,28 +59,21 @@ One T1. Lint it. Then write yours against the same four jobs.
 
 ## What this pack will not do
 
-It will not send the email.
-It will not ingest your CRM.
-It will not warm a domain.
+It will not send the email. It will not ingest your CRM. It will not warm a domain.
 
 This pack drafts and scores. It will not pick this quarter's PSP, ingest your CRM, or update when Gmail changes the spam window. That is the course + Operator Pass: the catalog that keeps moving, the tools that stay calibrated, the Friday room where you bring the artifact.
 
 ## Does this send the email for me?
 
-No. It drafts and lints. You send. Live send and reply write-back are Operator Pass + implementation.
+No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are Operator Pass plus implementation.
 
 ## What is a binary CTA?
 
-A yes/no ask.
-"Worth 15 minutes Thursday?" is binary.
-"Let me know if you'd like to learn more" is not.
-One ask per email.
+A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like to learn more" is not. One ask per email. Stacked asks confuse the person who has to answer at 11am.
 
 ## Will this get me marked as spam?
 
-The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups.
-It does not promise inbox.
-DNS scoring is in the pack. Running your infra is not.
+The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups. It does not promise inbox. It does not set SPF, DKIM, or DMARC. DNS scoring is in the pack. Running your infra is not.
 
 ## Suite, course, Operator Pass
 
@@ -90,10 +85,10 @@ Founder: $97/mo billed annually ($1,164/yr), locked for life if bought before Oc
 
 ## Companion packs
 
-- [claude-psp](https://github.com/cmj-hub/claude-psp) — five-part buying brief
-- [claude-evp](https://github.com/cmj-hub/claude-evp) — 22-word line per Schwartz tier
+- [claude-psp](https://github.com/cmj-hub/claude-psp) — Pain Signal Profile, the five-part buying brief
+- [claude-evp](https://github.com/cmj-hub/claude-evp) — 22-word Early Value Proposition per Schwartz tier
 - [claude-founder-brand](https://github.com/cmj-hub/claude-founder-brand) — Pillar / Proof / Process / Person
-- [claude-pricing](https://github.com/cmj-hub/claude-pricing) — three-tier contrast + pocket-price leaks
+- [claude-pricing](https://github.com/cmj-hub/claude-pricing) — three-tier contrast and pocket-price leaks
 
 ## License
 
