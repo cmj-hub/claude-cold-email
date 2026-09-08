@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] — 2026-09-08
+
+Public magnet pass. Instrument stays public. First loop is 15 minutes.
+
+### Added
+- Definition-first README (GEO paragraph, 15-minute artifact, FAQ H2s, current Pass price).
+- Cross-agent installer: `npx skills add cmj-hub/claude-cold-email --all -g --full-depth` (Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, OpenCode, Antigravity, Goose, and the rest of the skills CLI list). Fallback copies into well-known `*/skills` dirs.
+- `package.json` (`jmc-cold-email`) so `npm install github:cmj-hub/claude-cold-email` and `npx jmc-cold-email` work. Not published to npmjs.com.
+- `examples/` golden good/bad pair for the first loop.
+
+### Changed
+- Operator Pass price: $97/mo annual ($1,164/yr) locked before 2026-10-31; then $197/mo annual. Removed stale $2,400 / July 16 2026 copy where present.
+- `plugin.json` description is the definition, homepage is /skills.
+
 ## [0.2.1] — 2026-05-24
 
 Marketplace-submission compliance pass. No functional changes.

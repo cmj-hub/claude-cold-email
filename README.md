@@ -1,260 +1,118 @@
 <p align="center">
-  <img src="./assets/header.svg" alt="claude-cold-email — Cold email & outreach craft for B2B operators" width="100%">
+  <img src="./assets/header.svg" alt="claude-cold-email — signal-anchored cold email for B2B operators" width="100%">
 </p>
 
 # claude-cold-email
 
-> Replace an $80K SDR with the JMC framework + ~$130/mo in tools.
-> Cold email & outreach craft for B2B founders, as a Claude Code skill pack.
+> Replace an $80K SDR's drafting stack with the JMC framework + ~$130/mo in sending tools — as an agent skill pack.
 
-The full **JMC Cold Email & Outreach Craft course** as a skill pack —
-11 sub-skills, 2 specialist agents, 5 deterministic Python/Bash
-scripts, brand-config-driven so it sounds like *you*, not Jay, not
-ChatGPT.
+A JMC cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.
 
-No LLM calls inside the skill itself. No paid APIs. No vendor
-lock-in. Bring your own model; bring your own sending stack.
+The build guide teaches the framework to a human. This pack teaches the same framework to an agent.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/cmj-hub/claude-cold-email?style=social)](https://github.com/cmj-hub/claude-cold-email)
-![Sub-skills](https://img.shields.io/badge/Sub--skills-11-blue)
-![Scripts](https://img.shields.io/badge/Scripts-5-green)
-![No LLM inside](https://img.shields.io/badge/LLM--inside-no-success)
+![No paid APIs](https://img.shields.io/badge/paid%20APIs-none-success)
+![Install](https://img.shields.io/badge/install-npx%20skills-blue)
 
 <p align="center">
-  <img src="./assets/demo.gif" alt="claude-cold-email — terminal demo of the adaptive kickoff flow" width="100%">
+  <img src="./assets/demo.gif" alt="claude-cold-email — terminal demo of the kickoff and lint loop" width="100%">
 </p>
 
-## What it does
-
-```mermaid
-graph TB
-    A["/cold-email"] --> B{Kickoff: state check}
-    B -->|First time| C[Onboarding<br/>brand-config + SOUL]
-    B -->|Have config| D[Craft / Audit / Nurture]
-    C --> D
-    D --> E[Spam Lint<br/>script]
-    E --> F[Send infrastructure]
-    F --> G[Reply Scoring<br/>script]
-    G --> H[Weekly Rhythm<br/>Mon/Wed/Fri]
-    H --> D
-
-    style C fill:#1a1a2e,stroke:#00d4ff
-    style E fill:#1a1a2e,stroke:#cc4714
-    style G fill:#1a1a2e,stroke:#cc4714
-    style H fill:#1a1a2e,stroke:#00d4ff
-```
-
-## The 11 sub-skills
-
-| Sub-skill | What it does |
-|---|---|
-| `cold-email-kickoff` | Adaptive router. Detects what's set up (brand-config? PSP? EVP? infra?) and picks the next-best step |
-| `cold-email-onboarding` | 10-minute interactive setup → `brand-config.json` + `SOUL.md` at repo root |
-| `cold-email-craft` | Draft a single signal-anchored email or a 3-touch sequence — using YOUR brand + voice |
-| `cold-email-audit` | 30-point outbound program audit (infra / targeting / messaging / ops) → 0-100 score + top 3 levers + 90-day remediation order |
-| `cold-email-nurture` | 5-email nurture stream with route-to-sales triggers |
-| `cold-email-deliverability` | 15-point pre-campaign domain health (SPF, DKIM, DMARC, blacklists, warm-up, content) |
-| `cold-email-subject-lines` | Generate or critique subject lines across 4 framework families (pain, curiosity, social-proof, direct) |
-| `cold-email-spam-lint` | Deterministic spam-trigger scan — 200+ word lexicon, Python-backed, <100ms per email |
-| `cold-email-reply-scoring` | Classify replies into buy-signal / positive / neutral / not-interested. Script-backed (no LLM, no per-reply cost) |
-| `cold-email-list-quality` | 6-axis list scoring (dedup, role-fit, signal freshness, email validity, exclusion match, company-stage match) |
-| `cold-email-weekly-rhythm` | Operational cadence — Mon (signals + list), Wed (ship + triage), Fri (score + adjust) |
-
-Plus 2 specialist agents:
-
-- `cold-email-reviewer` — scores any draft 0-100 with line-by-line critique
-- `cold-email-deliverability-auditor` — DNS + reputation + bulk-sender compliance
-
-## Real scripts, not pure vibes
-
-| Script | Job |
-|---|---|
-| `scripts/spam_word_lint.py` | Spam-trigger scanner — 200+ lexicon + clickbait + ALL CAPS + emoji + fake-threading + link/image ratio. 0-100 risk score |
-| `scripts/score_subject_line.py` | Subject scoring — 5 axes (length, spam, clickbait, personalization, framework-fit) |
-| `scripts/score_reply.py` | Reply classifier — 5 categories (buy-signal / positive / neutral / not-interested / auto-reply) via regex + feature engineering |
-| `scripts/dig_dns.sh` | DNS lookups — SPF, DKIM, DMARC, MX, reverse DNS |
-| `scripts/check_deliverability.py` | Deliverability scorer — 15 checks → 0-100 → fix order. No paid APIs. |
-
-Each script is **zero-dependency Python 3.8+ or POSIX bash**. No `pip
-install`, no API keys, no network calls except DNS + (optional) public
-blacklist URLs. Calibrated against JMC's review of 1,000+ real B2B
-campaigns.
-
-## The 3-tier config (operator owns)
-
-```
-brand-config.json   ← Your ICP, PSP, EVP, tone, infrastructure, ops cadence
-SOUL.md             ← Your voice — phrases used, phrases banned, stories you lean on
-AGENTS.md           ← Behavior rules — generally "don't fabricate, don't send without auth, refuse banned patterns"
-```
-
-The JMC framework is the engine. These three files personalize every
-output. **The skill refuses to draft real outreach without
-brand-config + SOUL set up** — generic AI cold email is worse than no
-cold email.
+Clean T1 (signal + pain + EVP + binary ask) lints clean. `URGENT! ACT NOW 🚀 FREE` is rejected. The spam lexicon is deterministic Python — no LLM, no paid API.
 
 ## Install
 
-### Claude Code
+Two commands. Works in Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, OpenCode, Antigravity, Goose, Continue, Roo, and the rest of the [skills CLI](https://skills.sh) agent list.
 
 ```bash
+npx skills add cmj-hub/claude-cold-email --all -g --full-depth
+```
+
+```text
 /plugin marketplace add cmj-hub/claude-cold-email
 /plugin install cold-email
 ```
 
-### One-line install (any project)
+The first line is the cross-harness install. The second is Claude Code's plugin (slash commands + reviewer agents).
+
+npm (from GitHub — this pack is not on npmjs.com):
+
+```bash
+npm install github:cmj-hub/claude-cold-email
+npx jmc-cold-email
+```
+
+`npx jmc-cold-email` runs the same installer as `curl` below.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/install.sh | bash
 ```
 
-### Windows
+Windows: `iwr https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/install.ps1 -useb | iex`
 
-```powershell
-iwr https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/install.ps1 -useb | iex
+## What you walk out with in 15 minutes
+
+Artifact: `examples/t1.email.md`. Lint the sample T1, then write yours against the same four jobs.
+
+```bash
+python3 scripts/spam_word_lint.py \
+  --subject "Pipeline gap after the Q3 hire freeze?" \
+  --body "Sarah — saw you posted the Demand Gen Lead role four days ago. Pipeline gap is usually upstream of an SDR hire. Worth 15 min Thursday to walk through?"
+python3 scripts/score_subject_line.py --subject "Pipeline gap after the Q3 freeze?" --framework pain
 ```
 
-## First run
+One loop. One ICP. Example data. Then do yours.
 
-```
-> /cold-email
-```
+## What this pack will not do
 
-The kickoff sub-skill detects state. If you're new:
+- It will not send the email.
+- It will not ingest your CRM or hunt live signals.
+- It will not keep a weekly ship cadence for you.
+- It will not update when Gmail changes the spam window.
 
-```
-[Detected state: brand-config.json missing]
+This pack drafts and scores. It will not pick this quarter's PSP, ingest your CRM, or update when Gmail changes the spam window. That is the course + Operator Pass: the catalog that keeps moving, the tools that stay calibrated, the Friday room where you bring the artifact.
 
-You're at step 1 of 7. The 7 steps:
-1. ⬜ Set up brand-config + voice (10 min)        ← YOU ARE HERE
-2. ⬜ Build a Pain Signal Profile (20-30 min)
-3. ⬜ Lock the EVP for your primary tier (15 min)
-4. ⬜ Set up sending infrastructure
-5. ⬜ Run the 15-point pre-campaign deliverability check
-6. ⬜ Draft + ship first signal-anchored sequence
-7. ⬜ Score replies + iterate (weekly rhythm)
+## Also in the pack
 
-Step 1 takes ~10 minutes and is required for everything else.
+| Piece | Job |
+|---|---|
+| `cold-email` orchestrator | Route to write / sequence / audit / lint |
+| `scripts/spam_word_lint.py` | 200+ lexicon + clickbait + fake-thread |
+| `scripts/score_subject_line.py` | Length, spam, personalization, framework-fit |
+| Banned-pattern list | No Hope-you're-well, no Just-bumping-this |
+| Craft / audit / nurture / deliverability | After the first T1, if you want them |
 
-Want to run it now? (y/n)
-```
+Sub-skills stay in the repo. First run is the loop above, not the operating system.
 
-## Cost arbitrage — what this actually replaces
+## Does this send the email for me?
 
-| Role | $/year | What you'd outsource |
-|---|---|---|
-| SDR (entry-level) | $80K + benefits | List building, sequence shipping, reply triage |
-| Cold-email agency (mid) | $60K-$120K/year | Strategy + execution outsourced |
-| Cold-email vendor stack (Smartlead Pro, Clay, Apollo, Prospeo, etc.) | ~$130/mo | The tooling layer |
+No. It drafts and lints. You (or your sequencer) send. Live send, reply write-back, and CRM ingest are Operator Pass + implementation.
 
-This skill pack + the JMC framework + ~$130/mo in vendor tooling can
-do the strategy, list scoring, audit, drafting, deliverability, reply
-triage, and weekly cadence that an SDR or agency would otherwise own.
+## What is a binary CTA?
 
-It does **not** replace:
-- The judgment calls (which PSP is right for this quarter?)
-- The closing motion (the skill writes; sales closes)
-- The relationship work (introductions, board referrals)
+A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like to learn more" is not. One ask per email.
 
-It **does** replace:
-- The execution layer (the SDR's day-to-day)
-- The QA layer (audits + lint + scoring)
-- The cadence (operational rhythm without a project manager)
+## Will this get me marked as spam?
 
-## What's actually inside the framework
+The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups. It does not warm a domain, set SPF/DKIM/DMARC, or promise inbox. Deliverability sub-skills score DNS; they do not run your infra.
 
-```
-Signal  →  Pain  →  EVP  →  Ask
-  ↓         ↓       ↓       ↓
- What     What     What     What
- they      that    you do   you want
- just     means    about    them to
- did                it       do next
-```
+## Suite, course, Operator Pass
 
-Every line of every email this skill produces serves one of those
-four jobs. If it doesn't, the skill cuts it. The full framework lives
-in [`cold-email/references/jmc-framework.md`](./cold-email/references/jmc-framework.md).
+- Suite: [https://jaymountconsulting.com/skills](https://jaymountconsulting.com/skills)
+- Course: [Cold Email & Outreach Craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)
+- Operator Pass: [https://jaymountconsulting.com/operator-pass](https://jaymountconsulting.com/operator-pass)
 
-## Banned patterns
+Founder: $97/mo billed annually ($1,164/yr), locked for life if bought before October 31, 2026. After that: $197/mo billed annually ($2,364/yr), no lock.
 
-The skill refuses to produce these — pushes back with the JMC-shaped
-alternative. Full list at
-[`cold-email/references/banned-patterns.md`](./cold-email/references/banned-patterns.md):
+## Companion packs
 
-- "Hope you're well" / "Hope this finds you well"
-- "Just bumping this" / "Following up on my last email"
-- "Let me know your thoughts" / "Happy to chat whenever"
-- "Quick question" as an opener
-- Multi-paragraph value-prop monologues
-- Stacked questions
-- Demographics-as-signal
-
-## Plugs into
-
-Companion skill packs (install separately):
-
-- [`cmj-hub/claude-psp`](https://github.com/cmj-hub/claude-psp) — Pain Signal Profile builder
-- [`cmj-hub/claude-evp`](https://github.com/cmj-hub/claude-evp) — EVP Generator (Schwartz tiers)
-- [`cmj-hub/claude-founder-brand`](https://github.com/cmj-hub/claude-founder-brand) — Founder-led social
-- [`cmj-hub/claude-operator-pass`](https://github.com/cmj-hub/claude-operator-pass) — Operator Pass API wrapper (the deterministic execution layer)
-
-## Repo structure
-
-```
-claude-cold-email/
-├── .claude-plugin/plugin.json
-├── README.md
-├── LICENSE
-├── CHANGELOG.md
-├── AGENTS.md                          ← Behavior rules
-├── SOUL.md                            ← Voice template (operator personalizes)
-├── brand-config.example.json          ← Brand config template
-├── install.sh
-├── install.ps1
-├── cold-email/                        ← Main orchestrator
-│   ├── SKILL.md
-│   └── references/
-│       ├── jmc-framework.md
-│       ├── banned-patterns.md
-│       └── binary-ctas.md
-├── skills/                            ← 11 sub-skills (progressive disclosure)
-│   ├── cold-email-onboarding/
-│   ├── cold-email-kickoff/
-│   ├── cold-email-craft/
-│   ├── cold-email-audit/
-│   ├── cold-email-nurture/
-│   ├── cold-email-deliverability/
-│   ├── cold-email-subject-lines/
-│   ├── cold-email-spam-lint/
-│   ├── cold-email-reply-scoring/
-│   ├── cold-email-list-quality/
-│   └── cold-email-weekly-rhythm/
-├── agents/                            ← 2 specialist agents
-│   ├── cold-email-reviewer.md
-│   └── cold-email-deliverability-auditor.md
-└── scripts/                           ← Deterministic Python/Bash (no LLM)
-    ├── spam_word_lint.py
-    ├── score_subject_line.py
-    ├── score_reply.py
-    ├── dig_dns.sh
-    └── check_deliverability.py
-```
-
-## Course
-
-This skill is the agent-form of the JMC **Cold Email & Outreach Craft**
-course. The course covers PSPs in depth, infrastructure architecture,
-sequence design at scale, deliverability forensics, and program
-economics — across 26 lessons.
-
-→ **[jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)**
-
-Want it all-access? **[Operator Pass](https://jaymountconsulting.com/operator-pass)**
-unlocks every course in The Compounding Engine plus the deterministic
-tools API. Founder pricing: $2,400/yr locked through July 16 2026
-(100 seats).
+- **[Pain Signal Profile](https://github.com/cmj-hub/claude-psp)** — `claude-psp`
+- **[Early Value Proposition](https://github.com/cmj-hub/claude-evp)** — `claude-evp`
+- **[Four-pillar founder brand](https://github.com/cmj-hub/claude-founder-brand)** — `claude-founder-brand`
+- **[Pricing surgery](https://github.com/cmj-hub/claude-pricing)** — `claude-pricing`
+- **[Breakthrough Advertising (Schwartz)](https://github.com/cmj-hub/claude-breakthrough-advertising)** — `claude-breakthrough-advertising`
+- **[Johanson / Stanley tutorial email](https://github.com/cmj-hub/claude-johanson-stanley)** — `claude-johanson-stanley`
 
 ## License
 
@@ -262,8 +120,4 @@ MIT. See [LICENSE](./LICENSE).
 
 ## About
 
-Built by [Jay Mount Consulting](https://jaymountconsulting.com) as
-part of the JMC public-build spine. See
-[/build](https://jaymountconsulting.com/build) for what's shipping
-this week, [/skills](https://jaymountconsulting.com/skills) for the
-rest of the skill packs.
+Built by [Jay Mount Consulting](https://jaymountconsulting.com). Public build: [https://jaymountconsulting.com/build](https://jaymountconsulting.com/build). Skill suite: [https://jaymountconsulting.com/skills](https://jaymountconsulting.com/skills).

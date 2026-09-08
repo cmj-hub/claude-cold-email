@@ -1,0 +1,48 @@
+{
+  "name": "jmc-cold-email",
+  "version": "0.3.0",
+  "description": "A JMC cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.",
+  "license": "MIT",
+  "bin": {
+    "jmc-cold-email": "./install.sh"
+  },
+  "scripts": {
+    "install-skills": "npx -y skills add cmj-hub/claude-cold-email --all -g --copy --full-depth",
+    "smoke": "bash scripts/smoke-test.sh"
+  },
+  "files": [
+    "skills",
+    "cold-email",
+    "scripts",
+    "agents",
+    "examples",
+    "AGENTS.md",
+    "SOUL.md",
+    "brand-config.example.json",
+    "README.md",
+    "LICENSE",
+    "install.sh",
+    "install.ps1"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmj-hub/claude-cold-email.git"
+  },
+  "homepage": "https://jaymountconsulting.com/skills",
+  "bugs": {
+    "url": "https://github.com/cmj-hub/claude-cold-email/issues"
+  },
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "cursor",
+    "codex",
+    "grok",
+    "cold-email",
+    "b2b",
+    "outbound"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
