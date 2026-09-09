@@ -14,13 +14,10 @@ description: >
   "cold email", "write a cold email", "cold outreach", "follow-up sequence",
   "deliverability", "SPF", "DKIM", "DMARC", "domain health", "outbound audit",
   "subject line", "nurture sequence", "outreach craft".
-allowed-tools:
-  - Read
-  - Write
-  - Grep
-  - Glob
-  - Bash
+allowed-tools: Read Write Grep Glob Bash
   - WebFetch
+license: MIT
+
 ---
 
 # Cold Email — JMC Outreach Craft Skill

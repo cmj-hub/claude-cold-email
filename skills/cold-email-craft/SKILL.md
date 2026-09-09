@@ -2,10 +2,10 @@
 name: cold-email-craft
 description: Draft a single signal-anchored cold email or a 3-touch follow-up sequence using the JMC framework — <90 words, binary CTA, no banned openers. Anchors on a Pain Signal Profile (not demographics). Loaded by the main cold-email skill when the user asks to write or sequence outreach. Includes the surgical "rewrite the weakest line" mode for ship-or-cut review.
 user-invocable: false
-allowed-tools:
-  - Read
-  - Write
+allowed-tools: Read Write
   - Grep
+license: MIT
+
 ---
 
 # Cold Email Craft — sub-skill

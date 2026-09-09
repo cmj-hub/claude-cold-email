@@ -2,10 +2,10 @@
 name: cold-email-spam-lint
 description: "Deterministic spam-trigger scanner for cold email drafts. Scans subject + body against a 200-word spam-trigger lexicon, validates link/image ratios, checks for ALL-CAPS / emoji / clickbait / fake-Re patterns, and returns a 0-100 deliverability-risk score with line-by-line flags. Backed by a Python script (no LLM). Loaded by the main cold-email skill before any send + on Wednesday's ship-day batch via cold-email-weekly-rhythm."
 user-invocable: false
-allowed-tools:
-  - Read
-  - Bash
+allowed-tools: Read Bash
   - Grep
+license: MIT
+
 ---
 
 # Cold Email Spam Lint — deterministic spam-trigger scanner
