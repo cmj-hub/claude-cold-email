@@ -76,14 +76,17 @@ A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like
 
 The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups. It does not promise inbox. It does not set SPF, DKIM, or DMARC. DNS scoring is in the pack. Running your infra is not.
 
-## Free tools that do this in a browser
+## Free, no signup
 
-No install, no signup, no key.
-
-- **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)** — the same job as this pack, hosted
+- **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)** — the same job as this pack, hosted. No account, no key.
 - [Cold Email & Outreach Craft framework](https://jaymountconsulting.com/frameworks/cold-email-outreach-craft)
-- [Signal-Targeted Cold Email Scorecard](https://jaymountconsulting.com/outbound-signal-scorecard)
 - [Prompt Library](https://jaymountconsulting.com/resources/prompt-library)
+
+## Free, by email
+
+[**Signal-Targeted Cold Email Scorecard**](https://jaymountconsulting.com/outbound-signal-scorecard) — scores your outbound against the signal test, sent to your inbox.
+
+That one does ask for an email, and it enrols you in a short follow-up on the same topic. Unsubscribe whenever.
 
 
 ## Companion packs
@@ -106,5 +109,6 @@ Built by [Jay Mount Consulting](https://jaymountconsulting.com).
 `assets/social-preview.png` and `assets/header.png` are generated from `assets/spec.json` by a vendored renderer — no CI, no shared workflow, no network beyond the webfonts:
 
 ```bash
-node assets/card.mjs assets/spec.json assets/
+node assets/card.mjs assets/spec.json assets/          # social-preview.png + header.png
+npm i playwright-core && node assets/demo.mjs assets/spec.json assets/demo.gif
 ```

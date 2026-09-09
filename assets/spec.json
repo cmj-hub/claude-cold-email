@@ -1,5 +1,27 @@
-{ "renderer_version": 3, "title": "Cold Email Craft",
+{
+  "renderer_version": 3,
+  "title": "Cold Email Craft",
   "subtitle": "Four jobs, under 90 words. Demographics are not a signal.",
-  "accent_color": "#00D4FF", "tagline_top": "JMC Skill Pack",
+  "accent_color": "#00D4FF",
+  "tagline_top": "JMC Skill Pack",
   "proof": "spam_word_lint.py · score_subject_line.py · no LLM",
-  "cta": "jaymountconsulting.com/tools/cold-email-linter" }
+  "cta": "jaymountconsulting.com/tools/cold-email-linter",
+  "command": "/cold-email",
+  "user_prompt": "draft a CTO enterprise sequence",
+  "response_lines": [
+    "Loading brand voice + ICP config...",
+    "Mining PSP vocabulary phrases (8 found)",
+    "Drafting 4-touch sequence (specific → wedge → proof → walk)",
+    "Running spam-lint...",
+    "Sequence ready · spam-score 0.4 / 10"
+  ],
+  "artifact": {
+    "label": "sequences/cto-enterprise.md",
+    "lines": [
+      "subject: re: your Q3 migration",
+      "opener: noticed you posted 4 platform-eng",
+      "        roles in 30 days — usually means",
+      "        consolidation pressure from above."
+    ]
+  }
+}
