@@ -131,9 +131,8 @@ Output:
 ## References
 
 - The **Pre-Campaign Domain Health Checklist** (15-point PDF) ships in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass).
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter).
 - DMARC + Feb-2024 bulk-sender rules (Google / Yahoo / Microsoft) —
   see `../../cold-email/references/bulk-sender-rules.md`.
 - The full **Cold Email & Outreach Craft** course covers deliverability
   forensics in 4 lessons:
-  [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)

@@ -149,4 +149,4 @@ Produce a structured report:
 - `references/audit-rubric.md` — full 30-point rubric with scoring criteria
 - `../../cold-email/references/jmc-framework.md` — the framework underneath
 - The full **30-Point Outbound Audit Template** ships as a DOCX in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass)
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)

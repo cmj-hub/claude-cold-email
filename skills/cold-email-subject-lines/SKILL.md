@@ -95,9 +95,8 @@ Better alternatives:
 - `references/spam-trigger-words.md` — banned words / phrases that hurt
   inbox placement
 - The **25 High-Performing Subject Lines** PDF ships in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass) — 25
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter) — 25
   patterns organized by framework with reply-rate notes from real
   campaigns
 - The full **Cold Email & Outreach Craft** course in The Compounding
   Engine:
-  [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/header.svg" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
+  <img src="./assets/header.png" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
 </p>
 
 # claude-cold-email
@@ -18,6 +18,7 @@ The build guide teaches the framework to a human. This pack teaches the same fra
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/cmj-hub/claude-cold-email?style=social)](https://github.com/cmj-hub/claude-cold-email)
+[![skills.sh](https://skills.sh/b/cmj-hub/claude-cold-email)](https://skills.sh/cmj-hub/claude-cold-email)
 ![No paid APIs](https://img.shields.io/badge/paid%20APIs-none-success)
 ![Install](https://img.shields.io/badge/install-npx%20skills-blue)
 
@@ -61,11 +62,11 @@ One T1. Lint it. Then write yours against the same four jobs.
 
 It will not send the email. It will not ingest your CRM. It will not warm a domain.
 
-This pack drafts and scores. It will not pick this quarter's PSP, ingest your CRM, or update when Gmail changes the spam window. That is the course + Operator Pass: the catalog that keeps moving, the tools that stay calibrated, the Friday room where you bring the artifact.
+This pack drafts and scores. It will not pick this quarter's PSP, ingest your CRM, or update when Gmail changes the spam window. Those are judgement calls and live data. This pack gives you the instrument and the rubric; you bring the account.
 
 ## Does this send the email for me?
 
-No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are Operator Pass plus implementation.
+No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack: they need credentials this repo will never ask for.
 
 ## What is a binary CTA?
 
@@ -75,13 +76,15 @@ A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like
 
 The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups. It does not promise inbox. It does not set SPF, DKIM, or DMARC. DNS scoring is in the pack. Running your infra is not.
 
-## Suite, course, Operator Pass
+## Free tools that do this in a browser
 
-- Suite: [gtm-operator-skills](https://github.com/cmj-hub/gtm-operator-skills) · [jaymountconsulting.com/skills](https://jaymountconsulting.com/skills)
-- Course: [Cold Email & Outreach Craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)
-- Operator Pass: [jaymountconsulting.com/operator-pass](https://jaymountconsulting.com/operator-pass)
+No install, no signup, no key.
 
-Founder: $97/mo billed annually ($1,164/yr), locked for life if bought before October 31, 2026. After that: $197/mo billed annually ($2,364/yr), no lock.
+- **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)** — the same job as this pack, hosted
+- [Cold Email & Outreach Craft framework](https://jaymountconsulting.com/frameworks/cold-email-outreach-craft)
+- [Signal-Targeted Cold Email Scorecard](https://jaymountconsulting.com/outbound-signal-scorecard)
+- [Prompt Library](https://jaymountconsulting.com/resources/prompt-library)
+
 
 ## Companion packs
 
@@ -97,3 +100,11 @@ MIT. See [LICENSE](./LICENSE).
 ## About
 
 Built by [Jay Mount Consulting](https://jaymountconsulting.com).
+
+## Regenerating the artwork
+
+`assets/social-preview.png` and `assets/header.png` are generated from `assets/spec.json` by a vendored renderer — no CI, no shared workflow, no network beyond the webfonts:
+
+```bash
+node assets/card.mjs assets/spec.json assets/
+```

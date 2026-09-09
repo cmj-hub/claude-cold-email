@@ -171,15 +171,7 @@ in the same voice, with a one-sentence rationale.
 
 This is the canonical "ship-or-cut" decision aid before sending.
 
-## Full course
+## Free hosted version
 
-This framework is the spine of the **Cold Email & Outreach Craft**
-course in The Compounding Engine. The course covers:
-
-- Pain Signal Profiles (8 lessons)
-- Infrastructure: domains, warm-up, sending architecture (6 lessons)
-- Sequence architecture at scale (5 lessons)
-- Deliverability forensics (4 lessons)
-- Program economics: CPM, CAC, payback (3 lessons)
-
-→ [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)
+The same job runs in a browser, no install and no key:
+[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)

@@ -1,25 +1,5 @@
-{
-  "renderer_version": 2,
-  "title": "Cold Email Craft",
-  "subtitle": "Replace an $80K SDR with the JMC framework",
-  "accent_color": "#00D4FF",
-  "tagline_top": "JMC Skill Pack",
-  "command": "/cold-email",
-  "user_prompt": "draft a CTO enterprise sequence",
-  "response_lines": [
-    "Loading brand voice + ICP config...",
-    "Mining PSP vocabulary phrases (8 found)",
-    "Drafting 4-touch sequence (specific \u2192 wedge \u2192 proof \u2192 walk)",
-    "Running spam-lint...",
-    "Sequence ready \u00b7 spam-score 0.4 / 10"
-  ],
-  "artifact": {
-    "label": "sequences/cto-enterprise.md",
-    "lines": [
-      "subject: re: your Q3 migration",
-      "opener: noticed you posted 4 platform-eng",
-      "        roles in 30 days \u2014 usually means",
-      "        consolidation pressure from above."
-    ]
-  }
-}
+{ "renderer_version": 3, "title": "Cold Email Craft",
+  "subtitle": "Four jobs, under 90 words. Demographics are not a signal.",
+  "accent_color": "#00D4FF", "tagline_top": "JMC Skill Pack",
+  "proof": "spam_word_lint.py · score_subject_line.py · no LLM",
+  "cta": "jaymountconsulting.com/tools/cold-email-linter" }

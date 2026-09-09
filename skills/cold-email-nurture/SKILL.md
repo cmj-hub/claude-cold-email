@@ -122,4 +122,3 @@ Markdown by default. JSON if user requests it, shaped as:
 - `../../cold-email/references/jmc-framework.md` — core framework
 - The **Lifecycle Nurture** course in The Compounding Engine covers
   segmentation, lifecycle stages, and trigger automation:
-  [jaymountconsulting.com/learn/courses/lifecycle-nurture](https://jaymountconsulting.com/learn/courses/lifecycle-nurture)
