@@ -2,9 +2,10 @@
 name: cold-email-subject-lines
 description: Generate or critique cold-email subject lines across 4 framework families (pain, curiosity, social proof, direct). Each suggestion is ≤7 words, no spam triggers, no clickbait, includes reply-rate notes from the JMC Subject Line Swipe File (25 high-performers). Loaded by the main cold-email skill when the user asks for subject lines, openers, or to critique a draft subject.
 user-invocable: false
-allowed-tools:
-  - Read
+allowed-tools: Read
   - Grep
+license: MIT
+
 ---
 
 # Cold Email Subject Lines — 4-Framework Pattern Library
@@ -95,9 +96,8 @@ Better alternatives:
 - `references/spam-trigger-words.md` — banned words / phrases that hurt
   inbox placement
 - The **25 High-Performing Subject Lines** PDF ships in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass) — 25
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter) — 25
   patterns organized by framework with reply-rate notes from real
   campaigns
 - The full **Cold Email & Outreach Craft** course in The Compounding
   Engine:
-  [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)

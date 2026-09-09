@@ -2,11 +2,10 @@
 name: cold-email-kickoff
 description: Adaptive router for the cold-email skill pack. Detects the operator's current state (brand-config present? SOUL.md present? infrastructure ready? PSP defined? EVP locked? first campaign run?) and picks the next-best step. Loaded by the main cold-email skill on bare invocation ("/cold-email") or when the operator asks "where do I start" / "what's next". Inspired by coldoutboundskills' /cold-email-kickoff pattern.
 user-invocable: false
-allowed-tools:
-  - Read
-  - Write
-  - Grep
+allowed-tools: Read Write Grep
   - Bash
+license: MIT
+
 ---
 
 # Cold Email Kickoff — adaptive router

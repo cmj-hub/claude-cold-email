@@ -2,11 +2,10 @@
 name: cold-email-audit
 description: 30-point audit of a B2B outbound program across four dimensions — infrastructure (8 points), targeting (8 points), messaging (8 points), and operations (6 points). Produces a 0-100 score, the top 3 levers, and a 90-day remediation order. Loaded by the main cold-email skill when the user asks to audit or grade their outbound. Based on the JMC 30-Point Outbound Audit framework.
 user-invocable: false
-allowed-tools:
-  - Read
-  - Write
-  - Grep
+allowed-tools: Read Write Grep
   - WebFetch
+license: MIT
+
 ---
 
 # Cold Email Audit — 30-Point Outbound Program Review
@@ -149,4 +148,4 @@ Produce a structured report:
 - `references/audit-rubric.md` — full 30-point rubric with scoring criteria
 - `../../cold-email/references/jmc-framework.md` — the framework underneath
 - The full **30-Point Outbound Audit Template** ships as a DOCX in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass)
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)

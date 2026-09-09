@@ -14,13 +14,10 @@ description: >
   "cold email", "write a cold email", "cold outreach", "follow-up sequence",
   "deliverability", "SPF", "DKIM", "DMARC", "domain health", "outbound audit",
   "subject line", "nurture sequence", "outreach craft".
-allowed-tools:
-  - Read
-  - Write
-  - Grep
-  - Glob
-  - Bash
+allowed-tools: Read Write Grep Glob Bash
   - WebFetch
+license: MIT
+
 ---
 
 # Cold Email — JMC Outreach Craft Skill
@@ -108,19 +105,8 @@ Load these on demand for deeper context:
 - [`agents/cold-email-reviewer`](../agents/cold-email-reviewer.md) — Quality scorer (0-100) against framework
 - [`agents/cold-email-deliverability-auditor`](../agents/cold-email-deliverability-auditor.md) — DNS/reputation specialist
 
-## Full course
+## Free hosted version
 
-This skill is module 1 of the **Cold Email & Outreach Craft** course in
-The Compounding Engine. The full course covers infrastructure setup,
-data sourcing, sequence architecture at scale, deliverability
-forensics, and program economics.
+The same job runs in a browser, no install and no key:
+[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)
 
-→ [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)
-
-## Operator Pass — the 52-tool API
-
-The signal-anchored opener prompt above runs as a hosted API endpoint
-in [Operator Pass](https://jaymountconsulting.com/operator-pass)
-(`/api/v1/tools/cold-email-linter`). Cross-runtime install via
-[`claude-operator-pass`](https://github.com/cmj-hub/claude-operator-pass)
-when that ships (Wave 1+1).

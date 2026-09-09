@@ -2,11 +2,10 @@
 name: cold-email-deliverability
 description: 15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up status (mailbox age, send volume ramp, reply ratio), and content (spam-trigger lint, link-to-text ratio, image-to-text ratio). Returns a 0-100 deliverability score and a fix-order. Uses native DNS lookups + public blacklist APIs — no paid tools required. Loaded by the main cold-email skill when the user asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness.
 user-invocable: false
-allowed-tools:
-  - Read
-  - Write
-  - Bash
+allowed-tools: Read Write Bash
   - WebFetch
+license: MIT
+
 ---
 
 # Cold Email Deliverability — 15-point pre-campaign domain health
@@ -131,9 +130,8 @@ Output:
 ## References
 
 - The **Pre-Campaign Domain Health Checklist** (15-point PDF) ships in
-  [Operator Pass](https://jaymountconsulting.com/operator-pass).
+  [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter).
 - DMARC + Feb-2024 bulk-sender rules (Google / Yahoo / Microsoft) —
   see `../../cold-email/references/bulk-sender-rules.md`.
 - The full **Cold Email & Outreach Craft** course covers deliverability
   forensics in 4 lessons:
-  [jaymountconsulting.com/learn/courses/cold-email-outreach-craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft)
