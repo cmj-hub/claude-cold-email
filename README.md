@@ -84,7 +84,7 @@ The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile
 
 ## Free, by email
 
-[**Signal-Targeted Cold Email Scorecard**](https://jaymountconsulting.com/outbound-signal-scorecard) — scores your outbound against the signal test, sent to your inbox.
+[**Growth Audit**](https://jaymountconsulting.com/growth-audit) — where your go-to-market stack is leaking, sent to your inbox.
 
 That one does ask for an email, and it enrols you in a short follow-up on the same topic. Unsubscribe whenever.
 
