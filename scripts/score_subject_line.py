@@ -23,6 +23,36 @@ from dataclasses import dataclass, asdict
 from typing import Optional, List, Dict
 
 
+MAX_INPUT_BYTES = 2_000_000
+
+
+def fail_input(message: str) -> None:
+    print(f"error: {message}", file=sys.stderr)
+    raise SystemExit(2)
+
+
+def parse_json(text: str) -> dict:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        fail_input("invalid JSON")
+    if not isinstance(data, dict):
+        fail_input("JSON must be an object")
+    return data
+
+
+def read_stdin_text() -> str:
+    raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input("input is too large")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input("input is not UTF-8 text")
+
+
 # Re-use the lexicon from spam_word_lint.py at import time. For zero-dep,
 # we duplicate the most common spam triggers here.
 SPAM_WORDS = [
@@ -233,13 +263,13 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.stdin:
-        try:
-            payload = json.load(sys.stdin)
-            subject = payload.get("subject", "")
-            framework = payload.get("framework")
-        except json.JSONDecodeError as err:
-            print(f"Bad JSON on stdin: {err}", file=sys.stderr)
-            return 2
+        payload = parse_json(read_stdin_text())
+        subject = payload.get("subject", "")
+        if not isinstance(subject, str):
+            subject = ""
+        framework = payload.get("framework")
+        if framework is not None and not isinstance(framework, str):
+            framework = None
     else:
         subject = args.subject
         framework = args.framework

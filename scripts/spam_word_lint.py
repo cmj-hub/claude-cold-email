@@ -31,6 +31,36 @@ from dataclasses import dataclass, field, asdict
 from typing import List, Optional, Tuple
 
 
+MAX_INPUT_BYTES = 2_000_000
+
+
+def fail_input(message: str) -> None:
+    print(f"error: {message}", file=sys.stderr)
+    raise SystemExit(2)
+
+
+def parse_json(text: str) -> dict:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        fail_input("invalid JSON")
+    if not isinstance(data, dict):
+        fail_input("JSON must be an object")
+    return data
+
+
+def read_stdin_text() -> str:
+    raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input("input is too large")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input("input is not UTF-8 text")
+
+
 # ----------------------------------------------------------------------------
 # Spam-trigger lexicon (sourced from Google Postmaster, Yahoo, Microsoft 2024
 # bulk-sender rules; Litmus + Email on Acid public lists; JMC's review of
@@ -373,13 +403,13 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.stdin:
-        try:
-            payload = json.load(sys.stdin)
-            subject = payload.get("subject", "")
-            body = payload.get("body", "")
-        except json.JSONDecodeError as err:
-            print(f"Bad JSON on stdin: {err}", file=sys.stderr)
-            return 2
+        payload = parse_json(read_stdin_text())
+        subject = payload.get("subject", "")
+        body = payload.get("body", "")
+        if not isinstance(subject, str):
+            subject = ""
+        if not isinstance(body, str):
+            body = ""
     else:
         subject = args.subject
         body = args.body
