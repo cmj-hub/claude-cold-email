@@ -31,6 +31,22 @@ from dataclasses import dataclass, field, asdict
 from typing import List, Optional
 
 
+HOST = re.compile(
+    r"^(?=.{1,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)"
+    r"(\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$"
+)
+SELECTOR = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62})?$")
+IPV4 = re.compile(
+    r"^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$"
+)
+
+
+def plain_dns_name(name: str) -> bool:
+    return bool(name) and not name.startswith("-") and not any(
+        char in name for char in " \t\r\n/\\@?"
+    )
+
+
 @dataclass
 class Check:
     id: int
@@ -42,7 +58,12 @@ class Check:
 
 
 def dig(qtype: str, name: str) -> str:
-    """Run dig and return stdout. Empty string on failure."""
+    """Run dig and return stdout. Empty string on failure or an unsafe name."""
+    if qtype == "-x":
+        if not IPV4.match(name):
+            return ""
+    elif not plain_dns_name(name):
+        return ""
     try:
         result = subprocess.run(
             ["dig", "+short", qtype, name],
@@ -177,14 +198,15 @@ def check_reverse_dns(domain: str) -> List[Check]:
         out.append(Check(10, "Reverse DNS matches", "dns", "important", False, "No MX to derive IP from"))
         return out
     mx_host = mx.split()[-1].rstrip(".") if mx.split() else ""
-    if not mx_host:
-        out.append(Check(10, "Reverse DNS matches", "dns", "important", False, "No MX host"))
+    if not mx_host or not HOST.match(mx_host.lower()):
+        out.append(Check(10, "Reverse DNS matches", "dns", "important", False,
+                         "MX host is not a plain DNS name"))
         return out
 
-    ip = dig("A", mx_host).split("\n")[0]
-    if not ip:
+    ip = dig("A", mx_host).split("\n")[0].strip()
+    if not IPV4.match(ip):
         out.append(Check(10, "Reverse DNS matches", "dns", "important", False,
-                         f"No A record on MX host {mx_host}"))
+                         "MX host A record is not an IPv4 address"))
         return out
 
     ptr = dig("-x", ip).strip().rstrip(".")
@@ -329,11 +351,16 @@ def main() -> int:
     parser.add_argument("--format", default="text", choices=["text", "json"])
     args = parser.parse_args()
 
-    if not args.domain:
+    domain = args.domain.strip().lower().rstrip(".")
+    selector = args.selector.strip().lower().rstrip(".")
+    if not domain:
         print("--domain required.", file=sys.stderr)
         return 2
+    if not HOST.match(domain) or not SELECTOR.match(selector):
+        print("error: domain and selector must be plain DNS names", file=sys.stderr)
+        return 2
 
-    result = run_all(args.domain, args.selector)
+    result = run_all(domain, selector)
     if args.format == "json":
         print(json.dumps(result, indent=2))
     else:

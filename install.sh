@@ -60,13 +60,53 @@ DESTS=(
   "$HOME/.hermes/skills"
 )
 
+safe_skill_name() {
+  # C locale: in UTF-8, a-z can include A-Z, and this check would then accept BadName.
+  (
+    LC_ALL=C
+    case "$1" in
+      ""|-*|*-|*--*|*[!a-z0-9-]*) exit 1 ;;
+    esac
+  )
+}
+
+if [[ -L "$SRC" || -L "$SRC/skills" || -L "$SRC/$ORCH" || -L "$SRC/agents" ]]; then
+  echo "ERROR: the pack contains a symlink. Not installing." >&2
+  exit 1
+fi
+# Skip .git. Any other symlink is refused before a destination is deleted.
+if find "$SRC" -path "$SRC/.git" -prune -o -type l -print | grep -q .; then
+  echo "ERROR: the pack contains a symlink. Not installing." >&2
+  exit 1
+fi
+
 copy_tree() {
   local from="$1" to="$2"
   [[ -e "$from" ]] || return 0
+  local name root parent target
+  name="$(basename "$to")"
+  if ! safe_skill_name "$name"; then
+    echo "ERROR: skill name is not lowercase letters, digits, and hyphens: $name" >&2
+    exit 1
+  fi
   mkdir -p "$(dirname "$to")"
-  rm -rf "$to"
-  cp -R "$from" "$to"
-  echo "  → $to"
+  root="$(cd "$(dirname "$to")" && pwd -P)"
+  target="$root/$name"
+  case "$target" in
+    "$root"/*) ;;
+    *)
+      echo "ERROR: refusing to install outside $root" >&2
+      exit 1
+      ;;
+  esac
+  parent="$(dirname "$target")"
+  if [[ "$parent" != "$root" ]]; then
+    echo "ERROR: refusing to install outside $root" >&2
+    exit 1
+  fi
+  rm -rf -- "$target"
+  cp -R "$from" "$target"
+  echo "  → $target"
 }
 
 for dest in "${DESTS[@]}"; do

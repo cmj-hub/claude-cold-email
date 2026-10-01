@@ -28,6 +28,66 @@ from dataclasses import dataclass, field, asdict
 from typing import List, Dict, Tuple, Optional, Iterable
 
 
+MAX_INPUT_BYTES = 2_000_000
+
+
+def fail_input(message: str) -> None:
+    print(f"error: {message}", file=sys.stderr)
+    raise SystemExit(2)
+
+
+def read_text(path: str) -> str:
+    try:
+        with open(path, "rb") as handle:
+            raw = handle.read(MAX_INPUT_BYTES + 1)
+    except IsADirectoryError:
+        fail_input(f"not a file: {path}")
+    except FileNotFoundError:
+        fail_input(f"file not found: {path}")
+    except OSError:
+        fail_input(f"cannot read file: {path}")
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input(f"file is too large: {path}")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input(f"file is not UTF-8 text: {path}")
+
+
+def parse_json(text: str) -> dict:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        fail_input("invalid JSON")
+    if not isinstance(data, dict):
+        fail_input("JSON must be an object")
+    return data
+
+
+def read_stdin_text() -> str:
+    raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input("input is too large")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input("input is not UTF-8 text")
+
+
+def _as_text(value: object) -> str:
+    return value if isinstance(value, str) else ""
+
+
+def _as_minutes(value: object):
+    if value is None or isinstance(value, bool):
+        return None
+    return value if isinstance(value, int) else None
+
+
 # ----------------------------------------------------------------------------
 # Lexicons
 # ----------------------------------------------------------------------------
@@ -273,20 +333,23 @@ def format_json(result: ReplyScore) -> str:
 
 def iter_batch(path: str) -> Iterable[Tuple[Optional[str], ReplyScore]]:
     """Yield (line_id, ReplyScore) for each line in a JSONL file."""
-    with open(path, "r", encoding="utf-8") as f:
-        for idx, line in enumerate(f, start=1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-            except json.JSONDecodeError as err:
-                print(f"line {idx}: bad JSON: {err}", file=sys.stderr)
-                continue
-            body = obj.get("body", "")
-            mins = obj.get("minutes_since_send")
-            label = obj.get("id") or obj.get("sender") or str(idx)
-            yield label, classify(body, mins)
+    text = read_text(path)
+    for idx, line in enumerate(text.splitlines(), start=1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError:
+            print(f"line {idx}: bad JSON", file=sys.stderr)
+            continue
+        if not isinstance(obj, dict):
+            print(f"line {idx}: JSON must be an object", file=sys.stderr)
+            continue
+        body = _as_text(obj.get("body", ""))
+        mins = _as_minutes(obj.get("minutes_since_send"))
+        label = obj.get("id") or obj.get("sender") or str(idx)
+        yield label, classify(body, mins)
 
 
 def main() -> int:
@@ -335,13 +398,9 @@ def main() -> int:
         return 0
 
     if args.stdin:
-        try:
-            payload = json.load(sys.stdin)
-            body = payload.get("body", "")
-            mins = payload.get("minutes_since_send")
-        except json.JSONDecodeError as err:
-            print(f"Bad JSON on stdin: {err}", file=sys.stderr)
-            return 2
+        payload = parse_json(read_stdin_text())
+        body = _as_text(payload.get("body", ""))
+        mins = _as_minutes(payload.get("minutes_since_send"))
     else:
         body = args.body
         mins = args.minutes_since_send
