@@ -2,9 +2,9 @@
   <img src="./assets/header.png" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
 </p>
 
-# The letter
+# Cold email
 
-You hold one letter under 90 words plus the lint.
+A cold email is a short note to someone who has not asked to hear from you, anchored to a public signal.
 
 > "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
 
