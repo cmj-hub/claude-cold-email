@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-craft
 description: Draft a single signal-anchored cold email or a 3-touch follow-up sequence using the JMC framework — <90 words, binary CTA, no banned openers. Anchors on a Pain Signal Profile (not demographics). Loaded by the main cold-email skill when the user asks to write or sequence outreach. Includes the surgical "rewrite the weakest line" mode for ship-or-cut review.
 user-invocable: false
@@ -12,6 +13,15 @@ license: MIT
 
 Drafts the actual email(s). Loaded by `cold-email` when the user wants
 to write or sequence outreach.
+
+## Contents
+
+- Checklist
+- Activation
+- Workflow
+- 3-touch sequence mode
+- Output format
+- Reference
 
 ## Activation
 
@@ -124,3 +134,14 @@ wordCount, framework: { signal, pain, evp, ask } }`.
 - `../../cold-email/references/jmc-framework.md` — full framework
 - `../../cold-email/references/banned-patterns.md` — what NOT to write
 - `../../cold-email/references/binary-ctas.md` — 30 binary CTA patterns
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

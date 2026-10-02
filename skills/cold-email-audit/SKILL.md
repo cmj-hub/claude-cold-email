@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-audit
 description: 30-point audit of a B2B outbound program across four dimensions — infrastructure (8 points), targeting (8 points), messaging (8 points), and operations (6 points). Produces a 0-100 score, the top 3 levers, and a 90-day remediation order. Loaded by the main cold-email skill when the user asks to audit or grade their outbound. Based on the JMC 30-Point Outbound Audit framework.
 user-invocable: false
@@ -14,6 +15,18 @@ Loaded by `cold-email` when the user asks to "audit our outbound",
 "why isn't this working", "grade our cold email program", or similar.
 Scores a B2B outbound program against 30 points across 4 dimensions
 and surfaces the top 3 levers.
+
+## Contents
+
+- Checklist
+- Activation triggers
+- Workflow
+- Score: <0-100>/100
+- The top 3 levers
+- 90-day remediation order
+- Full point-by-point detail
+- Grade thresholds
+- References
 
 ## Activation triggers
 
@@ -149,3 +162,14 @@ Produce a structured report:
 - `../../cold-email/references/jmc-framework.md` — the framework underneath
 - The full **30-Point Outbound Audit Template** ships as a DOCX in
   [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

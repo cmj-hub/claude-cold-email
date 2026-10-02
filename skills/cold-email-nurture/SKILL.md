@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-nurture
 description: Design a 5-email nurture stream from a Pain Signal Profile + EVP. Each email has a subject, preheader, opener, body beats, CTA, cadence rationale, behavioral principle, and one route-to-sales trigger. Loaded by the main cold-email skill when the user asks to nurture, re-engage, or design a stream. Based on the JMC Lifecycle Nurture framework.
 user-invocable: false
@@ -13,6 +14,13 @@ license: MIT
 Loaded by `cold-email` when the user wants to nurture (warm leads who
 didn't reply, re-engage dormant prospects, re-activate churned
 clients, post-content-download follow-ups).
+
+## Contents
+
+- Checklist
+- Activation triggers
+- Workflow
+- References
 
 ## Activation triggers
 
@@ -122,3 +130,14 @@ Markdown by default. JSON if user requests it, shaped as:
 - `../../cold-email/references/jmc-framework.md` — core framework
 - The **Lifecycle Nurture** course in The Compounding Engine covers
   segmentation, lifecycle stages, and trigger automation:
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

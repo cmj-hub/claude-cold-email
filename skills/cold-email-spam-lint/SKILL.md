@@ -1,4 +1,6 @@
 ---
+description: "Use when this skill runs."
+models: ""
 name: cold-email-spam-lint
 description: "Deterministic spam-trigger scanner for cold email drafts. Scans subject + body against a 200-word spam-trigger lexicon, validates link/image ratios, checks for ALL-CAPS / emoji / clickbait / fake-Re patterns, and returns a 0-100 deliverability-risk score with line-by-line flags. Backed by a Python script (no LLM). Loaded by the main cold-email skill before any send + on Wednesday's ship-day batch via cold-email-weekly-rhythm."
 user-invocable: false
@@ -13,6 +15,20 @@ license: MIT
 A real scanner, not vibes. Backs onto `scripts/spam_word_lint.py` for
 deterministic scoring against a maintained 200-word spam-trigger
 lexicon.
+
+## Contents
+
+- Checklist
+- Activation
+- How it scores
+- Deliverability risk score: <0-100>/100
+- Line-by-line flags
+- Verdict
+- Implementation
+- Script location
+- Lexicon source
+- Why this matters
+- References
 
 ## Activation
 
@@ -116,3 +132,14 @@ runs through 100 emails in under 10 seconds.
 - `../../cold-email/references/banned-patterns.md` — JMC-specific bans
   (separate from generic spam triggers — these are voice + framework
   bans, not deliverability bans)
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

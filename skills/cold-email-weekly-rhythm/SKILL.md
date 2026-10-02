@@ -1,4 +1,6 @@
 ---
+description: "Use when this skill runs."
+models: ""
 name: cold-email-weekly-rhythm
 description: Operational cadence playbook for the cold-email program. Defines what happens on Monday (PSP signals + list refresh), Wednesday (sequence ship + reply triage), Friday (reply scoring + adjust). Surfaces this week's queue, drift signals, and the metric review against last week. Inspired by coldoutboundskills' /cold-email-weekly-rhythm pattern — the cadence is what separates hobbyist programs from compounding ones.
 user-invocable: false
@@ -14,6 +16,26 @@ The framework + the infrastructure are necessary but not sufficient.
 What separates programs that ship from programs that don't is the
 **weekly cadence**. This sub-skill walks the operator through that
 cadence and surfaces the queue for this week.
+
+## Contents
+
+- Checklist
+- Activation
+- The default rhythm (Mon / Wed / Fri)
+- This week's send queue
+- Signal hunt (top 5 to verify by Wednesday)
+- List quality
+- Next: Wednesday ship + Friday review
+- Sequences shipping today
+- Reply triage (since Monday)
+- Flagged for review
+- This week's numbers
+- What worked
+- What didn't
+- Single lever for next week
+- Friday review — quarterly meta
+- Why cadence beats tactics
+- References
 
 ## Activation
 
@@ -182,3 +204,14 @@ just "here's what Monday needs from you."
 - `../cold-email-spam-lint/SKILL.md` — Wednesday pre-send gate
 - `../cold-email-audit/SKILL.md` — quarterly meta-review
 - `../../scripts/` — Python scoring scripts the skills shell out to
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

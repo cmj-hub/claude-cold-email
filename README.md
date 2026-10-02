@@ -2,7 +2,9 @@
   <img src="./assets/header.png" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
 </p>
 
-# claude-cold-email
+# The letter
+
+You hold one letter under 90 words plus the lint.
 
 > "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
 
@@ -25,6 +27,22 @@ The build guide teaches the framework to a human. This pack teaches the same fra
 <p align="center">
   <img src="./assets/demo.gif" alt="claude-cold-email — linting a signal-anchored T1 versus a spam-laden draft" width="100%">
 </p>
+
+## Contents
+
+- What this replaces
+- Install
+- What you walk out with in 15 minutes
+- What this pack will not do
+- Does this send the email for me?
+- What is a binary CTA?
+- Will this get me marked as spam?
+- Free, no signup
+- Free, by email
+- Companion packs
+- License
+- About
+- Regenerating the artwork
 
 ## What this replaces
 

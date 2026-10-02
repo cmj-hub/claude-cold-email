@@ -1,4 +1,6 @@
 ---
+description: "Use when this skill runs."
+models: ""
 name: cold-email-list-quality
 description: Score a cold-email prospect list 0-100 across dedup, role-fit (vs brand-config.icp), signal freshness, email-validity heuristics, exclusion-criteria match, and company-stage match. Returns the score, list of rows to remove, and a fix recommendation. Loaded by cold-email-weekly-rhythm on Monday's list refresh. Operates on CSV or JSONL; no external services.
 user-invocable: false
@@ -13,6 +15,22 @@ license: MIT
 Run before any campaign. Bad lists kill reply rates more than bad
 copy. This sub-skill scores the list across 6 axes, returns the rows
 to remove, and surfaces fix recommendations.
+
+## Contents
+
+- Checklist
+- Activation
+- Inputs
+- Scoring (6 axes, 100 total)
+- Output
+- Overall: <0-100>/100
+- Rows to remove (<N> total)
+- Fix recommendations (in order)
+- Send-volume recommendation
+- Send the cleaned list
+- What gets flagged automatically
+- Implementation
+- References
 
 ## Activation
 
@@ -158,3 +176,14 @@ skill describes the contract; the deterministic script ships Wave 2.)
 - `../cold-email-weekly-rhythm/SKILL.md` — Monday's caller
 - Send-volume math: `warm_up_status` table in
   `cold-email-deliverability/SKILL.md`
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

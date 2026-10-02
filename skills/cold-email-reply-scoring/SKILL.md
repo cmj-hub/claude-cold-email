@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-reply-scoring
 description: Classify replies to cold email into 4 categories — buy-signal, positive, neutral, not-interested — using deterministic features (intent keywords, time-to-reply, length, question count, calendar/asset asks). Routes each reply per brand-config.operations.reply_routing. Backed by a Python script that uses regex + features (no LLM). Loaded by the main cold-email skill when the operator processes their reply queue.
 user-invocable: false
@@ -13,6 +14,23 @@ license: MIT
 Real classifier, not vibes. Backed by `scripts/score_reply.py` for
 deterministic categorization. The output is a category + confidence
 + recommended routing action.
+
+## Contents
+
+- Checklist
+- Activation
+- Output categories
+- Feature set (what the classifier uses)
+- Output format
+- Classification
+- Why
+- Recommended routing
+- Suggested reply opener (not generated; use your own voice)
+- Batch mode
+- Why deterministic > LLM here
+- False-positive handling
+- Calibration
+- References
 
 ## Activation
 
@@ -171,3 +189,14 @@ or when bulk-sender rules change).
 - `references/reply-lexicon.md` — feature regex source
 - `../cold-email-weekly-rhythm/SKILL.md` — where batch triage runs
 - `brand-config.operations.reply_routing` — the routing rules
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.
