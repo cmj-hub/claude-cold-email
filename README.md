@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="./assets/header.png" alt="claude-cold-email — signal-anchored cold email: public signal, pain, 22-word EVP, binary ask" width="100%">
+  <img src="./assets/header.png" alt="Cold email skill for Claude Code" width="100%">
 </p>
 
-# claude-cold-email
+# Cold email
+
+A cold email is a short note to someone who has not asked to hear from you, anchored to a public signal.
 
 > "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
 
