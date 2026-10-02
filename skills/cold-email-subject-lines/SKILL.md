@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-subject-lines
 description: Generate or critique cold-email subject lines across 4 framework families (pain, curiosity, social proof, direct). Each suggestion is ≤7 words, no spam triggers, no clickbait, includes reply-rate notes from the JMC Subject Line Swipe File (25 high-performers). Loaded by the main cold-email skill when the user asks for subject lines, openers, or to critique a draft subject.
 user-invocable: false
@@ -12,6 +13,15 @@ license: MIT
 
 Loaded by `cold-email` when the user wants subject-line suggestions or
 critique.
+
+## Contents
+
+- Checklist
+- Activation triggers
+- The 4 framework families
+- Constraints (every subject)
+- Workflow
+- References
 
 ## Activation triggers
 
@@ -101,3 +111,14 @@ Better alternatives:
   campaigns
 - The full **Cold Email & Outreach Craft** course in The Compounding
   Engine:
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

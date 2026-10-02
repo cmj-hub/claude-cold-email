@@ -1,4 +1,6 @@
 ---
+description: "Use when this skill runs."
+models: ""
 name: cold-email
 description: >
   Cold email & outreach craft for B2B teams. Write signal-anchored openers
@@ -25,6 +27,18 @@ license: MIT
 Comprehensive cold email orchestrator for B2B operators. Anchors every
 output on a Pain Signal Profile (not demographics) and forces the output
 into a shape you can ship.
+
+## Contents
+
+- Checklist
+- Quick Reference
+- Core principles (the JMC stance)
+- Workflow router
+- Variables (sub-skills inherit these)
+- References
+- Sub-skills
+- Specialist agents
+- Free hosted version
 
 ## Quick Reference
 
@@ -110,3 +124,14 @@ Load these on demand for deeper context:
 The same job runs in a browser, no install and no key:
 [Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)
 
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

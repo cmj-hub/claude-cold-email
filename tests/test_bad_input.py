@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TOKEN = "super-secret-token"
+MARKER = "super-secret-token"
 
 
 def run(script, args, stdin=None):
@@ -23,9 +23,9 @@ def run(script, args, stdin=None):
 
 class ColdEmailBadInput(unittest.TestCase):
     def test_reply_bad_json_hides_bytes(self):
-        result = run("score_reply.py", ["--stdin"], stdin='{"body": "' + TOKEN)
+        result = run("score_reply.py", ["--stdin"], stdin='{"body": "' + MARKER)
         self.assertEqual(result.returncode, 2)
-        self.assertNotIn(TOKEN, result.stderr + result.stdout)
+        self.assertNotIn(MARKER, result.stderr + result.stdout)
 
     def test_reply_array_rejected(self):
         result = run("score_reply.py", ["--stdin"], stdin="[]")
@@ -40,7 +40,7 @@ class ColdEmailBadInput(unittest.TestCase):
             path = Path(tmp) / "batch.jsonl"
             path.write_text(
                 '{"body":"sounds good"}\n'
-                + '{"body": "' + TOKEN + "\n"
+                + '{"body": "' + MARKER + "\n"
                 + "[]\n",
                 encoding="utf-8",
             )
@@ -48,7 +48,7 @@ class ColdEmailBadInput(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("line 2: bad JSON", result.stderr)
         self.assertIn("line 3: JSON must be an object", result.stderr)
-        self.assertNotIn(TOKEN, result.stderr + result.stdout)
+        self.assertNotIn(MARKER, result.stderr + result.stdout)
 
     def test_subject_and_spam_reject_array(self):
         for script in ("score_subject_line.py", "spam_word_lint.py"):

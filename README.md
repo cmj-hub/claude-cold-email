@@ -29,6 +29,22 @@ The build guide teaches the framework to a human. This pack teaches the same fra
   <img src="./assets/demo.gif" alt="claude-cold-email — linting a signal-anchored T1 versus a spam-laden draft" width="100%">
 </p>
 
+## Contents
+
+- What this replaces
+- Install
+- What you walk out with in 15 minutes
+- What this pack will not do
+- Does this send the email for me?
+- What is a binary CTA?
+- Will this get me marked as spam?
+- Free, no signup
+- Free, by email
+- Companion packs
+- License
+- About
+- Regenerating the artwork
+
 ## What this replaces
 
 The drafting stack an $80K SDR owns on a slow week — not the send, not the domain warm, not the close. Framework plus ~$130/mo in sending tools is the rest of the motion you already have.

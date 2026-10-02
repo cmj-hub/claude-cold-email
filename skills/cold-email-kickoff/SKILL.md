@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-kickoff
 description: Adaptive router for the cold-email skill pack. Detects the operator's current state (brand-config present? SOUL.md present? infrastructure ready? PSP defined? EVP locked? first campaign run?) and picks the next-best step. Loaded by the main cold-email skill on bare invocation ("/cold-email") or when the operator asks "where do I start" / "what's next". Inspired by coldoutboundskills' /cold-email-kickoff pattern.
 user-invocable: false
@@ -14,6 +15,17 @@ State-aware router. Operators don't ship cold email on day 1 — they
 go through a sequence: ICP → PSP → EVP → infrastructure → first send
 → reply triage → iterate. Kickoff detects where the operator is in
 that sequence and picks the right next step.
+
+## Contents
+
+- Checklist
+- Activation
+- State detection
+- Welcome flow
+- Status check mode
+- Resume from a specific step
+- Why state-aware routing matters
+- References
 
 ## Activation
 
@@ -129,3 +141,14 @@ adapts, doesn't list. Operators ship faster.
 - `../cold-email-craft/SKILL.md` — invoked on "ready to ship"
 - `../cold-email-audit/SKILL.md` — invoked on "have reply data"
 - `../cold-email-weekly-rhythm/SKILL.md` — invoked on "in iteration mode"
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

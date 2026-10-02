@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-deliverability
 description: 15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up status (mailbox age, send volume ramp, reply ratio), and content (spam-trigger lint, link-to-text ratio, image-to-text ratio). Returns a 0-100 deliverability score and a fix-order. Uses native DNS lookups + public blacklist APIs — no paid tools required. Loaded by the main cold-email skill when the user asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness.
 user-invocable: false
@@ -12,6 +13,16 @@ license: MIT
 
 Loaded by `cold-email` when the user asks about deliverability,
 SPF/DKIM/DMARC, domain health, or "are we ready to send."
+
+## Contents
+
+- Checklist
+- Activation triggers
+- Workflow
+- Score: <0-100>/100 — <grade>
+- Fix order
+- Grade thresholds
+- References
 
 ## Activation triggers
 
@@ -135,3 +146,14 @@ Output:
   see `../../cold-email/references/bulk-sender-rules.md`.
 - The full **Cold Email & Outreach Craft** course covers deliverability
   forensics in 4 lessons:
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.

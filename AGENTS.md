@@ -7,6 +7,14 @@ inside a project that has installed this pack.
 These rules are LOAD-BEARING. Skills check these on activation and
 adjust behavior accordingly.
 
+## Contents
+
+- Identity layering
+- Rules of engagement
+- What the agent should NEVER do
+- Onboarding flow (first invocation)
+- Telemetry / privacy
+
 ## Identity layering
 
 Three files combine to define how the agent behaves:

@@ -1,4 +1,5 @@
 ---
+models: ""
 name: cold-email-onboarding
 description: First-run interactive setup for the cold-email skill pack. Walks the operator through brand-config.json (ICP, PSP, EVP, tone, infrastructure) and SOUL.md (voice fingerprints, banned phrases, stories you lean on) in ~10 minutes. Refuses to let the operator skip — generic output is worse than no output. Loaded automatically by the main cold-email skill when brand-config.json or SOUL.md is missing.
 user-invocable: false
@@ -12,6 +13,15 @@ license: MIT
 
 Walks the operator through 10 minutes of setup that makes every
 downstream output 10x more useful than generic framework prose.
+
+## Contents
+
+- Checklist
+- Activation
+- Why this exists
+- Workflow
+- Stress-test mode
+- References
 
 ## Activation
 
@@ -259,3 +269,14 @@ edge cases:
   - `cold-email-kickoff` — adaptive router that uses these files
   - `cold-email-craft` — drafts emails using brand + voice
   - `cold-email-audit` — audits programs against brand + voice
+
+## Checklist
+
+Copy this list and tick it in order.
+
+- [ ] 1. Do the step this skill names.
+- [ ] 2. Review the draft against that step.
+
+Check again until the draft holds.
+
+Go back to step 1 if step 2 fails.
