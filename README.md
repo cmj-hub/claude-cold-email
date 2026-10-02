@@ -79,6 +79,12 @@ A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like
 
 The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile-ups. It does not promise inbox. It does not set SPF, DKIM, or DMARC. DNS scoring is in the pack. Running your infra is not.
 
+## On the site
+
+- [Cold Email pack](https://jaymountconsulting.com/skills/claude-cold-email) — this pack's page
+- [Skill packs catalog](https://jaymountconsulting.com/skills) — install paths + every pack
+- [Course twin](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft) — human build guide for this pack
+
 ## Free, no signup
 
 - **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)** — the same job as this pack, hosted. No account, no key.
