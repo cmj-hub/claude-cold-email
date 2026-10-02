@@ -1,27 +1,27 @@
 {
   "renderer_version": 3,
-  "title": "Cold Email Craft",
-  "subtitle": "Four jobs, under 90 words. Demographics are not a signal.",
+  "title": "Cold email",
+  "subtitle": "A short note anchored to a public signal.",
   "accent_color": "#00D4FF",
   "tagline_top": "JMC Skill Pack",
-  "proof": "spam_word_lint.py · score_subject_line.py · no LLM",
+  "proof": "spam_word_lint.py \u00b7 sample T1 100 \u00b7 no LLM",
   "cta": "jaymountconsulting.com/tools/cold-email-linter",
   "command": "/cold-email",
-  "user_prompt": "draft a CTO enterprise sequence",
+  "user_prompt": "lint examples/t1.email.md",
   "response_lines": [
-    "Loading brand voice + ICP config...",
-    "Mining PSP vocabulary phrases (8 found)",
-    "Drafting 4-touch sequence (specific → wedge → proof → walk)",
-    "Running spam-lint...",
-    "Sequence ready · spam-score 0.4 / 10"
+    "Linting the sample T1",
+    "Subject anchored to the Q3 hire freeze",
+    "URGENT / ACT NOW rejected",
+    "Sample T1 scored 100",
+    "No LLM \u00b7 no paid API"
   ],
   "artifact": {
-    "label": "sequences/cto-enterprise.md",
+    "label": "examples/t1.email.md",
     "lines": [
-      "subject: re: your Q3 migration",
-      "opener: noticed you posted 4 platform-eng",
-      "        roles in 30 days — usually means",
-      "        consolidation pressure from above."
+      "subject: Pipeline gap after the",
+      "         Q3 hire freeze?",
+      "saw the Demand Gen Lead role,",
+      "four days ago."
     ]
   }
 }
