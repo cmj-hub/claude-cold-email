@@ -2,7 +2,7 @@
 name: cold-email-list-quality
 description: Score a cold-email prospect list 0-100 across dedup, role-fit (vs brand-config.icp), signal freshness, email-validity heuristics, exclusion-criteria match, and company-stage match. Returns the score, list of rows to remove, and a fix recommendation. Loaded by cold-email-weekly-rhythm on Monday's list refresh. Operates on CSV or JSONL; no external services.
 user-invocable: false
-allowed-tools: Read Bash Write
+allowed-tools: Read Write
   - Grep
 license: MIT
 

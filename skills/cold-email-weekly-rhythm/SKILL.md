@@ -3,7 +3,6 @@ name: cold-email-weekly-rhythm
 description: Operational cadence playbook for the cold-email program. Defines what happens on Monday (PSP signals + list refresh), Wednesday (sequence ship + reply triage), Friday (reply scoring + adjust). Surfaces this week's queue, drift signals, and the metric review against last week. Inspired by coldoutboundskills' /cold-email-weekly-rhythm pattern — the cadence is what separates hobbyist programs from compounding ones.
 user-invocable: false
 allowed-tools: Read Write Grep
-  - Bash
 license: MIT
 
 ---

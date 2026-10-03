@@ -9,7 +9,8 @@ description: >
   "DKIM check", "domain reputation".
 allowed-tools:
   - Read
-  - Bash
+  - Bash(dig:*)
+  - Bash(openssl:*)
   - WebFetch
 ---
 
