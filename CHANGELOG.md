@@ -4,6 +4,7 @@
 
 ### Fixed
 - Plugin directory review: single-line `allowed-tools` with specific commands only (no bare shell), installer no longer copies into home-directory skill paths, and skills/agents no longer ask for a machine credential.
+- Allow-lists use repo-relative `python3 scripts/…` paths (no host-env interpolation). `install.sh` points at the repo and does not fetch a remote installer.
 
 ## [0.3.0] — 2026-09-08
 
