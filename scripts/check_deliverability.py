@@ -10,7 +10,7 @@ USAGE:
     python3 check_deliverability.py --stdin    # consume dig_dns.sh output
 
 Uses `dig` for DNS lookups. Falls back to URL-based blacklist lookups
-via standard-library urllib (no API keys, no external services).
+via standard-library urllib (no paid services).
 
 Exit codes:
     0  score >= 85   (ready to send)
@@ -224,7 +224,7 @@ def check_reverse_dns(domain: str) -> List[Check]:
     return out
 
 
-# ---------------- Reputation checks (URL-based, no API keys) ----------------
+# ---------------- Reputation checks (URL-based, no paid services) ----------------
 
 def check_blacklist_multirbl(domain: str) -> List[Check]:
     """Use multirbl.valli.org's public lookup page as a heuristic.

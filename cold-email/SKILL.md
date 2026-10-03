@@ -14,8 +14,7 @@ description: >
   "cold email", "write a cold email", "cold outreach", "follow-up sequence",
   "deliverability", "SPF", "DKIM", "DMARC", "domain health", "outbound audit",
   "subject line", "nurture sequence", "outreach craft".
-allowed-tools: Read Write Grep Glob
-  - WebFetch
+allowed-tools: Read Write Grep Glob WebFetch
 license: MIT
 
 ---

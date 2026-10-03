@@ -2,8 +2,7 @@
 name: cold-email-reply-scoring
 description: Classify replies to cold email into 4 categories — buy-signal, positive, neutral, not-interested — using deterministic features (intent keywords, time-to-reply, length, question count, calendar/asset asks). Routes each reply per brand-config.operations.reply_routing. Backed by a Python script that uses regex + features (no LLM). Loaded by the main cold-email skill when the operator processes their reply queue.
 user-invocable: false
-allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*)
-  - Grep
+allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*) Grep
 license: MIT
 
 ---

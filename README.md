@@ -68,7 +68,7 @@ This pack drafts and scores. It will not pick this quarter's PSP, ingest your CR
 
 ## Does this send the email for me?
 
-No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack: they need credentials this repo will never ask for.
+No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack.
 
 ## What is a binary CTA?
 

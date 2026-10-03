@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Plugin directory review: single-line `allowed-tools` with specific commands only (no bare shell), installer no longer copies into home-directory skill paths, and skills/agents no longer ask for a machine credential.
+
 ## [0.3.0] — 2026-09-08
 
 Public magnet pass. Instrument stays public. First loop is 15 minutes.

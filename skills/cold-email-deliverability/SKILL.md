@@ -2,8 +2,7 @@
 name: cold-email-deliverability
 description: 15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up status (mailbox age, send volume ramp, reply ratio), and content (spam-trigger lint, link-to-text ratio, image-to-text ratio). Returns a 0-100 deliverability score and a fix-order. Uses native DNS lookups + public blacklist APIs — no paid tools required. Loaded by the main cold-email skill when the user asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness.
 user-invocable: false
-allowed-tools: Read Write Bash(dig:*) Bash(host:*) Bash(nslookup:*)
-  - WebFetch
+allowed-tools: Read Write Bash(dig:*) Bash(host:*) Bash(nslookup:*) WebFetch
 license: MIT
 
 ---
@@ -60,12 +59,12 @@ The 15 checks span four categories:
 
 ### 3. Run the lookups
 
-Use `Bash` for `dig`, `host`, `nslookup`. Use `WebFetch` for blacklist
+Run `dig`, `host`, or `nslookup` for DNS. Use `WebFetch` for blacklist
 lookups against public APIs (Spamhaus DBL, MultiRBL.valli.org).
 
-**Never** call paid APIs. Never ask for an API key. If a check requires
-a tool the user doesn't have, fall back to telling the user the
-manual lookup command + expected output.
+**Never** call paid services. If a check requires a tool the user
+doesn't have, fall back to telling the user the manual lookup
+command + expected output.
 
 Example fallback:
 
