@@ -2,8 +2,7 @@
 name: cold-email-nurture
 description: Design a 5-email nurture stream from a Pain Signal Profile + EVP. Each email has a subject, preheader, opener, body beats, CTA, cadence rationale, behavioral principle, and one route-to-sales trigger. Loaded by the main cold-email skill when the user asks to nurture, re-engage, or design a stream. Based on the JMC Lifecycle Nurture framework.
 user-invocable: false
-allowed-tools: Read Write
-  - Grep
+allowed-tools: Read Write Grep
 license: MIT
 
 ---

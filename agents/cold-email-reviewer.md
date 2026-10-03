@@ -6,9 +6,7 @@ description: >
   and scores 0-100 with line-by-line critique. Use after drafting and before
   sending. Triggers on "review this cold email", "score my email", "is this
   cold email good", "critique this draft".
-allowed-tools:
-  - Read
-  - Grep
+allowed-tools: Read Grep
 ---
 
 # Cold Email Reviewer Agent

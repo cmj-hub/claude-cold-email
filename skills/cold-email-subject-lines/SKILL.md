@@ -2,8 +2,7 @@
 name: cold-email-subject-lines
 description: Generate or critique cold-email subject lines across 4 framework families (pain, curiosity, social proof, direct). Each suggestion is ≤7 words, no spam triggers, no clickbait, includes reply-rate notes from the JMC Subject Line Swipe File (25 high-performers). Loaded by the main cold-email skill when the user asks for subject lines, openers, or to critique a draft subject.
 user-invocable: false
-allowed-tools: Read
-  - Grep
+allowed-tools: Read Grep
 license: MIT
 
 ---

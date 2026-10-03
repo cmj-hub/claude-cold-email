@@ -1,5 +1,5 @@
 # Install cmj-hub/claude-cold-email into detected Windows agent skill directories.
-# Prefers npx skills add --all. Fallback copies into well-known paths.
+# Path: npx skills add --all.
 $ErrorActionPreference = "Stop"
 $Repo = "cmj-hub/claude-cold-email"
 

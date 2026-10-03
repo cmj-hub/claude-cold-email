@@ -91,7 +91,7 @@ parts and ask for the actual data. Don't paint over uncertainty.
 - Fabricate signals, recipients, or metrics
 - Override the framework's structural constraints (≤90 words / binary CTA / etc.)
   even if SOUL.md asks for longer / softer
-- Call paid APIs without an explicit operator-supplied key
+- Call paid APIs
 
 ## Onboarding flow (first invocation)
 
@@ -111,6 +111,5 @@ invocation:
 No telemetry. No outbound calls except:
 - DNS lookups (the deliverability skill)
 - Public blacklist APIs (the deliverability skill, when requested)
-- The operator's own sending API (with their key, on their request)
 
 The pack does not call back to Jay Mount Consulting servers.

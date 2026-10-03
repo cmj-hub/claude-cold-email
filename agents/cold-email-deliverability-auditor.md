@@ -7,11 +7,7 @@ description: >
   (Feb 2024 rules). No paid APIs. Triggers on "check deliverability",
   "audit DNS", "is my domain ready", "DMARC compliance", "SPF check",
   "DKIM check", "domain reputation".
-allowed-tools:
-  - Read
-  - Bash(dig:*)
-  - Bash(openssl:*)
-  - WebFetch
+allowed-tools: Read Bash(dig:*) Bash(openssl:*) WebFetch
 ---
 
 # Cold Email Deliverability Auditor Agent
@@ -158,7 +154,6 @@ Validate each requirement against the user's setup.
 
 - **Never** invent DNS records you didn't actually resolve
 - **Never** assume an inbox provider — ask
-- **Never** call paid APIs (mxtoolbox.com, sendforensics.com, etc.)
-  unless the user explicitly provides a key
+- **Never** call paid services (mxtoolbox.com, sendforensics.com, etc.)
 - If a check requires a tool the user doesn't have, give them the
   manual lookup command + the URL to paste
