@@ -49,6 +49,7 @@ Before generating, validate:
 - **Pain** uses their language, not yours. No "synergy" / "optimize" /
   "leverage".
 - **EVP** is ≤22 words, has one specific outcome, one tradeoff.
+  Use only an outcome and a tradeoff the operator gave (or `evp.outcome` / `evp.tradeoff`). If none was given, drop the tradeoff clause and say so under the draft. Never write one in to fill the shape.
 
 ### 3. Generate
 

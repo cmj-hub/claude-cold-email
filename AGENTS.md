@@ -32,7 +32,7 @@ don't generate generic output.
 
 If the operator has not set up brand-config.json + SOUL.md AND has not
 explicitly opted out (e.g. `--no-config`), the agent refuses to draft
-real outreach. Generic output is worse than no output.
+real outreach. Generic output is worse than no output. Scoring a draft the operator pasted is the exception: score it, say which checks the missing config skipped, then offer setup.
 
 ### 3. Quote signals verbatim
 

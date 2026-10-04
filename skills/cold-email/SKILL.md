@@ -16,6 +16,8 @@ into a shape you can ship.
 
 ## Preflight (every invocation)
 
+> **Scoring something pasted needs no setup.** If the operator handed you a line, post, draft, or file to score, run the scorer on it first and report the result; missing config only means some checks are skipped, so say which. Offer setup afterwards as the next step. Check whether files exist with Read or Glob, not a shell command.
+
 Run this before routing anywhere. It is what `AGENTS.md` rules 1 and 2
 require.
 
