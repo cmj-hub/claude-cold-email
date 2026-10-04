@@ -1,6 +1,6 @@
 {
   "name": "jmc-cold-email",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A JMC cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.",
   "license": "MIT",
   "bin": {
@@ -12,13 +12,13 @@
   },
   "files": [
     "skills",
-    "cold-email",
     "scripts",
     "agents",
     "examples",
     "AGENTS.md",
     "SOUL.md",
     "brand-config.example.json",
+    "brand-config.schema.json",
     "README.md",
     "LICENSE",
     "install.sh",
@@ -38,7 +38,6 @@
     "cursor",
     "codex",
     "grok",
-    "cold-email",
     "b2b",
     "outbound"
   ],

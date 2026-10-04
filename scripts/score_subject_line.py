@@ -20,7 +20,12 @@ import json
 import re
 import sys
 from dataclasses import dataclass, asdict
+from pathlib import Path
 from typing import Optional, List, Dict
+
+# Sibling script; both ship together in scripts/. Still stdlib only.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from spam_word_lint import phrase_pattern, shouty_caps  # noqa: E402
 
 
 MAX_INPUT_BYTES = 2_000_000
@@ -53,8 +58,8 @@ def read_stdin_text() -> str:
         fail_input("input is not UTF-8 text")
 
 
-# Re-use the lexicon from spam_word_lint.py at import time. For zero-dep,
-# we duplicate the most common spam triggers here.
+# Subject-specific subset of the spam_word_lint.py lexicon. Matching uses
+# the same whole-word rule (phrase_pattern), so "earn" does not hit "learn".
 SPAM_WORDS = [
     "act now", "act fast", "limited time", "limited offer", "expires today",
     "deadline", "hurry", "urgent", "free money", "free cash", "earn",
@@ -64,7 +69,7 @@ SPAM_WORDS = [
 ]
 
 CLICKBAIT_PATTERNS = [
-    r"you won['']t believe",
+    r"you won['’]t believe",
     r"this one (trick|secret|tip|hack)",
     r"doctors hate",
     r"will (shock|amaze|surprise) you",
@@ -115,14 +120,14 @@ def axis_length(subject: str) -> tuple:
 def axis_spam(subject: str) -> tuple:
     score = 25
     flags = []
-    lower = subject.lower()
     for w in SPAM_WORDS:
-        if w in lower:
+        if phrase_pattern(w).search(subject):
             score -= 5
             flags.append(f"Spam-trigger: '{w}'")
-    if re.search(r"[A-Z]{3,}", subject):
+    caps = shouty_caps(subject)
+    if caps:
         score -= 8
-        flags.append("ALL CAPS sequence")
+        flags.append(f"ALL CAPS: {caps}")
     if EMOJI_RE.search(subject):
         score -= 10
         flags.append("Emoji in subject (B2B deliverability hit)")
@@ -162,10 +167,9 @@ def axis_framework_fit(subject: str, requested: Optional[str]) -> tuple:
     specific framework, score 25 if matched, 10 if mismatched."""
     score = 25
     flags = []
-    lower = subject.lower()
     matches = []
     for family, words in FRAMEWORK_SIGNALS.items():
-        if any(w in lower for w in words):
+        if any(phrase_pattern(w).search(subject) for w in words):
             matches.append(family)
 
     detected = matches[0] if matches else None
@@ -181,6 +185,9 @@ def axis_framework_fit(subject: str, requested: Optional[str]) -> tuple:
         flags.append("No clear framework signal (pain / curiosity / proof / direct)")
 
     return max(0, score), flags, detected
+
+
+BANNED_CAP = 49
 
 
 def verdict_for(score: int) -> str:
@@ -201,6 +208,14 @@ def score_subject(subject: str, framework: Optional[str] = None) -> SubjectScore
     fw_score, fw_flags, detected = axis_framework_fit(subject, framework)
 
     total = length_score + spam_score + cb_score + pers_score + fw_score
+
+    # Banned subject patterns (references/banned-patterns.md) never ship,
+    # however well the other axes score.
+    banned = cb_flags or any(
+        f.startswith(("Fake threading", "Emoji", "ALL CAPS")) for f in spam_flags
+    )
+    if banned and total > BANNED_CAP:
+        total = BANNED_CAP
 
     return SubjectScore(
         subject=subject,

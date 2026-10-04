@@ -3,11 +3,11 @@ name: cold-email-deliverability-auditor
 description: >
   Email deliverability specialist agent. Runs DNS lookups for SPF, DKIM,
   DMARC, MX, and reverse DNS. Checks against public blacklist APIs (Spamhaus,
-  SURBL). Validates bulk-sender compliance for Google / Yahoo / Microsoft
-  (Feb 2024 rules). No paid APIs. Triggers on "check deliverability",
+  SURBL) over DNS. Validates bulk-sender compliance for Google / Yahoo
+  (Feb 2024) and Microsoft (May 2025). No paid APIs. Triggers on "check deliverability",
   "audit DNS", "is my domain ready", "DMARC compliance", "SPF check",
   "DKIM check", "domain reputation".
-allowed-tools: Read Bash(dig:*) Bash(openssl:*) WebFetch
+allowed-tools: Read Bash(python3 scripts/check_deliverability.py:*) Bash(dig:*) Bash(openssl:*) WebFetch
 ---
 
 # Cold Email Deliverability Auditor Agent
@@ -20,11 +20,17 @@ only native tools and public APIs — no paid services.
 
 1. **SPF**: record exists, includes the inbox provider, lookup count ≤10
 2. **DKIM**: selector resolves, key length ≥1024 bits, body-signed
-3. **DMARC**: record exists, policy ≠ `none` for bulk senders, reporting URI configured
+3. **DMARC**: record exists (required for bulk senders; `p=none` is the floor), reporting URI configured, policy moving to `quarantine` / `reject`
 4. **MX**: TLS supported (STARTTLS), priority ordering sane
 5. **Reverse DNS**: PTR record matches forward DNS
 6. **Blacklists**: Spamhaus DBL, SURBL — flag any hits
-7. **Bulk-sender compliance**: Google / Yahoo / Microsoft 2024 rules
+7. **Bulk-sender compliance**: Google / Yahoo (Feb 2024) and Microsoft (May 2025) rules —
+   see `skills/cold-email/references/bulk-sender-rules.md`
+
+Start with `python3 scripts/check_deliverability.py --domain <domain> --format json`
+(pack root `scripts/`). It runs checks 1-15 and marks anything DNS cannot
+show as `unknown`. Use the manual steps below to settle unknowns, never to
+guess them.
 
 ## Execution workflow
 
@@ -69,7 +75,8 @@ dig +short TXT _dmarc.<sending_domain>
 
 Validate:
 - Record exists
-- `p=` is `quarantine` or `reject` (NOT `none` for bulk senders)
+- `p=` present. `none` meets the bulk-sender minimum; recommend `quarantine`
+  once `rua` reports show only legitimate senders
 - `rua=mailto:` reporting URI present
 - Optional: `sp=`, `pct=`, `adkim=`, `aspf=` configured per use case
 
@@ -93,23 +100,27 @@ PTR should resolve back to the sending IP.
 
 ### 7. Blacklist check
 
-Use WebFetch against public APIs (no key required):
+Spamhaus DBL and SURBL are DNS zones — query them with `dig`:
 
+```bash
+dig +short A <sending_domain>.dbl.spamhaus.org   # 127.0.1.x = listed
+dig +short A <sending_domain>.multi.surbl.org    # 127.0.0.x (not .1) = listed
 ```
-https://multirbl.valli.org/lookup/<sending_domain>.html
-https://www.spamhaus.org/lookup/<domain>
-```
 
-Parse for any RED / LISTED flags.
+An empty answer means "not listed" **only if** the zone's test entry
+answers (`dbltest.com.dbl.spamhaus.org`, `test.surbl.org.multi.surbl.org`).
+Spamhaus refuses many public resolvers (answer `127.255.255.x`); report
+that as unknown and give the operator
+`https://multirbl.valli.org/lookup/<sending_domain>.html` to check by hand.
 
-### 8. Bulk-sender compliance (Feb 2024 rules)
+### 8. Bulk-sender compliance
 
-Google / Yahoo / Microsoft now require:
-- SPF + DKIM aligned (mandatory)
-- DMARC `p=quarantine` minimum (mandatory)
-- One-click List-Unsubscribe header for >5,000 sends/day to consumer
-  inboxes (RFC 8058)
-- ≤0.3% spam-complaint rate (Postmaster Tools)
+For senders of 5,000+/day to consumer mailboxes, Google / Yahoo (Feb
+2024) and Microsoft (May 2025) require:
+- SPF and DKIM passing, with the `From:` domain aligned to one of them
+- A DMARC record (`p=none` is the minimum)
+- One-click unsubscribe (RFC 8058) for marketing / subscribed mail
+- Spam-complaint rate below 0.3% (Postmaster Tools)
 
 Validate each requirement against the user's setup.
 
@@ -120,6 +131,8 @@ Validate each requirement against the user's setup.
 
 ## Status: <READY | NOT READY>
 
+Status is ✓ pass, ✗ fail, or ? unknown. Unknowns are listed, not scored.
+
 | Check | Status | Detail |
 |---|---|---|
 | SPF record | ✓ / ✗ | <one-line> |
@@ -128,14 +141,14 @@ Validate each requirement against the user's setup.
 | DKIM selector resolves | ✓ / ✗ | selector: <name> |
 | DKIM key ≥1024 bits | ✓ / ✗ | |
 | DMARC exists | ✓ / ✗ | |
-| DMARC policy ≠ none | ✓ / ✗ | p=<policy> |
+| DMARC policy enforcing | ✓ / ✗ | p=<policy> (recommended, not required) |
 | DMARC reporting URI | ✓ / ✗ | |
 | MX TLS support | ✓ / ✗ | |
 | Reverse DNS | ✓ / ✗ | |
 | Spamhaus DBL | ✓ / ✗ | |
 | SURBL | ✓ / ✗ | |
 | Bulk-sender SPF+DKIM alignment | ✓ / ✗ | |
-| Bulk-sender DMARC ≥ quarantine | ✓ / ✗ | |
+| Bulk-sender DMARC published | ✓ / ✗ | |
 | List-Unsubscribe header (if >5k/day) | ✓ / ✗ | |
 
 ## Fixes (in order)

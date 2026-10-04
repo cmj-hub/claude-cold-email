@@ -98,9 +98,12 @@ Per your brand-config.operations.reply_routing.buy_signal:
 For triaging the Wednesday/Friday batch of replies:
 
 ```bash
-# In the project, with reply data in replies.jsonl
-python3 ../../scripts/score_reply.py --batch replies.jsonl --format json | jq
+# replies.jsonl: one {"body": "...", "minutes_since_send": N} per line
+python3 scripts/score_reply.py --batch replies.jsonl --format json
 ```
+
+(`scripts/` is at the pack root — `<skill-dir>/../../scripts/`. Bad lines
+are reported on stderr by line number and skipped; the rest still score.)
 
 Output:
 
@@ -154,19 +157,20 @@ Category candidates: positive (0.42) | neutral (0.38)
 
 ## Calibration
 
-The lexicon is calibrated against JMC's review of 1000+ real cold-email
-replies (anonymized). Accuracy on the held-out set:
+The patterns are hand-tuned. No accuracy figure ships with the pack, so
+don't quote one. Two rules keep mistakes cheap:
 
-- buy-signal vs not: 94%
-- positive vs neutral: 81%
-- not-interested precision: 97%
+- A reply that matches no pattern is `neutral` with confidence 0 and
+  `needs_review: true`. Length and reply time alone never decide a
+  category, so "Who is this?" goes to a human, not the suppression list.
+- Anything under 0.6 confidence is flagged for review.
 
-Re-calibration ships when the lexicon updates (every 90 days minimum,
-or when bulk-sender rules change).
+When a reply is scored wrong, add it as a test case and adjust the
+pattern lists — see CONTRIBUTING.md.
 
 ## References
 
 - `../../scripts/score_reply.py` — the actual classifier
-- `references/reply-lexicon.md` — feature regex source
+- The `*_PATTERNS` lists at the top of `score_reply.py` — the lexicon
 - `../cold-email-weekly-rhythm/SKILL.md` — where batch triage runs
 - `brand-config.operations.reply_routing` — the routing rules

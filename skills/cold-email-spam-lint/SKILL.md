@@ -82,36 +82,43 @@ table above.
 
 ## Script location
 
-`../../scripts/spam_word_lint.py`
+`../../scripts/spam_word_lint.py` — relative to this skill's base
+directory. From the pack root that is `scripts/spam_word_lint.py`.
+
+Exit code 0 means score ≥75, 1 means below 75, 2 means bad input.
+
+Trigger words match as whole words: "credit" fires on "credit line",
+not "accredited". A lone 3-4 letter acronym (SDR, CRM, ARR) is not
+"ALL CAPS"; a 5+ letter capitalised word or two capitalised words in a
+row is.
 
 The script is zero-dependency Python 3.8+. No external libraries, no
 network calls.
 
 ## Lexicon source
 
-The 200-word lexicon lives at `references/spam-trigger-lexicon.md`
-(loaded as a JSON-shaped const at the top of the Python script).
-Sources:
+The 200-word lexicon lives in the script itself — the `*_TRIGGERS`
+and `CLICKBAIT_PATTERNS` lists at the top of `spam_word_lint.py`. Edit
+it there. Sources:
 
 - Google Postmaster Tools 2024 bulk-sender guidance
 - Yahoo + Microsoft 2024 bulk-sender rules
 - Litmus / Email on Acid public spam-trigger lists
 - JMC's own list from reviewing 1000+ campaigns
 
-The lexicon is versioned. When Gmail/Yahoo update guidance, the
-lexicon updates and the script picks it up on next install.
+The lexicon is versioned with the pack. When Gmail/Yahoo update
+guidance, the lexicon updates in a release.
 
 ## Why this matters
 
-Vibes-based spam-checking misses 60% of issues. A deterministic lint
-catches every instance of the 200 known triggers, every time. The
+Vibes-based spam-checking is inconsistent. A deterministic lint
+catches every instance of the known triggers, every time. The
 script runs in <100ms per email — Wednesday's batch ship-day check
 runs through 100 emails in under 10 seconds.
 
 ## References
 
 - `../../scripts/spam_word_lint.py` — the actual scanner
-- `references/spam-trigger-lexicon.md` — the lexicon source
-- `../../cold-email/references/banned-patterns.md` — JMC-specific bans
+- `../cold-email/references/banned-patterns.md` — JMC-specific bans
   (separate from generic spam triggers — these are voice + framework
   bans, not deliverability bans)

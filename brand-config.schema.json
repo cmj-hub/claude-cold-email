@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/brand-config.schema.json",
+  "title": "cold-email brand-config.json",
+  "description": "Operator config read by every cold-email skill. Written by cold-email-onboarding; see brand-config.example.json.",
+  "type": "object",
+  "required": ["operator", "icp", "psp", "evp"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "operator": {
+      "type": "object",
+      "required": ["name", "company"],
+      "properties": {
+        "name": { "type": "string", "description": "Sign-off name" },
+        "title": { "type": "string" },
+        "company": { "type": "string" },
+        "calendar_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "icp": {
+      "type": "object",
+      "required": ["segment", "role_targets"],
+      "properties": {
+        "segment": { "type": "string", "description": "One sentence: stage, size, motion, region. A funding stage here enables the list scorer's company-stage axis." },
+        "role_targets": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "exclusion_criteria": { "type": "array", "items": { "type": "string" }, "description": "Text in parentheses is a note; the rest is matched as whole words by score_list.py" }
+      }
+    },
+    "psp": {
+      "type": "object",
+      "required": ["primary_pain"],
+      "properties": {
+        "signal_anchors": { "type": "array", "items": { "type": "string" } },
+        "primary_pain": { "type": "string" },
+        "timing_trigger": { "type": "string", "enum": ["new-exec", "budget-cycle", "obvious-failure", ""] },
+        "felt_pain_role": { "type": "string" },
+        "vocabulary": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evp": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "tier": { "type": "integer", "minimum": 1, "maximum": 5, "description": "Schwartz awareness tier" },
+        "primary": { "type": "string", "description": "≤22 words: For <ICP>, in <pain>, we ship <outcome> without <tradeoff>." },
+        "outcome": { "type": "string" },
+        "tradeoff": { "type": "string" },
+        "proof": { "type": "string", "description": "A real case or metric. Never invented." }
+      }
+    },
+    "tone": {
+      "type": "object",
+      "properties": {
+        "register": { "type": "string" },
+        "banned_phrases": { "type": "array", "items": { "type": "string" } },
+        "preferred_phrases": { "type": "array", "items": { "type": "string" } },
+        "first_person_singular_ok": { "type": "boolean" },
+        "swearing_ok": { "type": "boolean" },
+        "emoji_in_subject": { "type": "boolean" },
+        "emoji_in_body": { "type": "boolean" }
+      }
+    },
+    "infrastructure": {
+      "type": "object",
+      "properties": {
+        "sending_domain": { "type": "string" },
+        "inbox_provider": { "type": "string" },
+        "warm_up_status": { "type": "string" },
+        "deliverability_last_audited": { "type": "string", "format": "date" },
+        "dmarc_policy": { "type": "string", "enum": ["none", "quarantine", "reject", ""] }
+      }
+    },
+    "operations": {
+      "type": "object",
+      "properties": {
+        "weekly_cadence": { "type": "object", "additionalProperties": { "type": "string" } },
+        "reply_routing": {
+          "type": "object",
+          "properties": {
+            "buy_signal": { "type": "string" },
+            "positive": { "type": "string" },
+            "neutral": { "type": "string" },
+            "not_interested": { "type": "string" }
+          }
+        },
+        "experiment_log_path": { "type": "string" }
+      }
+    }
+  }
+}

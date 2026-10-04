@@ -1,8 +1,67 @@
 # Changelog
 
-## [Unreleased]
+## [0.4.0] — 2026-10-04
+
+Plugin loading, honest scoring, and the missing pieces the skills
+already promised.
 
 ### Fixed
+- **The main `cold-email` skill now loads as a plugin skill.** It lived at
+  `cold-email/`, outside `skills/`, so the plugin loader never saw it.
+  Moved to `skills/cold-email/`; shared references are now in
+  `skills/cold-email/references/`.
+- **Nine dead references.** Skills told the agent to load files that did
+  not exist (`psp-anchors.md`, `audit-rubric.md`, `bulk-sender-rules.md`,
+  `copy-frameworks.md`, `subject-line-patterns.md`, three lexicon files,
+  and `score_list.py`). Each one now exists or points at the real source.
+- **Orchestrator routed to 5 of 11 sub-skills.** Kickoff, onboarding,
+  spam-lint, list-quality, reply-scoring, and weekly-rhythm were
+  unreachable from the router. The orchestrator also gains the preflight
+  and self-check rubric that `AGENTS.md` already referenced.
+- `check_deliverability.py` reported "No SPF / DKIM / DMARC / MX" for every
+  domain when `dig` was missing or a lookup timed out. It now exits 2 when
+  `dig` is missing and marks unverifiable checks `unknown` (left out of
+  the score) instead of passing or failing them.
+- Blacklist check matched the words "spamhaus" / "surbl" on the
+  multirbl page, so it could not tell listed from clean. It now queries
+  `dbl.spamhaus.org` and `multi.surbl.org` over DNS and probes each
+  zone's test entry first, so a refused resolver reads as unknown.
+- DMARC: the pack said Google / Yahoo require `p=quarantine`. They require
+  a DMARC record; `p=none` is the minimum. Enforcement is now scored as
+  "important", not "critical", in the script, skill, and agent.
+- Spam lint and subject scorer matched trigger words inside other words
+  ("earn" in "learn", "credit" in "accredited", "urgent" in "insurgent").
+  Matching is now whole-word.
+- Any 3-letter acronym (SDR, CRM, ARR) counted as an ALL CAPS subject.
+  Shouting is now a 5+ letter capitalised word, two in a row, or a
+  mostly-capitals line.
+- A fake `Re:` / `Fwd:`, emoji, ALL CAPS, or clickbait subject could still
+  score "Ship after small fix". Banned subject patterns now cap at 49.
+- Reply scorer: "sure" matched "ensure" / "pressure", pricing questions
+  missed buy-signal, curly apostrophes defeated every `'` pattern, a bare
+  "stop" anywhere meant not-interested, and short unmatched replies
+  ("Who is this?") were routed as not-interested. Unmatched replies now
+  go to human review as neutral.
+- Release workflow interpolated CHANGELOG text straight into a shell
+  command; notes now go through a file.
+- Removed unverifiable accuracy figures from the reply-scoring skill.
+
+### Added
+- `scripts/score_list.py` — the list scorer `cold-email-list-quality`
+  described but did not ship: dedup, role-fit, signal freshness, email
+  validity, exclusions, company stage; `--write` splits cleaned / removed
+  CSVs. Sample input: `examples/prospects.csv`.
+- `brand-config.schema.json` (the example's `$schema` pointed at a file
+  that did not exist).
+- `references/psp-anchors.md`, `references/bulk-sender-rules.md`,
+  `cold-email-audit/references/audit-rubric.md`.
+- `tests/test_scoring.py` (21 cases) and `scripts/check_refs.py`; CI now
+  runs the unit tests, the reference check, and a guard that every
+  `SKILL.md` sits under `skills/`.
+- Skills that drive a script now allow-list it and say where `scripts/`
+  is relative to the skill directory.
+
+### Fixed (plugin directory review)
 - Plugin directory review: single-line `allowed-tools` with specific commands only (no bare shell), installer no longer copies into home-directory skill paths, and skills/agents no longer ask for a machine credential.
 - Allow-lists use repo-relative `python3 scripts/…` paths (no host-env interpolation). `install.sh` and `install.ps1` point at the repo and do not fetch a remote installer.
 

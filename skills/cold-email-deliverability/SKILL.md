@@ -2,7 +2,7 @@
 name: cold-email-deliverability
 description: 15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up status (mailbox age, send volume ramp, reply ratio), and content (spam-trigger lint, link-to-text ratio, image-to-text ratio). Returns a 0-100 deliverability score and a fix-order. Uses native DNS lookups + public blacklist APIs — no paid tools required. Loaded by the main cold-email skill when the user asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness.
 user-invocable: false
-allowed-tools: Read Write Bash(dig:*) Bash(host:*) Bash(nslookup:*) WebFetch
+allowed-tools: Read Write Bash(python3 scripts/check_deliverability.py:*) Bash(bash scripts/dig_dns.sh:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*) WebFetch
 license: MIT
 
 ---
@@ -47,9 +47,9 @@ The 15 checks span four categories:
 | 4 | DNS | DKIM selector resolves | `dig TXT <selector>._domainkey.<domain>` |
 | 5 | DNS | DKIM key ≥1024 bits | Decode the p= value |
 | 6 | DNS | DMARC record exists | `dig TXT _dmarc.<domain>` |
-| 7 | DNS | DMARC policy ≠ none for cold outreach | `p=quarantine` or `p=reject` required for bulk senders post-Feb 2024 |
+| 7 | DNS | DMARC policy enforcing | `p=quarantine` or `p=reject`. Best practice for cold outreach; Google / Yahoo only require a record (`p=none` is the floor) |
 | 8 | DNS | DMARC has `rua=` reporting | Aggregate report URI configured |
-| 9 | Reputation | Domain not on Spamhaus / SURBL | Lookup against public blacklist APIs |
+| 9 | Reputation | Domain not on Spamhaus DBL / SURBL | DNS query against `dbl.spamhaus.org` and `multi.surbl.org` |
 | 10 | Reputation | rDNS / PTR record matches sending IP | `dig -x <sending-ip>` matches forward |
 | 11 | Warm-up | Mailbox age ≥21 days | Compare `mailbox_age_days` to threshold |
 | 12 | Warm-up | Daily send ramp ≤30/day for first 14 days | Compare `current_daily_send_volume` |
@@ -59,8 +59,24 @@ The 15 checks span four categories:
 
 ### 3. Run the lookups
 
-Run `dig`, `host`, or `nslookup` for DNS. Use `WebFetch` for blacklist
-lookups against public APIs (Spamhaus DBL, MultiRBL.valli.org).
+Run the bundled checker first. It covers the DNS, blacklist, and
+bulk-sender rows in one pass (scripts live at `<skill-dir>/../../scripts/`;
+see "Running the bundled scripts" in the main `cold-email` skill):
+
+```bash
+python3 scripts/check_deliverability.py --domain <sending_domain> --selector <dkim_selector> --format json
+```
+
+The script reports each check as `pass`, `fail`, or `unknown`. Unknown
+means DNS could not show it (a timeout, a blocklist that refuses the
+resolver, List-Unsubscribe, complaint rate). **Report unknowns as
+unknown** — never turn them into a pass or a fail, and never invent a
+record you did not resolve. Unknowns are left out of the score.
+
+Warm-up rows (11-13) come from the operator's answers in step 1, not
+DNS. If `dig` is missing, the script exits 2; give the operator the
+install line it prints and the manual commands below. For a raw dump
+of the records, `bash scripts/dig_dns.sh <domain> [selector]`.
 
 **Never** call paid services. If a check requires a tool the user
 doesn't have, fall back to telling the user the manual lookup
@@ -75,11 +91,14 @@ Example fallback:
 
 ### 4. Score
 
-Each of the 15 checks is binary (pass / fail). Score:
+Each check is pass / fail / unknown. Score only what was verified:
 
 ```
-Deliverability = (passingChecks / 15) * 100
+Deliverability = passingChecks / (passingChecks + failingChecks) * 100
 ```
+
+List the unknowns under the score with the manual step that settles
+each one.
 
 ### 5. Output the fix-order
 
@@ -130,7 +149,8 @@ Output:
 
 - The **Pre-Campaign Domain Health Checklist** (15-point PDF) ships in
   [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter).
-- DMARC + Feb-2024 bulk-sender rules (Google / Yahoo / Microsoft) —
-  see `../../cold-email/references/bulk-sender-rules.md`.
-- The full **Cold Email & Outreach Craft** course covers deliverability
-  forensics in 4 lessons:
+- DMARC + bulk-sender rules (Google / Yahoo Feb 2024, Microsoft May 2025) —
+  see `../cold-email/references/bulk-sender-rules.md`.
+- `../../scripts/check_deliverability.py` and `../../scripts/dig_dns.sh` — the checks above.
+- The full [Cold Email & Outreach Craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft) course covers
+  deliverability forensics in 4 lessons.

@@ -93,63 +93,74 @@ def _as_minutes(value: object):
 # ----------------------------------------------------------------------------
 
 BUY_SIGNAL_PATTERNS = [
-    (r"send (me )?(the |your )?(calendar|cal link|availability)", 0.50),
-    (r"what (dates|times) work", 0.45),
-    (r"let['']s (get|set up) (a |the )?(time|call|meeting|chat)", 0.40),
-    (r"send (the |a )?(demo|walkthrough)", 0.35),
-    (r"what['']s (the |your )?(price|pricing|cost)", 0.40),
-    (r"can (you|we) (do|set up) (a |an )?(intro|introduction)", 0.40),
-    (r"(book|schedule) (a |the )?(call|meeting|demo)", 0.45),
-    (r"send (the |a )?(deck|proposal|case stud(y|ies)|one[- ]pager)", 0.30),
-    (r"(decision[- ]?maker|economic buyer|approver)", 0.25),
-    (r"(buy[- ]?signal|ready to (buy|move))", 0.40),
-    (r"(my|our) calendar is (here|at)", 0.45),
-    (r"(send|share) (the |an? )?intro", 0.30),
+    (r"\bsend (me )?(the |your )?(calendar|cal link|availability)", 0.50),
+    (r"\bwhat (dates|times|days) (work|suit)", 0.45),
+    (r"\blet's (get|set up|find) (a |the |some )?(time|call|meeting|chat)", 0.40),
+    (r"\bsend (the |a )?(demo|walkthrough)", 0.35),
+    (r"\bwhat('s| is| are| does| do) (the |your )?(price|pricing|cost|rates?)\b", 0.40),
+    (r"\b(how much (does|do|is|would)|what would it cost)", 0.40),
+    (r"\b(pricing|price|quote)\b[^.?!]*\?", 0.25),
+    (r"\bcan (you|we) (do|set up) (a |an )?(intro|introduction)", 0.40),
+    (r"\b(book|schedule) (a |the )?(call|meeting|demo)", 0.45),
+    (r"\bsend (the |a |me the |me a )?(deck|proposal|case stud(y|ies)|one[- ]pager)", 0.30),
+    (r"\b(decision[- ]?maker|economic buyer|approver)", 0.25),
+    (r"\bready to (buy|move|sign|start)\b", 0.40),
+    (r"\b(my|our) calendar is (here|at)", 0.45),
+    (r"\b(send|share) (the |an? )?intro\b", 0.30),
+    (r"\b(monday|tuesday|wednesday|thursday|friday) (works|is good|is fine|at \d)", 0.35),
 ]
 
 POSITIVE_PATTERNS = [
-    (r"(tell|give) me (more|some more)", 0.30),
-    (r"(this|that) (is|looks) (interesting|cool|relevant)", 0.30),
-    (r"(curious|interested) (about|in)", 0.25),
-    (r"how (does|do) (this|that|you|it) work", 0.25),
-    (r"send (the |me |a )?(?:info|details|info on)", 0.25),
-    (r"would love (to|the)", 0.25),
-    (r"happy to (chat|connect|learn)", 0.30),
-    (r"(yes|sure|sounds good|let me know more)", 0.25),
+    (r"\b(tell|give) me (more|some more)\b", 0.30),
+    (r"\b(this|that) (is|looks|sounds) (interesting|cool|relevant|useful)", 0.30),
+    (r"\b(curious|interested) (about|in)\b", 0.25),
+    (r"\bhow (does|do) (this|that|you|it) work", 0.25),
+    (r"\bsend (the |me |a )?(info|details|info on)\b", 0.25),
+    (r"\bwould love (to|the)\b", 0.25),
+    (r"\bhappy to (chat|connect|learn|talk)\b", 0.30),
+    (r"\b(yes|sure|sounds good|let me know more)\b", 0.25),
 ]
 
 NEUTRAL_PATTERNS = [
-    (r"not (the |a )?(right |great )?time", 0.40),
-    (r"in (a few |several )?(months|quarters)", 0.35),
-    (r"(q[1234]|next year|next quarter)", 0.30),
-    (r"(circle back|reach out) (in|later|next)", 0.35),
-    (r"send (me )?(some |more )?info", 0.20),  # mild — could be positive or neutral
-    (r"keep me (in mind|posted)", 0.30),
-    (r"(maybe |perhaps )(later|next)", 0.30),
+    (r"\bnot (the |a )?(right |great |good )?time\b", 0.40),
+    (r"\bnot right now\b", 0.40),
+    (r"\bin (a few |several |a couple of )?(months|quarters)\b", 0.35),
+    (r"\b(q[1-4]|next year|next quarter)\b", 0.30),
+    (r"\b(circle back|reach out|follow up) (in|later|next)\b", 0.35),
+    (r"\bsend (me )?(some |more )?info\b", 0.20),  # mild — could be positive or neutral
+    (r"\bkeep me (in mind|posted)\b", 0.30),
+    (r"\b(maybe |perhaps )(later|next)\b", 0.30),
+    (r"\b(who is this|who are you|what is this about)\b", 0.30),
+    (r"\b(forward(ed|ing)?|loop(ed|ing)? in|right person (is|would be))\b", 0.25),
 ]
 
 NOT_INTERESTED_PATTERNS = [
-    (r"(no |not )(thanks|thank you|interested)", 0.45),
-    (r"stop (emailing|messaging|reaching out)", 0.55),
-    (r"(remove|take) me (off|out of)", 0.55),
-    (r"unsubscribe", 0.60),
-    (r"(not a fit|not right for us)", 0.45),
-    (r"(we|i) (have|use) (a |our )?(competitor|existing|vendor)", 0.40),
-    (r"don['']t (email|message|reach out) (again|me)", 0.55),
-    (r"how did you get my email", 0.35),
-    (r"(stop|cease)( and desist)?", 0.50),
-    (r"(this is |that['']s )?(spam|harassment)", 0.55),
+    (r"\b(no|not) (thanks|thank you|interested)\b", 0.45),
+    (r"\bstop (emailing|messaging|reaching out|contacting)\b", 0.55),
+    (r"\b(remove|take) me (off|out of|from)\b", 0.55),
+    (r"\bunsubscribe\b", 0.60),
+    (r"\b(not a fit|not right for us|not relevant)\b", 0.45),
+    (r"\b(we|i) (already )?(have|use|work with) (a |an |our )?(competitor|existing|vendor|agency|partner|solution)\b", 0.40),
+    (r"\bwe('re| are) (all set|covered|good)\b", 0.40),
+    (r"\bdon't (email|message|contact|reach out to) me\b", 0.55),
+    (r"\bdon't (email|message|contact|reach out) again\b", 0.55),
+    (r"\bhow did you get my (email|address)\b", 0.35),
+    (r"\bcease and desist\b", 0.55),
+    (r"^\W*stop\W*$", 0.55),
+    (r"\b(this is |that's )?(spam|harassment)\b", 0.55),
 ]
 
 AUTO_REPLY_PATTERNS = [
-    r"out of (the )?office",
+    r"\bout of (the )?office\b",
     r"\bOOO\b",
-    r"auto[- ]?reply",
-    r"i['']m currently (away|out|traveling)",
-    r"i will be (out|away|traveling) (from|until)",
-    r"limited (access to |)email",
-    r"i['']ll (respond|reply|be back) (when|on|after)",
-    r"thank you for your email\.? i (am|will be) (away|out)",
+    r"\bauto[- ]?(reply|response|responder)\b",
+    r"\bi'm currently (away|out|traveling|on leave)\b",
+    r"\bi am currently (away|out|traveling|on leave)\b",
+    r"\bi will be (out|away|traveling) (from|until|through)\b",
+    r"\blimited (access to )?email\b",
+    r"\bi'll (respond|reply|be back) (when|on|after|upon)\b",
+    r"\bthank you for your email\.? i (am|will be) (away|out)\b",
+    r"\b(i am|i'm|is) no longer (with|at|employed)\b",
 ]
 
 
@@ -230,7 +241,8 @@ def length_adjustment(body: str) -> Dict[str, float]:
 
 
 def classify(body: str, minutes_since_send: Optional[int] = None) -> ReplyScore:
-    body = body.strip()
+    # Phone keyboards send curly apostrophes; the patterns are written straight.
+    body = body.replace("\u2019", "'").strip()
     length = len(body)
     qcount = body.count("?")
 
@@ -271,13 +283,14 @@ def classify(body: str, minutes_since_send: Optional[int] = None) -> ReplyScore:
 
     # Pick winner
     category = max(scores, key=lambda k: scores[k])
-    winning = scores[category]
 
     # Confidence: how dominant is the winner over the runner-up?
     sorted_scores = sorted(scores.values(), reverse=True)
-    if sorted_scores[0] == 0:
+    if not all_contribs:
+        # Length and timing alone never decide a category. "Who is this?"
+        # or "ok" goes to a human, not to the suppression list.
         confidence = 0.0
-        category = "neutral"  # nothing matched → default neutral
+        category = "neutral"
     else:
         runner_up = sorted_scores[1] if len(sorted_scores) > 1 else 0.0
         margin = sorted_scores[0] - runner_up

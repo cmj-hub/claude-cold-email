@@ -55,7 +55,7 @@ an alternative.
 |---|---|
 | ALL CAPS subjects | Spam signal |
 | Emojis (☀️ 🚀 🎯) | Deliverability hurt in B2B |
-| "Re:" or "Fwd:" fakes | Banned by bulk-sender rules (CAN-SPAM, 2024 Gmail/Yahoo) |
+| "Re:" or "Fwd:" fakes | Deceptive subject line (CAN-SPAM); a spam signal to Gmail / Yahoo / Outlook filters |
 | Clickbait ("You won't believe...", "This one trick...") | Will land in spam |
 | "URGENT" / "ACT NOW" / "Limited time" | Spam triggers |
 | Long subjects (>50 chars) | Truncated; lower open rate |
