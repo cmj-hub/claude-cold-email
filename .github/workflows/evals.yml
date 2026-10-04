@@ -26,7 +26,12 @@ jobs:
       - name: Install Claude Code
         if: env.ANTHROPIC_API_KEY != ''
         run: npm i -g @anthropic-ai/claude-code@2.1.289
+      # Bash runs inside the eval sandbox, which needs bubblewrap and socat; dig
+      # lets the deliverability checks resolve DNS.
+      - name: Install sandbox tools
+        if: env.ANTHROPIC_API_KEY != ''
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq bubblewrap socat dnsutils
 
       - name: Run evals
         if: env.ANTHROPIC_API_KEY != ''
-        run: claude plugin eval . --trust-plugin --runs 1 --no-publish --threshold 0.8
+        run: claude plugin eval . --trust-plugin --runs 1 --no-publish --threshold 0.8 --allow-tools Bash --judge-model sonnet

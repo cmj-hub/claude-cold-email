@@ -3,7 +3,8 @@ name: cold-email-deliverability-auditor
 description: >
   Deliverability specialist: SPF, DKIM, DMARC, MX, reverse DNS, and
   blacklist checks over DNS, plus bulk-sender rules. No paid APIs. Use when
-  the operator asks if a sending domain is ready or why mail lands in spam.
+  the cold-email skill's deliverability mode hands off a full domain audit;
+  for a direct question about a sending domain, start with /cold-email:cold-email.
 tools:
   - Read
   - Bash
