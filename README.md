@@ -29,13 +29,13 @@ The drafting stack an $80K SDR owns on a slow week — not the send, not the dom
 ## Install
 
 ```text
-skills add cmj-hub/claude-cold-email --all -g --full-depth
+npx skills add cmj-hub/claude-cold-email --all -g --full-depth
 ```
 
 `--all` writes this pack for every host the installer knows. One host:
 
 ```text
-skills add cmj-hub/claude-cold-email --skill '*' -g --full-depth -y -a claude-code
+npx skills add cmj-hub/claude-cold-email --skill '*' -g --full-depth -y -a claude-code
 ```
 
 Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, `cline`, or `opencode`.
@@ -44,7 +44,7 @@ Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, 
 
 ```text
 /plugin marketplace add cmj-hub/gtm-operator-skills
-/plugin install cold-email
+/plugin install cold-email@gtm-operator-skills
 ```
 
 ## What you walk out with in 15 minutes

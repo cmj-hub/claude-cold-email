@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.0] — 2026-10-04
+
+Fits the GTM operator suite.
+
+### Changed
+- Scripts are called as `${CLAUDE_PLUGIN_ROOT}/scripts/...`, so they run from any project. Agents use `tools:` lists.
+- Every description says when to use it. The main skill names what belongs to sales-offer, prospect-list, and email-sequence. `cold-email-nurture` is for prospects who have not opted in; `cold-email-list-quality` is hygiene of an existing send list.
+- `cold-email-onboarding` merges into the shared `brand-config.json` at the field level. It owns `tone`, `infrastructure`, `operations`; reads `psp` and `evp` and points to those packs when they are missing. No offer to replace the files.
+- `psp.timing_trigger` in the schema is free text, matching the psp pack.
+- New "Works with the suite" section in the main skill.
+- Manifest gains `repository`, `keywords`, and `author.url`.
+
+### Fixed
+- References, `SOUL.md`, and examples are linked from the skills that use them. `jmc-framework.md` has a Contents list.
+- README install lines use `npx skills add`.
+
 ## [0.4.0] — 2026-10-04
 
 Plugin loading, honest scoring, and the missing pieces the skills

@@ -1,9 +1,10 @@
 ---
 name: cold-email-spam-lint
-description: "Deterministic spam-trigger scanner for cold email drafts. Scans subject + body against a 200-word spam-trigger lexicon, validates link/image ratios, checks for ALL-CAPS / emoji / clickbait / fake-Re patterns, and returns a 0-100 deliverability-risk score with line-by-line flags. Backed by a Python script (no LLM). Loaded by the main cold-email skill before any send + on Wednesday's ship-day batch via cold-email-weekly-rhythm."
+description: "Deterministic spam-trigger scanner for cold email drafts. Scans subject and body against a 200-word spam-trigger lexicon, checks link and image ratios, ALL CAPS, emoji, clickbait, and fake Re: patterns, and returns a 0-100 risk score with line-by-line flags. Backed by a Python script, no LLM. Use when the operator asks to spam-check a draft, before any send, and on Wednesday's ship-day batch; loaded by the main cold-email skill."
 user-invocable: false
-allowed-tools: Read Bash(python3 scripts/spam_word_lint.py:*) Grep
+allowed-tools: Read Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Grep
 license: MIT
+models: ""
 
 ---
 
@@ -74,7 +75,7 @@ Output:
 The skill shells out to a Python script:
 
 ```bash
-python3 scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json
 ```
 
 The script returns structured JSON. The skill formats it into the

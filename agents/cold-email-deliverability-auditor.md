@@ -4,10 +4,13 @@ description: >
   Email deliverability specialist agent. Runs DNS lookups for SPF, DKIM,
   DMARC, MX, and reverse DNS. Checks against public blacklist APIs (Spamhaus,
   SURBL) over DNS. Validates bulk-sender compliance for Google / Yahoo
-  (Feb 2024) and Microsoft (May 2025). No paid APIs. Triggers on "check deliverability",
-  "audit DNS", "is my domain ready", "DMARC compliance", "SPF check",
-  "DKIM check", "domain reputation".
-allowed-tools: Read Bash(python3 scripts/check_deliverability.py:*) Bash(dig:*) Bash(openssl:*) WebFetch
+  (Feb 2024) and Microsoft (May 2025). No paid APIs. Use when the operator
+  asks to "check deliverability", "audit DNS", "is my domain ready",
+  "DMARC compliance", "SPF check", "DKIM check", or "domain reputation".
+tools:
+  - Read
+  - Bash
+  - WebFetch
 ---
 
 # Cold Email Deliverability Auditor Agent
@@ -27,7 +30,7 @@ only native tools and public APIs — no paid services.
 7. **Bulk-sender compliance**: Google / Yahoo (Feb 2024) and Microsoft (May 2025) rules —
    see `skills/cold-email/references/bulk-sender-rules.md`
 
-Start with `python3 scripts/check_deliverability.py --domain <domain> --format json`
+Start with `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py --domain <domain> --format json`
 (pack root `scripts/`). It runs checks 1-15 and marks anything DNS cannot
 show as `unknown`. Use the manual steps below to settle unknowns, never to
 guess them.

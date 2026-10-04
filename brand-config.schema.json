@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://raw.githubusercontent.com/cmj-hub/claude-cold-email/main/brand-config.schema.json",
   "title": "cold-email brand-config.json",
-  "description": "Operator config read by every cold-email skill. Written by cold-email-onboarding; see brand-config.example.json.",
+  "description": "Shared operator config for the GTM operator suite. cold-email owns tone, infrastructure, and operations; psp and evp come from their packs. Merge at the field level; see brand-config.example.json.",
   "type": "object",
   "required": ["operator", "icp", "psp", "evp"],
   "properties": {
@@ -32,7 +32,7 @@
       "properties": {
         "signal_anchors": { "type": "array", "items": { "type": "string" } },
         "primary_pain": { "type": "string" },
-        "timing_trigger": { "type": "string", "enum": ["new-exec", "budget-cycle", "obvious-failure", ""] },
+        "timing_trigger": { "type": "string", "description": "Usually new-exec, budget-cycle, or obvious-failure. Free text when the psp pack writes it." },
         "felt_pain_role": { "type": "string" },
         "vocabulary": { "type": "array", "items": { "type": "string" } }
       }

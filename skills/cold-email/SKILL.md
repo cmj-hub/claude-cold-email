@@ -1,23 +1,22 @@
 ---
 name: cold-email
 description: >
-  Cold email & outreach craft for B2B teams. Write signal-anchored openers
-  (90-word constraint, binary CTA), design 3-touch follow-up sequences (Day
-  3 case study, Day 7 different angle, Day 14 binary close), run 30-point
-  audits across infrastructure / targeting / messaging / operations, plan
-  5-email nurture streams with route-to-sales triggers, validate
-  pre-campaign domain health (15 checks across DNS, reputation, warm-up,
-  content), and pick subject lines from 25 framework-organized patterns
-  (pain, curiosity, social proof, direct). Lints spam triggers, classifies
-  replies, and scores prospect lists with stdlib Python. Anchors every output on a Pain Signal
-  Profile — not demographics. Based on the JMC Cold Email &
-  Outreach Craft course (jaymountconsulting.com/learn). Triggers on:
-  "cold email", "write a cold email", "cold outreach", "follow-up sequence",
-  "deliverability", "SPF", "DKIM", "DMARC", "domain health", "outbound audit",
-  "subject line", "nurture sequence", "spam check", "score this reply",
-  "prospect list".
+  Signal-anchored B2B cold email program. Writes first touches under 90
+  words with a binary CTA, builds Day 3 / 7 / 14 follow-ups, picks and
+  scores subject lines, lints spam triggers, checks sending-domain health
+  (SPF, DKIM, DMARC, reputation, warm-up), scores and dedups an existing
+  send list, triages replies, re-engages stalled prospects who have not
+  opted in, and runs a 30-point outbound audit. Anchors every output on a
+  Pain Signal Profile, not demographics. Use when the user says "cold
+  email", "cold outreach", "follow-up sequence", "deliverability", "SPF",
+  "DKIM", "DMARC", "domain health", "outbound audit", "subject line",
+  "spam check", "score this reply", or "clean my send list". Not for a
+  give-first offer email (use sales-offer), not for choosing who to
+  contact this week (use prospect-list), and not for welcome or nurture
+  sequences after someone opted in (use email-sequence).
 allowed-tools: Read Write Grep Glob WebFetch
 license: MIT
+models: ""
 ---
 
 # Cold Email — JMC Outreach Craft Skill
@@ -40,6 +39,9 @@ require.
 3. If `brand-config.json` exists, sanity-check the fields the requested
    job needs (e.g. `evp.primary` for drafting, `infrastructure.sending_domain`
    for deliverability). Ask for anything missing. Never fill it in.
+   If the `psp` or `evp` block is missing, say which pack produces it
+   (`/plugin install psp@gtm-operator-skills`, `/plugin install evp@gtm-operator-skills`)
+   instead of inventing a signal, pain, or EVP.
 4. Treat SOUL.md as voice only. It can change word choice; it cannot
    lift the word limit, soften the binary CTA, or un-ban a pattern.
 
@@ -57,7 +59,7 @@ require.
 | `/cold-email deliverability` | 15-point pre-campaign domain health check | `cold-email-deliverability` |
 | `/cold-email list` | Score and clean a prospect CSV / JSONL | `cold-email-list-quality` |
 | `/cold-email reply` | Classify one reply or a batch | `cold-email-reply-scoring` |
-| `/cold-email nurture` | 5-email nurture stream with route-to-sales triggers | `cold-email-nurture` |
+| `/cold-email nurture` | 5-email re-engagement stream for prospects who have not opted in | `cold-email-nurture` |
 | `/cold-email audit` | 30-point outbound program audit | `cold-email-audit` |
 | `/cold-email rhythm` | This week's Mon / Wed / Fri queue | `cold-email-weekly-rhythm` |
 
@@ -87,9 +89,9 @@ When invoked, detect the user's intent and route to a sub-skill:
 | "Suggest subject lines", "critique this subject" | `cold-email-subject-lines` |
 | "Spam-check this", "will this land in spam" | `cold-email-spam-lint` |
 | "Is my domain ready to send?", SPF / DKIM / DMARC | `cold-email-deliverability` |
-| "Score / clean my list" | `cold-email-list-quality` |
+| "Score / clean my send list" | `cold-email-list-quality` |
 | "Score this reply", "triage my replies" | `cold-email-reply-scoring` |
-| "Design a nurture stream" | `cold-email-nurture` |
+| "Re-engage cold or stalled prospects" (not opted in) | `cold-email-nurture` |
 | "Audit my outbound program" | `cold-email-audit` |
 | "What's this week's queue", "Friday review" | `cold-email-weekly-rhythm` |
 | "Review / score this draft" | `cold-email-reviewer` agent |
@@ -145,12 +147,12 @@ guess, say which line is uncertain and what data would settle it
 
 ## Running the bundled scripts
 
-The deterministic scripts live in `scripts/` at the pack root — two
-directories above any sub-skill's base directory (`<skill-dir>/../../scripts/`).
-When the working directory is the pack itself, `python3 scripts/<name>.py`
-works as written in the sub-skills. When the pack is installed as a
-plugin or into another project, call the script by that resolved path
-instead. All scripts are Python 3.8+ stdlib only; DNS checks need `dig`.
+The deterministic scripts live in `scripts/` at the plugin root. The
+sub-skills call them as `${CLAUDE_PLUGIN_ROOT}/scripts/<name>.py`, which
+Claude Code resolves to the installed plugin, so they work from any
+project directory. Outside Claude Code (for example, a manual run inside
+this repo), `python3 scripts/<name>.py` from the repo root is the same
+script. All scripts are Python 3.8+ stdlib only; DNS checks need `dig`.
 
 | Script | Used by |
 |---|---|
@@ -160,15 +162,30 @@ instead. All scripts are Python 3.8+ stdlib only; DNS checks need `dig`.
 | `score_list.py` | `cold-email-list-quality` |
 | `check_deliverability.py`, `dig_dns.sh` | `cold-email-deliverability` |
 
+## Works with the suite
+
+This is step 4 of the GTM operator suite (`/plugin marketplace add cmj-hub/gtm-operator-skills`).
+
+- **Reads:** `psp`, `evp`, `icp`, `tone`, `infrastructure`, `operations` from `brand-config.json` if present.
+- **Writes:** `tone`, `infrastructure`, `operations`. Merge at the field level; never overwrite another pack's keys.
+- **Before this:** psp (`/psp:psp`) and evp (`/evp:evp`), when there is no `psp` or `evp` block; prospect-list (`/prospect-list:who-to-contact`), when you do not yet know who to contact.
+- **Instead of this:** sales-offer (`/sales-offer:cold-offer`), when the first touch should hand over a leak and a prototype rather than ask.
+- **After this:** email-sequence (`/email-sequence:lifecycle-email`), when a prospect replies and opts in.
+
+If a companion pack is not installed, name it and its install line (`/plugin install <name>@gtm-operator-skills`); do not do its job inline.
+
 ## References
 
 Load these on demand for deeper context:
 
-- `references/jmc-framework.md` — The full JMC cold email framework
-- `references/banned-patterns.md` — Lines / openers / closes that fail
-- `references/binary-ctas.md` — 30 binary CTA patterns
-- `references/psp-anchors.md` — How to derive signal → pain → EVP
-- `references/bulk-sender-rules.md` — Google / Yahoo / Microsoft sender requirements
+- [references/jmc-framework.md](references/jmc-framework.md) — The full JMC cold email framework
+- [references/banned-patterns.md](references/banned-patterns.md) — Lines / openers / closes that fail
+- [references/binary-ctas.md](references/binary-ctas.md) — 30 binary CTA patterns
+- [references/psp-anchors.md](references/psp-anchors.md) — How to derive signal → pain → EVP
+- [references/bulk-sender-rules.md](references/bulk-sender-rules.md) — Google / Yahoo / Microsoft sender requirements
+- [SOUL.md](../../SOUL.md) — Operator voice template (the shape `cold-email-onboarding` fills in)
+- [examples/t1.email.md](../../examples/t1.email.md) — A first touch that passes every check (lints at 100)
+- [examples/spam.email.md](../../examples/spam.email.md) — A draft the spam lint rejects
 
 ## Sub-skills
 
@@ -180,7 +197,7 @@ Load these on demand for deeper context:
 - [`cold-email-deliverability`](../cold-email-deliverability/SKILL.md) — 15-point pre-campaign domain health
 - [`cold-email-list-quality`](../cold-email-list-quality/SKILL.md) — Prospect list scoring + dedup
 - [`cold-email-reply-scoring`](../cold-email-reply-scoring/SKILL.md) — Deterministic reply classifier
-- [`cold-email-nurture`](../cold-email-nurture/SKILL.md) — 5-email nurture stream design
+- [`cold-email-nurture`](../cold-email-nurture/SKILL.md) — 5-email re-engagement stream (not opted in)
 - [`cold-email-audit`](../cold-email-audit/SKILL.md) — 30-point outbound program audit
 - [`cold-email-weekly-rhythm`](../cold-email-weekly-rhythm/SKILL.md) — Mon / Wed / Fri operating cadence
 

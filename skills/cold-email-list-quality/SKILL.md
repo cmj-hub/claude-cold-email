@@ -1,9 +1,10 @@
 ---
 name: cold-email-list-quality
-description: Score a cold-email prospect list 0-100 across dedup, role-fit (vs brand-config.icp), signal freshness, email-validity heuristics, exclusion-criteria match, and company-stage match. Returns the score, list of rows to remove, and a fix recommendation. Loaded by cold-email-weekly-rhythm on Monday's list refresh. Operates on CSV or JSONL; no external services.
+description: "Hygiene check for an existing cold-email send list. Scores a CSV or JSONL 0-100 across dedup, role-fit against brand-config.icp, signal freshness, email-validity heuristics, exclusion criteria, and company stage, then returns rows to remove and a fix. No external services. Use when the operator asks to score, dedup, or clean a send list they already have, or on Monday's list refresh. Not for choosing who to contact this week (prospect-list)."
 user-invocable: false
-allowed-tools: Read Write Grep Bash(python3 scripts/score_list.py:*)
+allowed-tools: Read Write Grep Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_list.py:*)
 license: MIT
+models: ""
 
 ---
 
@@ -147,7 +148,7 @@ Backed by `scripts/score_list.py` (Python 3.8+, stdlib only, no network).
 `scripts/` is at the pack root — `<skill-dir>/../../scripts/`.
 
 ```bash
-python3 scripts/score_list.py \
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_list.py \
     --input prospects.csv \
     --brand-config brand-config.json \
     --format json

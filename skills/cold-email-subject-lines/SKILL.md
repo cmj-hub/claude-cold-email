@@ -1,9 +1,10 @@
 ---
 name: cold-email-subject-lines
-description: Generate or critique cold-email subject lines across 4 framework families (pain, curiosity, social proof, direct). Each suggestion is ≤7 words, no spam triggers, no clickbait, includes reply-rate notes from the JMC Subject Line Swipe File (25 high-performers). Loaded by the main cold-email skill when the user asks for subject lines, openers, or to critique a draft subject.
+description: "Generate or critique cold-email subject lines across four framework families (pain, curiosity, social proof, direct). Each suggestion is 7 words or fewer, with no spam triggers or clickbait, and carries reply-rate notes from the JMC Subject Line Swipe File (25 high performers). Use when the operator asks for subject lines or wants a draft subject critiqued; loaded by the main cold-email skill."
 user-invocable: false
-allowed-tools: Read Grep Bash(python3 scripts/score_subject_line.py:*)
+allowed-tools: Read Grep Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*)
 license: MIT
+models: ""
 
 ---
 
@@ -75,7 +76,7 @@ After generating, run every candidate through the deterministic scorer
 (scripts live at `<skill-dir>/../../scripts/`):
 
 ```bash
-python3 scripts/score_subject_line.py --subject "<subject>" --framework <pain|curiosity|social-proof|direct> --format json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py --subject "<subject>" --framework <pain|curiosity|social-proof|direct> --format json
 ```
 
 Drop any candidate under 70. A fake `Re:` / `Fwd:`, emoji, ALL CAPS, or
