@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0] — 2026-10-04
+
+A first touch must quote its signal and ask one yes/no question.
+
+### Added
+- `scripts/score_letter.py` refuses a letter with no `public_signal`, no 3-word run of the signal quoted verbatim, demographic or template lines, 90 words or more, or an ask that is not one yes/no question. Lists every reason; `--json` for the report. Exit 0 ok, 1 refused, 2 bad input.
+- A role on its own ("your VP of Sales posted...") is not demographic; a role pinned to a segment ("VPs of Marketing at Series B companies"), "companies like yours", "hope you're well", and "just bumping" are.
+- `cold-email-craft` runs `score_letter.py` before the spam lint. The main skill lists it in the self-check and the script table.
+- `examples/letter-good.json`, `examples/letter-demographic.json`, `tests/test_letter.py`, and a smoke-test entry.
+- `SECURITY.md` and a Privacy and security section in the README.
+
 ## [0.5.0] — 2026-10-04
 
 Fits the GTM operator suite.

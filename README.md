@@ -56,6 +56,8 @@ python3 scripts/spam_word_lint.py \
   --subject "Pipeline gap after the Q3 hire freeze?" \
   --body "Sarah — saw you posted the Demand Gen Lead role four days ago. Pipeline gap is usually upstream of an SDR hire. Worth 15 min Thursday to walk through?"
 python3 scripts/score_subject_line.py --subject "Pipeline gap after the Q3 freeze?" --framework pain
+python3 scripts/score_letter.py --file examples/letter-good.json        # exit 0: signal quoted, one yes/no ask
+python3 scripts/score_letter.py --file examples/letter-demographic.json # exit 1: refused, every reason listed
 ```
 
 One T1. Lint it. Then write yours against the same four jobs.
@@ -104,6 +106,10 @@ That one does ask for an email, and it enrols you in a short follow-up on the sa
 Previous: [LinkedIn posts](https://github.com/cmj-hub/claude-founder-brand)
 
 Next: [Email sequence](https://github.com/cmj-hub/claude-email-sequence)
+
+## Privacy and security
+
+The scripts are stdlib Python and run locally on the drafts and lists you pass them. The only network traffic is DNS: `check_deliverability.py` and `dig_dns.sh` run `dig` against the sending domain you name and its mail host, plus the Spamhaus DBL and SURBL blacklist zones. Three skills and one agent may use WebFetch to open a public page you point them at. No telemetry, no credentials, and nothing is sent: you send. See [SECURITY.md](SECURITY.md).
 
 ## License
 

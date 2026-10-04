@@ -20,6 +20,22 @@ check() {
   fi
 }
 
+echo "=== score_letter.py ==="
+check "signal-anchored letter passes" \
+  python3 scripts/score_letter.py --file examples/letter-good.json
+set +e
+python3 scripts/score_letter.py --file examples/letter-demographic.json > /dev/null
+rc=$?
+set -e
+if [ "$rc" -eq 1 ]; then
+  echo "  ✓ demographic letter refused"
+  PASSED=$((PASSED + 1))
+else
+  echo "  ✗ demographic letter should exit 1 (got $rc)"
+  FAILED=$((FAILED + 1))
+fi
+
+echo ""
 echo "=== spam_word_lint.py ==="
 # Should exit 0 (score ≥75) on a clean email
 check "clean email scores ≥75" \
