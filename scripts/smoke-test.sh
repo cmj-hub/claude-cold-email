@@ -37,6 +37,8 @@ fi
 
 echo ""
 echo "=== spam_word_lint.py ==="
+check "sample T1 file scores ≥75" \
+  python3 scripts/spam_word_lint.py --file examples/t1.email.md
 # Should exit 0 (score ≥75) on a clean email
 check "clean email scores ≥75" \
   python3 scripts/spam_word_lint.py \
@@ -56,6 +58,8 @@ echo ""
 echo "=== score_subject_line.py ==="
 check "strong pain subject" \
   python3 scripts/score_subject_line.py --subject "Pipeline gap after the Q3 freeze?" --framework pain
+check "subject read from the sample T1 file" \
+  python3 scripts/score_subject_line.py --file examples/t1.email.md --framework pain
 
 echo ""
 echo "=== score_reply.py ==="
@@ -63,13 +67,15 @@ check "buy-signal reply" \
   python3 scripts/score_reply.py \
     --body "Sounds interesting — send me the case study and what dates work next week?" \
     --minutes-since-send 27
+check "sample reply batch" \
+  python3 scripts/score_reply.py --file examples/replies.jsonl
 
 echo ""
 echo "=== score_list.py ==="
 # The sample list is built to fail: exit 1 with a JSON report, not exit 2.
 set +e
-python3 scripts/score_list.py --input examples/prospects.csv \
-  --brand-config brand-config.example.json --today 2026-10-04 --format json > /dev/null
+python3 scripts/score_list.py --file examples/prospects.csv \
+  --brand-config brand-config.example.json --today 2026-10-04 --json > /dev/null
 rc=$?
 set -e
 if [ "$rc" -eq 1 ]; then
@@ -84,7 +90,7 @@ echo ""
 echo "=== check_deliverability.py ==="
 # Hit a domain with known-good DNS
 check "DNS resolution against jaymountconsulting.com" \
-  python3 scripts/check_deliverability.py --domain jaymountconsulting.com
+  python3 scripts/check_deliverability.py --file examples/domain.json
 
 echo ""
 echo "=== dig_dns.sh ==="

@@ -22,10 +22,12 @@ plus half the share of rows that survive cleaning.
 Zero dependencies. Python 3.8+. No network calls. No LLM.
 
 USAGE:
-    python3 score_list.py --input prospects.csv
-    python3 score_list.py --input prospects.jsonl --brand-config brand-config.json
-    python3 score_list.py --input prospects.csv --write      # also writes
-        prospects.cleaned.csv and prospects.removed.csv next to the input
+    python3 score_list.py --file gtm/send-list.csv
+    python3 score_list.py --file prospects.jsonl --brand-config brand-config.json
+    python3 score_list.py --file gtm/send-list.csv --write   # also writes
+        send-list.cleaned.csv and send-list.removed.csv next to the input
+    python3 score_list.py --stdin < gtm/send-list.csv         # CSV or JSONL
+    (--input is the old name for --file; --format json is the same as --json)
 
 Columns (header names are case-insensitive): email (required), first_name,
 last_name, role, company, signal, signal_date (YYYY-MM-DD), linkedin_url,
@@ -33,8 +35,9 @@ stage, industry.
 
 EXIT CODES:
     0   score >= 75 (ship the list)
-    1   score < 75  (clean before sending)
-    2   bad input
+    1   score < 75  (clean before sending); every row to remove reads
+        "- row N: email — what is wrong → what to change"
+    2   bad input (never echoed)
 """
 
 from __future__ import annotations
@@ -124,10 +127,28 @@ def read_text(path: Path) -> str:
     return ""  # unreachable
 
 
-def load_rows(path: Path) -> Tuple[List[Dict[str, str]], List[str]]:
-    """Return (rows, original header order). Keys are lower-cased."""
-    text = read_text(path)
-    if path.suffix.lower() in (".jsonl", ".ndjson"):
+def read_stdin_text() -> str:
+    raw = sys.stdin.buffer.read(MAX_INPUT_BYTES + 1)
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input("input is too large")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input("input is not UTF-8 text")
+    return ""  # unreachable
+
+
+def load_rows(path: Optional[Path], text: Optional[str] = None) -> Tuple[List[Dict[str, str]], List[str]]:
+    """Return (rows, original header order). Keys are lower-cased.
+    With `text` (stdin), JSONL is detected by a leading '{'."""
+    if text is None:
+        text = read_text(path)
+        is_jsonl = path.suffix.lower() in (".jsonl", ".ndjson")
+    else:
+        is_jsonl = text.lstrip().startswith("{")
+    if is_jsonl:
         rows: List[Dict[str, str]] = []
         header: List[str] = []
         for n, line in enumerate(text.splitlines(), start=1):
@@ -234,6 +255,7 @@ class RowIssue:
     axis: str
     action: str  # remove | warn
     reason: str
+    fix: str = ""
 
 
 @dataclass
@@ -255,6 +277,28 @@ class ListResult:
     warn: List[RowIssue] = field(default_factory=list)
 
 
+FIXES = {
+    "dedup": "delete the duplicate row; keep one per person",
+    "email-validity": "replace with the person's work address or drop the row",
+    "role-fit": "drop the row, or add the role to icp.role_targets if the ICP changed",
+    "signal-freshness": "re-pull a signal from the last 14 days or drop the row",
+    "exclusion": "drop the row; it matches who you do not sell to",
+    "company-stage": "check the stage; drop the row if it is outside the ICP",
+}
+NEXT_OK = "Next: write the first touch (/cold-email:cold-email write)."
+NEXT_FIX = "Next: fix the lines above and run this again."
+
+
+def fix_for(axis: str, reason: str) -> str:
+    if axis == "dedup" and "check by hand" in reason:
+        return "confirm they are different people; delete one if not"
+    if axis == "email-validity" and reason.startswith("plus-address"):
+        return "confirm the inbox or strip the +tag"
+    if axis == "signal-freshness" and "signal_date" in reason:
+        return "write signal_date as YYYY-MM-DD"
+    return FIXES.get(axis, "check the row by hand")
+
+
 def score_rows(rows: List[Dict[str, str]], header: List[str], cfg: dict, today: dt.date) -> ListResult:
     icp = cfg.get("icp") if isinstance(cfg.get("icp"), dict) else {}
     targets = [t for t in icp.get("role_targets", []) if isinstance(t, str)] if isinstance(icp.get("role_targets"), list) else []
@@ -266,7 +310,7 @@ def score_rows(rows: List[Dict[str, str]], header: List[str], cfg: dict, today: 
     n = len(rows)
 
     def flag(i: int, axis: str, action: str, reason: str) -> None:
-        issues.append(RowIssue(i + 1, rows[i].get("email", ""), axis, action, reason))
+        issues.append(RowIssue(i + 1, rows[i].get("email", ""), axis, action, reason, fix_for(axis, reason)))
         if action == "remove" or axis in ("signal-freshness", "company-stage"):
             bad[axis].add(i)
 
@@ -454,12 +498,17 @@ def format_text(name: str, res: ListResult) -> str:
     if res.remove:
         lines += ["", "## Rows to remove"]
         for it in res.remove:
-            lines.append(f"  row {it.row}: {it.email or '(no email)'} — {it.reason}")
+            lines.append(f"- row {it.row}: {it.email or '(no email)'} — {it.reason} → {it.fix}")
     if res.warn:
         lines += ["", "## Check by hand"]
         for it in res.warn:
-            lines.append(f"  row {it.row}: {it.email or '(no email)'} — {it.reason}")
+            lines.append(f"- row {it.row}: {it.email or '(no email)'} — {it.reason} → {it.fix}")
+    lines += ["", next_step(res)]
     return "\n".join(lines)
+
+
+def next_step(res: ListResult) -> str:
+    return NEXT_OK if res.score >= 75 else NEXT_FIX
 
 
 def write_split(path: Path, rows: List[Dict[str, str]], header: List[str], res: ListResult) -> Tuple[Path, Path]:
@@ -483,8 +532,16 @@ def write_split(path: Path, rows: List[Dict[str, str]], header: List[str], res: 
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--input", required=True, help="Prospect list (.csv or .jsonl)")
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="example: python3 scripts/score_list.py --file examples/prospects.csv "
+               "--brand-config brand-config.example.json --today 2026-10-04   # exit 1, rows to remove",
+    )
+    parser.add_argument("--file", dest="input", metavar="PATH", default=None, help="Prospect list (.csv or .jsonl)")
+    parser.add_argument("--input", dest="input", default=None, help=argparse.SUPPRESS)
+    parser.add_argument("--stdin", action="store_true", help="Read the list (CSV or JSONL) from stdin")
+    parser.add_argument("--json", action="store_true", help="Print one JSON object")
     parser.add_argument("--brand-config", default=None, help="Path to brand-config.json (enables role / exclusion / stage axes)")
     parser.add_argument("--today", default=None, help="Override today's date (YYYY-MM-DD) for signal age")
     parser.add_argument("--write", action="store_true", help="Write <input>.cleaned.csv and <input>.removed.csv")
@@ -498,16 +555,26 @@ def main() -> int:
             fail_input("--today must be YYYY-MM-DD")
         today = parsed
 
-    path = Path(args.input)
-    rows, header = load_rows(path)
+    if args.input and args.stdin:
+        fail_input("pass --file or --stdin, not both")
+    if args.stdin:
+        if args.write:
+            fail_input("--write needs --file (it writes next to the input)")
+        path = Path("stdin")
+        rows, header = load_rows(None, read_stdin_text())
+    elif args.input:
+        path = Path(args.input)
+        rows, header = load_rows(path)
+    else:
+        fail_input("pass --file or --stdin")
     if "email" not in header:
         fail_input("list needs an 'email' column")
     cfg = load_brand_config(Path(args.brand_config) if args.brand_config else None)
 
     res = score_rows(rows, header, cfg, today)
 
-    if args.format == "json":
-        print(json.dumps(asdict(res), indent=2))
+    if args.json or args.format == "json":
+        print(json.dumps(dict(asdict(res), next=next_step(res)), indent=2))
     else:
         print(format_text(path.name, res))
 

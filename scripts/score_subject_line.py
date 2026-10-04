@@ -8,7 +8,17 @@ clickbait, personalization, framework-fit (pain/curiosity/proof/direct).
 USAGE:
     python3 score_subject_line.py --subject "<line>"
     python3 score_subject_line.py --subject "<line>" --framework direct
-    python3 score_subject_line.py --stdin
+    python3 score_subject_line.py --file examples/t1.email.md [--json]
+    python3 score_subject_line.py --stdin   # JSON {"subject":"","framework":"..."}
+
+--file takes a JSON object ("subject", optional "framework") or a
+plain-text email whose first line is "Subject: ...". --format json is
+the same as --json.
+
+EXIT CODES:
+    0   score >= 70 (ship)
+    1   score < 70; every flag reads "- what is wrong → what to change"
+    2   bad input (never echoed)
 
 NO network calls. NO LLM.
 """
@@ -25,7 +35,7 @@ from typing import Optional, List, Dict
 
 # Sibling script; both ship together in scripts/. Still stdlib only.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from spam_word_lint import phrase_pattern, shouty_caps  # noqa: E402
+from spam_word_lint import load_draft_file, phrase_pattern, shouty_caps  # noqa: E402
 
 
 MAX_INPUT_BYTES = 2_000_000
@@ -235,6 +245,35 @@ def score_subject(subject: str, framework: Optional[str] = None) -> SubjectScore
     )
 
 
+NEXT_OK = "Next: check the sending domain (/cold-email:cold-email deliverability), then send."
+NEXT_FIX = "Next: fix the lines above and run this again."
+
+FLAG_FIXES = [
+    ("Subject ", "cut it to under 40 characters"),
+    ("Spam-trigger", "swap that word for a plain one"),
+    ("ALL CAPS", "write it in sentence case"),
+    ("Emoji", "remove the emoji"),
+    ("Fake threading", "drop the prefix; there is no prior thread"),
+    ("Clickbait", "cut the hook; name the specific thing"),
+    ("Unmerged personalization", "merge the token or cut it"),
+    ("Requested framework", "rewrite it for the framework you asked for, or pass the one it fits"),
+    ("No clear framework", "lead with the pain, a peer, a question, or the ask"),
+]
+
+
+def fix_for(flag: str) -> str:
+    for prefix, fix in FLAG_FIXES:
+        if flag.startswith(prefix):
+            return fix
+    if " words" in flag:
+        return "cut it to 7 words or fewer"
+    return "rewrite the subject"
+
+
+def next_step(s: SubjectScore) -> str:
+    return NEXT_OK if s.score >= 70 else NEXT_FIX
+
+
 def format_text(s: SubjectScore) -> str:
     lines = [
         f"# Subject Line Score",
@@ -252,12 +291,20 @@ def format_text(s: SubjectScore) -> str:
         lines.append("")
         lines.append("## Flags")
         for f in s.flags:
-            lines.append(f"  - {f}")
+            lines.append(f"- {f} → {fix_for(f)}")
+    lines.append("")
+    lines.append(next_step(s))
     return "\n".join(lines)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="example: python3 scripts/score_subject_line.py --file examples/t1.email.md --framework pain   # exit 0",
+    )
+    parser.add_argument("--file", default=None, help="Draft file: JSON object or plain-text email")
+    parser.add_argument("--json", action="store_true", help="Print one JSON object")
     parser.add_argument("--subject", default="", help="Subject line to score")
     parser.add_argument(
         "--framework",
@@ -277,7 +324,13 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if args.stdin:
+    if args.file and args.stdin:
+        fail_input("pass --file or --stdin, not both")
+    if args.file:
+        draft = load_draft_file(args.file)
+        subject = draft["subject"]
+        framework = args.framework or draft["framework"]
+    elif args.stdin:
         payload = parse_json(read_stdin_text())
         subject = payload.get("subject", "")
         if not isinstance(subject, str):
@@ -290,12 +343,15 @@ def main() -> int:
         framework = args.framework
 
     if not subject:
-        print("No subject. Use --subject or --stdin.", file=sys.stderr)
+        print("No subject. Use --subject, --file, or --stdin.", file=sys.stderr)
         return 2
 
     result = score_subject(subject, framework)
-    if args.format == "json":
-        print(json.dumps(asdict(result), indent=2))
+    if args.json or args.format == "json":
+        payload = asdict(result)
+        payload["fixes"] = [fix_for(f) for f in result.flags]
+        payload["next"] = next_step(result)
+        print(json.dumps(payload, indent=2))
     else:
         print(format_text(result))
 

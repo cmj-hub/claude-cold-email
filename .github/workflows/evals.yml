@@ -1,0 +1,32 @@
+# Trigger evals: does the cold-email skill fire on the prompts in evals/?
+# Manual only. Calls the model, so it needs ANTHROPIC_API_KEY and is
+# never part of normal CI.
+name: Evals
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    name: Plugin trigger evals
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - name: Skip without an API key
+        if: env.ANTHROPIC_API_KEY == ''
+        run: echo "ANTHROPIC_API_KEY is not set; skipping evals."
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        if: env.ANTHROPIC_API_KEY != ''
+
+      - name: Install Claude Code
+        if: env.ANTHROPIC_API_KEY != ''
+        run: npm i -g @anthropic-ai/claude-code@2.1.289
+
+      - name: Run evals
+        if: env.ANTHROPIC_API_KEY != ''
+        run: claude plugin eval . --trust-plugin --runs 1 --no-publish --threshold 0.8

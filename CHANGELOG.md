@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.7.0] — 2026-10-04
+
+One skill, eleven modes. Always-on cost drops from about 2,435 tokens to about 335 (180 for the skill, 160 for the two agents, whose descriptions are shorter).
+
+### Moved
+- `skills/cold-email-<x>/SKILL.md` → `skills/cold-email/modes/<mode>.md`: kickoff → `status`, onboarding → `setup`, craft → `craft` (`write`, `sequence`), subject-lines → `subject`, spam-lint → `lint`, deliverability → `deliverability`, list-quality → `list`, reply-scoring → `reply`, nurture → `nurture`, audit → `audit`, weekly-rhythm → `rhythm`.
+- `skills/cold-email-audit/references/audit-rubric.md` → `skills/cold-email/references/audit-rubric.md`.
+- The sub-skills are no longer skills. Type `/cold-email:cold-email <mode>`; with no argument it runs `status` and names the next step.
+- Draft files go under `gtm/` in your project: `letter.json` → `gtm/letter.json`; send lists as `gtm/send-list.csv`; reply batches as `gtm/replies.jsonl`.
+- `score_list.py --input` → `--file`; `score_reply.py --batch` → `--file`. The old flags still work.
+
+### Added
+- Every scorer takes `--file PATH` or `--stdin` and `--json` (`--format json` still works). `spam_word_lint.py` and `score_subject_line.py` read a JSON draft or a plain-text email (`Subject:` first line); `score_list.py` reads CSV or JSONL from stdin; `check_deliverability.py` reads `{"domain", "selector"}`.
+- Refusals read `- what is wrong → what to change` and end `Next: fix the lines above and run this again.` A pass ends with the next step. JSON gains `fixes` / per-item `fix` and `next`; existing keys are unchanged.
+- `--help` shows an example on `examples/`. New `examples/replies.jsonl`, `examples/domain.json`, `tests/test_cli.py`.
+- `argument-hint` lists the modes. Setup points to `/gtm:setup` for the shared operator, ICP, and voice questions and asks only this pack's own.
+- Trigger evals in `evals/` (five cases plus one near miss) and a manual `Evals` workflow.
+- README "In 60 seconds".
+
 ## [0.6.0] — 2026-10-04
 
 A first touch must quote its signal and ask one yes/no question.

@@ -6,7 +6,8 @@ does not exist.
 Skills tell the agent to "load references/x.md" or "run scripts/y.py".
 A dead path there means the agent improvises, so CI checks every
 relative path (containing a "/") in backticks or markdown links across
-the pack's markdown. A path counts as found if it resolves from the
+the pack's markdown (except `gtm/...`, the operator's work folder in
+their own project). A path counts as found if it resolves from the
 file's own directory, the skill's directory, or the repo root.
 
 Zero dependencies. Python 3.8+.
@@ -40,6 +41,8 @@ def candidates(md: Path, ref: str):
 def is_checkable(ref: str) -> bool:
     if "/" not in ref or "://" in ref or ref.startswith(("#", "mailto:")):
         return False
+    if ref.startswith("gtm/"):
+        return False  # the operator's work folder, not a pack file
     if any(ch in ref for ch in "<>{}*$"):
         return False
     return ref.split("#")[0].endswith(EXTS)

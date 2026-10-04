@@ -10,13 +10,20 @@ line-by-line flags.
 Zero dependencies. Python 3.8+.
 
 USAGE:
-    python3 spam_word_lint.py --subject "Re: URGENT" --body "..." [--format json|text]
+    python3 spam_word_lint.py --file examples/t1.email.md [--json]
+    python3 spam_word_lint.py --file gtm/letter.json      # {"subject": "", "body" or "letter": ""}
+    python3 spam_word_lint.py --subject "Re: URGENT" --body "..."
     python3 spam_word_lint.py --stdin   # read JSON {"subject":"","body":""} from stdin
+
+--file takes a JSON object (keys "subject" and "body", or "letter" for the
+body) or a plain-text email whose first line may be "Subject: ...".
+--format json is the same as --json.
 
 EXIT CODES:
     0   score >= 75 (ship or ship-after-fix)
-    1   score < 75  (rewrite or do-not-send)
-    2   bad input
+    1   score < 75  (rewrite or do-not-send); every flag reads
+        "- what is wrong → what to change"
+    2   bad input (never echoed)
 
 NO network calls. NO LLM. NO external libraries.
 """
@@ -47,6 +54,54 @@ def parse_json(text: str) -> dict:
     if not isinstance(data, dict):
         fail_input("JSON must be an object")
     return data
+
+
+def read_file_text(path: str) -> str:
+    try:
+        with open(path, "rb") as handle:
+            raw = handle.read(MAX_INPUT_BYTES + 1)
+    except FileNotFoundError:
+        fail_input("file not found")
+    except IsADirectoryError:
+        fail_input("not a file")
+    except OSError:
+        fail_input("cannot read file")
+    if len(raw) > MAX_INPUT_BYTES:
+        fail_input("file is too large")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        raw = raw[3:]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        fail_input("file is not UTF-8 text")
+    return ""  # unreachable
+
+
+def split_email_text(text: str) -> Tuple[str, str]:
+    """(subject, body) from a plain-text email: an optional first line
+    "Subject: ..." then the body."""
+    lines = text.strip().splitlines()
+    subject = ""
+    if lines and lines[0].lower().startswith("subject:"):
+        subject = lines[0].split(":", 1)[1].strip()
+        lines = lines[1:]
+    return subject, "\n".join(lines).strip()
+
+
+def load_draft_file(path: str) -> dict:
+    """A draft file as {"subject", "body", "framework"}. JSON objects use
+    "body" (or "letter"); anything else is read as a plain-text email."""
+    text = read_file_text(path)
+    if path.lower().endswith(".json") or text.lstrip().startswith("{"):
+        data = parse_json(text)
+        body = data.get("body", data.get("letter", ""))
+        return {
+            "subject": data.get("subject", "") if isinstance(data.get("subject", ""), str) else "",
+            "body": body if isinstance(body, str) else "",
+            "framework": data.get("framework") if isinstance(data.get("framework"), str) else None,
+        }
+    subject, body = split_email_text(text)
+    return {"subject": subject, "body": body, "framework": None}
 
 
 def read_stdin_text() -> str:
@@ -382,6 +437,27 @@ def lint(subject: str, body: str) -> LintResult:
     )
 
 
+NEXT_OK = "Next: score the subject line (/cold-email:cold-email subject)."
+NEXT_FIX = "Next: fix the lines above and run this again."
+
+AXIS_FIX = {
+    "trigger-words": "swap it for a plain word or cut it",
+    "all-caps": "write it in sentence case",
+    "emoji": "remove the emoji",
+    "clickbait": "cut the hook; say the specific thing",
+    "fake-thread": "drop the Re:/Fwd: prefix; there is no prior thread",
+    "link-image-ratio": "keep one link at most and no images",
+}
+
+
+def fix_for(flag: Flag) -> str:
+    return AXIS_FIX.get(flag.axis, "rewrite that line")
+
+
+def next_step(result: LintResult) -> str:
+    return NEXT_OK if result.total_score >= 75 else NEXT_FIX
+
+
 def format_text(result: LintResult) -> str:
     lines = [
         f"# Spam Lint",
@@ -392,11 +468,14 @@ def format_text(result: LintResult) -> str:
     ]
     for axis in result.axes:
         lines.append(f"  {axis.axis.ljust(20)} {axis.score}/{axis.max_score}")
-    if result.flagged_lines:
+    flags = [f for a in result.axes for f in a.flags]
+    if flags:
         lines.append("")
         lines.append("## Flags")
-        for f in result.flagged_lines:
-            lines.append(f"  - {f}")
+        for f in flags:
+            lines.append(f"- [{f.location}] {f.axis}: {f.pattern} → {fix_for(f)}")
+    lines.append("")
+    lines.append(next_step(result))
     return "\n".join(lines)
 
 
@@ -410,18 +489,25 @@ def format_json(result: LintResult) -> str:
                 "axis": a.axis,
                 "score": a.score,
                 "max": a.max_score,
-                "flags": [asdict(f) for f in a.flags],
+                "flags": [dict(asdict(f), fix=fix_for(f)) for f in a.flags],
             }
             for a in result.axes
         ],
+        "next": next_step(result),
     }
     return json.dumps(payload, indent=2)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="example: python3 scripts/spam_word_lint.py --file examples/t1.email.md   # exit 0, Score: 100/100",
+    )
+    parser.add_argument("--file", default=None, help="Draft file: JSON object or plain-text email")
     parser.add_argument("--subject", default="", help="Email subject line")
     parser.add_argument("--body", default="", help="Email body")
+    parser.add_argument("--json", action="store_true", help="Print one JSON object")
     parser.add_argument(
         "--stdin",
         action="store_true",
@@ -435,7 +521,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if args.stdin:
+    if args.file and args.stdin:
+        fail_input("pass --file or --stdin, not both")
+    if args.file:
+        draft = load_draft_file(args.file)
+        subject, body = draft["subject"], draft["body"]
+    elif args.stdin:
         payload = parse_json(read_stdin_text())
         subject = payload.get("subject", "")
         body = payload.get("body", "")
@@ -448,12 +539,12 @@ def main() -> int:
         body = args.body
 
     if not subject and not body:
-        print("No input. Provide --subject + --body, or --stdin.", file=sys.stderr)
+        print("No input. Provide --file, --subject + --body, or --stdin.", file=sys.stderr)
         return 2
 
     result = lint(subject, body)
 
-    if args.format == "json":
+    if args.json or args.format == "json":
         print(format_json(result))
     else:
         print(format_text(result))

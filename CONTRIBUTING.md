@@ -8,7 +8,7 @@ before you contribute.
 - **Bug reports** — open an issue with a reproducible case. The
   scripts in `scripts/` are deterministic, so bugs there are usually
   one-line fixes.
-- **New sub-skills** that extend the existing framework. Discuss in
+- **New modes** that extend the existing framework. Discuss in
   an issue first if it's a substantial addition.
 - **Calibration improvements** to the scoring scripts — if you can
   show a case where the script scores wrong, that's gold.
@@ -48,20 +48,29 @@ python3 -m unittest discover -s tests
 bash scripts/smoke-test.sh          # needs `dig` and network for the DNS checks
 ```
 
-Layout: every skill is `skills/<name>/SKILL.md` (the plugin loader only
-scans `skills/`), the orchestrator is `skills/cold-email/`, and shared
-references live in `skills/cold-email/references/`.
+Layout: the pack has one skill, `skills/cold-email/SKILL.md`. Each job is
+a mode in `skills/cold-email/modes/<mode>.md` (plain markdown, no
+frontmatter, read on demand), routed from the SKILL.md table. Shared
+references live in `skills/cold-email/references/`. Trigger evals live in
+`evals/<case>/` (`prompt.md` + `graders/*.md`); run them by hand with the
+Evals workflow, never in normal CI.
+
+Scorer CLI: every script takes `--file PATH` or `--stdin`, prints text by
+default and one JSON object with `--json`, exits 0 pass / 1 refused / 2
+bad input (never echoing the input), writes each refusal as `- what is
+wrong → what to change`, and ends with a `Next:` line.
 
 ## Pull-request checklist
 
 - [ ] Skill names follow the spec (lowercase, hyphens, ≤64 chars,
       directory matches `name:` in frontmatter)
-- [ ] Sub-skill descriptions include trigger phrases inline
+- [ ] New trigger phrases go in the SKILL.md routing table
 - [ ] If you touch a script, add or update a case in `tests/` and paste
       the smoke-test output in the PR
 - [ ] Every path a skill tells the agent to load or run exists
       (`python3 scripts/check_refs.py`)
-- [ ] If you add a new sub-skill, list it in the README catalog table
+- [ ] A new mode gets a row in the SKILL.md routing table, a word in
+      `argument-hint`, and a link from SKILL.md
 - [ ] CHANGELOG.md updated
 - [ ] No new dependencies (any of: pip packages, npm packages, API
       keys, paid services)

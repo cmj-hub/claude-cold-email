@@ -145,7 +145,7 @@ The skill refuses to produce these; if user requests them, push back:
 ## The signal-anchored opener prompt
 
 This is the canonical first-touch template. The skill's `craft`
-sub-skill uses this:
+mode uses this:
 
 ```
 Write a cold email to {firstName}, {role} at {company}. The signal
