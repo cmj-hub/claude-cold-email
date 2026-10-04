@@ -1,9 +1,10 @@
 ---
 name: cold-email-craft
-description: Draft a single signal-anchored cold email or a 3-touch follow-up sequence using the JMC framework — <90 words, binary CTA, no banned openers. Anchors on a Pain Signal Profile (not demographics). Loaded by the main cold-email skill when the user asks to write or sequence outreach. Includes the surgical "rewrite the weakest line" mode for ship-or-cut review.
+description: "Draft a single signal-anchored cold email or the Day 3 / 7 / 14 follow-up sequence using the JMC framework: under 90 words, binary CTA, no banned openers, anchored on a Pain Signal Profile rather than demographics. Includes the \"rewrite the weakest line\" mode. Use when the operator asks to write, rewrite, or sequence cold outreach; loaded by the main cold-email skill. Not for give-first offer emails (sales-offer)."
 user-invocable: false
-allowed-tools: Read Write Grep Bash(python3 scripts/spam_word_lint.py:*) Bash(python3 scripts/score_subject_line.py:*)
+allowed-tools: Read Write Grep Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*)
 license: MIT
+models: ""
 
 ---
 
@@ -92,8 +93,8 @@ When Bash is available, also run the deterministic gates from the
 main skill's self-check rubric (scripts live at `<skill-dir>/../../scripts/`):
 
 ```bash
-python3 scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json   # need ≥75
-python3 scripts/score_subject_line.py --subject "<subject>" --format json              # need ≥70
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json   # need ≥75
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py --subject "<subject>" --format json              # need ≥70
 ```
 
 Before drafting, check the draft against `brand-config.tone.banned_phrases`

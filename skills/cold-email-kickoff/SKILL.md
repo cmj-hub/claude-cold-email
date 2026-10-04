@@ -1,9 +1,10 @@
 ---
 name: cold-email-kickoff
-description: Adaptive router for the cold-email skill pack. Detects the operator's current state (brand-config present? SOUL.md present? infrastructure ready? PSP defined? EVP locked? first campaign run?) and picks the next-best step. Loaded by the main cold-email skill on bare invocation ("/cold-email") or when the operator asks "where do I start" / "what's next". Inspired by coldoutboundskills' /cold-email-kickoff pattern.
+description: "Adaptive router for the cold-email pack. Detects the operator's state (brand-config present, SOUL.md present, infrastructure ready, PSP and EVP blocks present, first campaign run) and picks the next-best step. Use when the operator runs a bare /cold-email or asks \"where do I start\" or \"what's next\"; loaded by the main cold-email skill."
 user-invocable: false
 allowed-tools: Read Write Grep
 license: MIT
+models: ""
 
 ---
 
@@ -46,8 +47,8 @@ Map state to the next-best step:
 | State condition | Route to |
 |---|---|
 | `!has_brand_config OR !has_soul` | `cold-email-onboarding` |
-| `has_brand_config AND !has_psp` | "Install `cmj-hub/claude-psp` first; let me know when PSP is done" |
-| `has_psp AND !has_evp` | "Install `cmj-hub/claude-evp` first; let me know when EVP is done" |
+| `has_brand_config AND !has_psp` | "No `psp` block. Install the psp pack (`/plugin install psp@gtm-operator-skills`), run `/psp:psp`, then come back" |
+| `has_psp AND !has_evp` | "No `evp` block. Install the evp pack (`/plugin install evp@gtm-operator-skills`), run `/evp:evp`, then come back" |
 | `has_evp AND !has_infrastructure` | "Let's set up infrastructure. Run `cold-email-deliverability` for a baseline audit." |
 | `has_infrastructure AND !deliverability_audited_recently` | "Deliverability hasn't been re-audited in 30+ days. Run `cold-email-deliverability` first." |
 | `deliverability_audited_recently AND !first_send_logged` | "Ready to ship. Want to draft your first sequence via `cold-email-craft`?" |

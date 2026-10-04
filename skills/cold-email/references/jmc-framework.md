@@ -4,6 +4,17 @@ The framework underneath every output this skill produces. Load this
 when a user asks "why this shape", "what's the framework", or before
 explaining a recommendation.
 
+## Contents
+
+- The framework, in one diagram
+- The four blocks
+- Constraints (the shape)
+- Banned patterns
+- The signal-anchored opener prompt
+- 3-touch sequence
+- The "rewrite the weakest line" sub-prompt
+- Free hosted version
+
 ## The framework, in one diagram
 
 ```

@@ -3,10 +3,12 @@ name: cold-email-reviewer
 description: >
   Cold email quality scoring agent. Evaluates a drafted email against the
   JMC framework (signal-anchored, <90 words, binary CTA, no banned patterns)
-  and scores 0-100 with line-by-line critique. Use after drafting and before
-  sending. Triggers on "review this cold email", "score my email", "is this
+  and scores 0-100 with line-by-line critique. Use when a draft is done and
+  before sending, on "review this cold email", "score my email", "is this
   cold email good", "critique this draft".
-allowed-tools: Read Grep
+tools:
+  - Read
+  - Grep
 ---
 
 # Cold Email Reviewer Agent

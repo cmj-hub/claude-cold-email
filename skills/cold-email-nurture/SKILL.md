@@ -1,17 +1,20 @@
 ---
 name: cold-email-nurture
-description: Design a 5-email nurture stream from a Pain Signal Profile + EVP. Each email has a subject, preheader, opener, body beats, CTA, cadence rationale, behavioral principle, and one route-to-sales trigger. Loaded by the main cold-email skill when the user asks to nurture, re-engage, or design a stream. Based on the JMC Lifecycle Nurture framework.
+description: "Design a 5-email re-engagement stream for cold or stalled prospects who have NOT opted in, from the Pain Signal Profile and EVP. Each email has a subject, preheader, opener, body beats, CTA, cadence rationale, behavioral principle, and one route-to-sales trigger. Use when the operator asks to re-engage or nurture cold prospects; loaded by the main cold-email skill. Not for welcome or nurture sequences after someone opted in (email-sequence)."
 user-invocable: false
 allowed-tools: Read Write Grep
 license: MIT
+models: ""
 
 ---
 
 # Cold Email Nurture — 5-Email Stream Designer
 
-Loaded by `cold-email` when the user wants to nurture (warm leads who
-didn't reply, re-engage dormant prospects, re-activate churned
-clients, post-content-download follow-ups).
+Loaded by `cold-email` when the user wants to re-engage prospects who
+have NOT opted in (cold leads who didn't reply, dormant prospects,
+churned clients). For anyone who opted in (signed up, downloaded,
+subscribed), use the email-sequence pack instead
+(`/email-sequence:lifecycle-email`; `/plugin install email-sequence@gtm-operator-skills`).
 
 ## Activation triggers
 
@@ -19,8 +22,6 @@ clients, post-content-download follow-ups).
 - "5-email nurture"
 - "Re-engagement sequence"
 - "Re-activate churned"
-- "Post-download follow-up"
-- "Lifecycle nurture"
 
 ## Workflow
 
@@ -32,7 +33,7 @@ Required:
 |---|---|
 | `pain_signal_profile` | The PSP for this audience |
 | `evp` | One-line value prop |
-| `nurture_context` | Why these prospects are getting this stream (no reply / churned / downloaded / post-event) |
+| `nurture_context` | Why these prospects are getting this stream (no reply / stalled / churned / met at an event without opting in) |
 | `expected_cadence_days` | Default: 3 / 5 / 10 / 17 / 28 |
 
 ### 2. Generate the 5-email stream
@@ -65,15 +66,15 @@ Route-to-sales trigger: <Behavior that flags this lead is hot — open + reply +
 | 4 | 23 | Soft close | "Should I keep these coming?" — explicit permission ask. |
 | 5 | 40 | Hard close | "I'll stop reaching out unless you want a different lens. Reply 'keep' to stay on." |
 
-For re-engagement / churned / post-download contexts, shift the
+For re-engagement / churned contexts, shift the
 opening principle but keep the 5-touch shape:
 
 - **Re-engagement**: T1 = "What changed?" (curiosity) → T5 = "Last
   ping — should I close the loop?"
 - **Churned**: T1 = "What broke?" (reciprocity by listening) → T5 = "If
   we shipped <X>, would you re-evaluate?"
-- **Post-download**: T1 = "Most-asked Q after <download>" (insight) →
-  T5 = "Want a walkthrough or close the loop?"
+- **Downloaded or subscribed**: they opted in. Hand off to the
+  email-sequence pack (`/email-sequence:lifecycle-email`).
 
 ### 4. Route-to-sales trigger per email
 

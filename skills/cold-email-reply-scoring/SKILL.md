@@ -1,9 +1,10 @@
 ---
 name: cold-email-reply-scoring
-description: Classify replies to cold email into 4 categories — buy-signal, positive, neutral, not-interested — using deterministic features (intent keywords, time-to-reply, length, question count, calendar/asset asks). Routes each reply per brand-config.operations.reply_routing. Backed by a Python script that uses regex + features (no LLM). Loaded by the main cold-email skill when the operator processes their reply queue.
+description: "Classify replies to cold email as buy-signal, positive, neutral, or not-interested using deterministic features (intent keywords, time-to-reply, length, question count, calendar or asset asks), then route each per brand-config.operations.reply_routing. Backed by a regex-and-features Python script, no LLM. Use when the operator pastes a reply or processes their reply queue; loaded by the main cold-email skill."
 user-invocable: false
-allowed-tools: Read Write Bash(python3 scripts/score_reply.py:*) Grep
+allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*) Grep
 license: MIT
+models: ""
 
 ---
 
@@ -99,7 +100,7 @@ For triaging the Wednesday/Friday batch of replies:
 
 ```bash
 # replies.jsonl: one {"body": "...", "minutes_since_send": N} per line
-python3 scripts/score_reply.py --batch replies.jsonl --format json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py --batch replies.jsonl --format json
 ```
 
 (`scripts/` is at the pack root — `<skill-dir>/../../scripts/`. Bad lines

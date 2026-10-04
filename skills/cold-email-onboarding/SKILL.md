@@ -1,9 +1,10 @@
 ---
 name: cold-email-onboarding
-description: First-run interactive setup for the cold-email skill pack. Walks the operator through brand-config.json (ICP, PSP, EVP, tone, infrastructure) and SOUL.md (voice fingerprints, banned phrases, stories you lean on) in ~10 minutes. Refuses to let the operator skip — generic output is worse than no output. Loaded automatically by the main cold-email skill when brand-config.json or SOUL.md is missing.
+description: "First-run setup for the cold-email pack. Merges the fields this pack owns (tone, infrastructure, operations) into the shared brand-config.json and adds its own section to SOUL.md, reading the psp and evp blocks other packs publish. Takes about 10 minutes and does not let the operator skip the inputs that make output specific. Use when brand-config.json or SOUL.md is missing or lacks the cold-email fields; loaded by the main cold-email skill."
 user-invocable: false
 allowed-tools: Read Write Grep
 license: MIT
+models: ""
 
 ---
 
@@ -41,8 +42,41 @@ This onboarding sub-skill captures the operator's:
 6. **Infrastructure** (domain, inbox provider, deliverability state)
 7. **Operations** (weekly cadence, reply routing, experiment log)
 
-Output: `brand-config.json` + `SOUL.md` at the project root, both
-filled in.
+Output: the cold-email fields in `brand-config.json` and the
+cold-email section of `SOUL.md`, at the project root.
+
+## Shared files contract
+
+Every pack in the GTM operator suite shares one `brand-config.json` and
+one `SOUL.md` at the operator's project root.
+
+- **Merge at the field level.** Read the existing file first. Add or
+  update only the fields this pack owns, and leave every other key
+  exactly as it was. Never rewrite the file from the example. Never
+  delete another pack's keys. Show the diff and ask before changing a
+  field that already has a value.
+- **This pack owns** `tone`, `infrastructure`, and `operations`.
+- **Shared, fill gaps only:** `operator` and `icp`.
+- **Read, not owned:** `psp` (published by the psp pack) and `evp`
+  (published by the evp pack). If a block is present, use it as is and
+  do not re-ask. If it is missing, say which pack produces it and how to
+  install it: `/plugin install psp@gtm-operator-skills` then `/psp:psp`,
+  or `/plugin install evp@gtm-operator-skills` then `/evp:evp`. Do not
+  invent the values. Only when the operator has no psp or evp pack and
+  wants to continue, collect them in Steps 3 and 4 and write them in the
+  published shapes below.
+- **SOUL.md:** add or update only the sections in this pack's template
+  (`../../SOUL.md`). Voice sections other packs also use (`Who I am`,
+  `Phrases I use a lot`, `Phrases I refuse`, `Stories I lean on`) are
+  shared: merge bullets, keep what is there. Never rewrite another
+  pack's section. If SOUL.md does not exist, start it from the template.
+
+Published block shapes (write exactly these keys):
+
+```json
+"psp": { "signal_anchors": ["..."], "primary_pain": "...", "timing_trigger": "...", "felt_pain_role": "...", "vocabulary": ["..."] }
+"evp": { "tier": 3, "primary": "...", "outcome": "...", "tradeoff": "...", "proof": "..." }
+```
 
 ## Workflow
 
@@ -53,15 +87,18 @@ filled in.
 exists_brand = file_exists("brand-config.json")
 exists_soul = file_exists("SOUL.md")
 
-if exists_brand and exists_soul:
-    ask: "Both files exist. Refresh them, or skip onboarding?"
-elif exists_brand:
-    "I see brand-config.json but no SOUL.md. Let's add the voice piece."
-elif exists_soul:
-    "I see SOUL.md but no brand-config.json. Let's add the config."
-else:
+if exists_brand:
+    read it; list which of operator, icp, psp, evp, tone,
+    infrastructure, operations are present and which are empty
+    ask only for the empty ones this pack needs
+if exists_soul:
+    read it; list which template sections are present and which are empty
+if not exists_brand and not exists_soul:
     "Welcome. ~10 minute setup. Ready?"
 ```
+
+Skip any step whose fields are already filled. Never offer to replace
+the files.
 
 ### Step 1 — Operator + company
 
@@ -76,7 +113,8 @@ First, the basics:
 4. Your calendar / booking link?
 ```
 
-Save to `brand-config.operator`.
+Save to `brand-config.operator`. Fill gaps only; keep any value
+another pack already wrote.
 
 ### Step 2 — ICP precision check
 
@@ -93,7 +131,7 @@ sharpen ICP before launching outreach. Let me know if you want to
 talk through it, or use a placeholder for now.
 ```
 
-Save to `brand-config.icp`.
+Save to `brand-config.icp`. Fill gaps only.
 
 If the operator says "I don't know yet" — push back ONCE:
 
@@ -102,6 +140,15 @@ If the operator says "I don't know yet" — push back ONCE:
 > mark this for review after the first 100 sends?
 
 ### Step 3 — Pain Signal Profile (PSP)
+
+If `brand-config.psp` exists, show it back in one line and move on.
+If only `psp_drafts.primary` exists, use it and suggest locking it with
+`/psp:psp`. If neither exists, point to the psp pack first:
+
+> No PSP yet. The psp pack builds it and publishes it here:
+> `/plugin install psp@gtm-operator-skills`, then `/psp:psp`.
+
+Only if the operator has no psp pack and wants to continue, ask:
 
 ```
 The PSP is the bridge from a public signal to felt operational pain.
@@ -114,35 +161,34 @@ Tell me:
 5. 4-8 phrases your buyer uses about this pain (read their job posts, LinkedIn comments, conference talks)
 ```
 
-If the operator hasn't built a PSP yet, suggest installing the
-companion skill:
-
-> Haven't built a PSP yet? Install `cmj-hub/claude-psp` first — it
-> walks you through the full 5-component PSP construction. I'll wait.
-
-Save to `brand-config.psp`.
+Save to `brand-config.psp` in the published shape: answer 1 becomes
+`signal_anchors`, then `primary_pain`, `timing_trigger`,
+`felt_pain_role`, `vocabulary`. Leave a field empty rather than guess.
 
 ### Step 4 — EVP
+
+If `brand-config.evp` exists, show `evp.primary` back and move on. If
+it is missing, point to the evp pack first:
+
+> No EVP yet. The evp pack writes it and publishes it here:
+> `/plugin install evp@gtm-operator-skills`, then `/evp:evp`.
+
+Only if the operator has no evp pack and wants to continue, ask:
 
 ```
 Your EVP — the one-line value prop.
 
 1. Which Schwartz awareness tier (1-5) is your primary outreach
    audience in? (Most B2B cold-email targets are Tier 2 or 3.)
-2. Your 22-word EVP using the shape: "For <ICP>, in <pain>, we ship
-   <specific outcome> without <specific tradeoff>."
+2. Your 22-word EVP using the shape: "For {ICP}, in {pain}, we ship
+   {specific outcome} without {specific tradeoff}."
 3. The specific outcome (must include a number)
 4. The specific tradeoff
 5. Your strongest proof point (case study / metric / receipt)
 ```
 
-If the operator hasn't built an EVP yet:
-
-> Haven't built an EVP yet? Install `cmj-hub/claude-evp` first — it
-> generates 3 variants per tier and a structured 3-tier brief. I'll
-> wait.
-
-Save to `brand-config.evp`.
+Save to `brand-config.evp` in the published shape: `tier`, `primary`,
+`outcome`, `tradeoff`, `proof`. Never invent the proof.
 
 ### Step 5 — Voice fingerprints (SOUL.md)
 
@@ -163,7 +209,10 @@ not Jay Mount or ChatGPT.
 5. Any topic you absolutely will not write about (boundaries)
 ```
 
-Save to `SOUL.md` (not JSON — markdown, since voice is descriptive).
+Save to the matching sections of `SOUL.md` (markdown, not JSON,
+since voice is descriptive). If SOUL.md already has voice sections from
+another pack, read them and ask only for what is missing. Phrases-banned
+also go to `brand-config.tone.banned_phrases`.
 
 ### Step 6 — Infrastructure
 
@@ -205,18 +254,21 @@ Save to `brand-config.operations`.
 
 ### Step 8 — Write the files
 
-Write `brand-config.json` + `SOUL.md` at the project root with the
-captured data. Start `brand-config.json` with the `"$schema"` line from
+Merge the captured data into `brand-config.json` + `SOUL.md` at the
+project root, field by field, per the shared files contract above. If
+`brand-config.json` is new, start it with the `"$schema"` line from
 `brand-config.example.json` so editors validate it against
 `brand-config.schema.json`. Leave a field empty rather than inventing a
-value the operator did not give. Show the operator a preview:
+value the operator did not give. Show the diff of every changed field,
+ask before changing a field that already had a value, then show a
+preview:
 
 ```
-✓ brand-config.json (24 fields populated)
-✓ SOUL.md (voice fingerprints + 5 stories)
+✓ brand-config.json (tone, infrastructure, operations merged; other keys untouched)
+✓ SOUL.md (voice fingerprints + 5 stories merged in)
 
 Try a quick test:
-> Write a cold email to <name>, <role> at <company>. They just <signal>.
+> Write a cold email to {name}, {role} at {company}. They just {signal}.
 
 The output will now use:
 - Your ICP precision
@@ -234,7 +286,8 @@ Final note — brand profiles decay. Re-run this onboarding when:
 - Your buyer's vocabulary evolves
 - Quarterly minimum
 
-Re-run with: `/cold-email onboarding refresh`
+Re-run with: `/cold-email onboarding refresh` (asks field by field;
+never replaces the file)
 ```
 
 ## Stress-test mode

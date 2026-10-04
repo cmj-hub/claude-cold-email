@@ -1,9 +1,10 @@
 ---
 name: cold-email-deliverability
-description: 15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up status (mailbox age, send volume ramp, reply ratio), and content (spam-trigger lint, link-to-text ratio, image-to-text ratio). Returns a 0-100 deliverability score and a fix-order. Uses native DNS lookups + public blacklist APIs — no paid tools required. Loaded by the main cold-email skill when the user asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness.
+description: "15-point pre-campaign domain health check across DNS (SPF, DKIM, DMARC, MX, BIMI), reputation (SNDS, Postmaster, blacklists), warm-up (mailbox age, volume ramp, reply ratio), and content. Returns a 0-100 deliverability score and a fix order, using native DNS lookups and public blacklist zones, no paid tools. Use when the operator asks about deliverability, domain health, SPF/DKIM/DMARC, or pre-launch readiness; loaded by the main cold-email skill."
 user-invocable: false
-allowed-tools: Read Write Bash(python3 scripts/check_deliverability.py:*) Bash(bash scripts/dig_dns.sh:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*) WebFetch
+allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py:*) Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/dig_dns.sh:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*) WebFetch
 license: MIT
+models: ""
 
 ---
 
@@ -64,7 +65,7 @@ bulk-sender rows in one pass (scripts live at `<skill-dir>/../../scripts/`;
 see "Running the bundled scripts" in the main `cold-email` skill):
 
 ```bash
-python3 scripts/check_deliverability.py --domain <sending_domain> --selector <dkim_selector> --format json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py --domain <sending_domain> --selector <dkim_selector> --format json
 ```
 
 The script reports each check as `pass`, `fail`, or `unknown`. Unknown
@@ -76,7 +77,7 @@ record you did not resolve. Unknowns are left out of the score.
 Warm-up rows (11-13) come from the operator's answers in step 1, not
 DNS. If `dig` is missing, the script exits 2; give the operator the
 install line it prints and the manual commands below. For a raw dump
-of the records, `bash scripts/dig_dns.sh <domain> [selector]`.
+of the records, `bash ${CLAUDE_PLUGIN_ROOT}/scripts/dig_dns.sh <domain> [selector]`.
 
 **Never** call paid services. If a check requires a tool the user
 doesn't have, fall back to telling the user the manual lookup
