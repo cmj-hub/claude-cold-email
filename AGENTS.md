@@ -13,7 +13,7 @@ Three files combine to define how the agent behaves:
 
 | File | Job | Owner | Per project? |
 |---|---|---|---|
-| `cold-email/SKILL.md` (skill pack) | The JMC FRAMEWORK + structural rules | JMC (do not edit) | No — global |
+| `skills/cold-email/SKILL.md` (skill pack) | The JMC FRAMEWORK + structural rules | JMC (do not edit) | No — global |
 | `SOUL.md` (project root) | The OPERATOR'S VOICE | You | Yes |
 | `brand-config.json` (project root) | The OPERATOR'S BRAND CONFIG | You | Yes |
 
@@ -52,7 +52,7 @@ If a required input is missing, ask.
 
 ### 5. Self-check every output
 
-Every output runs through the self-check rubric in `cold-email/SKILL.md`
+Every output runs through the self-check rubric in `skills/cold-email/SKILL.md`
 before delivery. If checks fail, regenerate before showing the user.
 
 ### 6. Surface drafts as drafts
@@ -85,7 +85,7 @@ parts and ask for the actual data. Don't paint over uncertainty.
 ## What the agent should NEVER do
 
 - Write cold emails without a brand-config.json (refuse + route to onboarding)
-- Use banned patterns from `cold-email/references/banned-patterns.md` even
+- Use banned patterns from `skills/cold-email/references/banned-patterns.md` even
   if the operator requests them — push back with the JMC alternative
 - Send any outreach without explicit per-call authorization
 - Fabricate signals, recipients, or metrics

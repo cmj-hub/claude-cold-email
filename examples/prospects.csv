@@ -1,0 +1,8 @@
+email,first_name,last_name,role,company,stage,industry,signal,signal_date,linkedin_url
+sarah@acmecloud.example,Sarah,Lee,"VP, Demand Generation",Acme Cloud,Series B,SaaS,Posted Senior Demand Gen Lead role,2026-09-30,https://linkedin.com/in/sarah-lee-example
+sarah@acmecloud.example,Sarah,Lee,VP Demand Gen,Acme Cloud,Series B,SaaS,Posted Senior Demand Gen Lead role,2026-09-30,
+mike@betaops.example,Mike,Chen,Engineering Manager,Beta Ops,Series B,SaaS,Announced Series B,2026-09-25,
+priya@gammahq.example,Priya,Shah,Head of Growth,Gamma HQ,Series C,SaaS,Shipped enterprise tier,2026-08-10,
+info@deltaworks.example,,,Chief Revenue Officer,Delta Works,Series B,SaaS,Announced Series B,2026-09-28,
+dan.ortiz@gmail.com,Dan,Ortiz,CRO,Epsilon,Series B,SaaS,Posted SDR Manager role,2026-09-29,
+lena+outbound@zetagov.example,Lena,Park,Chief Revenue Officer,Zeta Gov,Series B,Government,Announced Series B,2026-09-20,

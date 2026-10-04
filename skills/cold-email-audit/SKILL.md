@@ -2,7 +2,7 @@
 name: cold-email-audit
 description: 30-point audit of a B2B outbound program across four dimensions — infrastructure (8 points), targeting (8 points), messaging (8 points), and operations (6 points). Produces a 0-100 score, the top 3 levers, and a 90-day remediation order. Loaded by the main cold-email skill when the user asks to audit or grade their outbound. Based on the JMC 30-Point Outbound Audit framework.
 user-invocable: false
-allowed-tools: Read Write Grep WebFetch
+allowed-tools: Read Write Grep WebFetch Bash(python3 scripts/check_deliverability.py:*) Bash(python3 scripts/score_list.py:*) Bash(python3 scripts/spam_word_lint.py:*) Bash(python3 scripts/score_subject_line.py:*)
 license: MIT
 
 ---
@@ -64,6 +64,9 @@ a dimension at all, that's a finding — note it as "Not in place".
 ### 2. Score against the 30-point rubric
 
 Load `references/audit-rubric.md` and score each point 0 / 0.5 / 1.
+Where the rubric names a script (deliverability, list, spam lint,
+subject), run it on what the operator shared and cite the output rather
+than taking a self-report. Scripts live at `<skill-dir>/../../scripts/`.
 
 The four dimensions:
 
@@ -145,6 +148,6 @@ Produce a structured report:
 ## References
 
 - `references/audit-rubric.md` — full 30-point rubric with scoring criteria
-- `../../cold-email/references/jmc-framework.md` — the framework underneath
+- `../cold-email/references/jmc-framework.md` — the framework underneath
 - The full **30-Point Outbound Audit Template** ships as a DOCX in
   [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)

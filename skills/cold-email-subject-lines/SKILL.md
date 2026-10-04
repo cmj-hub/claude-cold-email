@@ -2,7 +2,7 @@
 name: cold-email-subject-lines
 description: Generate or critique cold-email subject lines across 4 framework families (pain, curiosity, social proof, direct). Each suggestion is ≤7 words, no spam triggers, no clickbait, includes reply-rate notes from the JMC Subject Line Swipe File (25 high-performers). Loaded by the main cold-email skill when the user asks for subject lines, openers, or to critique a draft subject.
 user-invocable: false
-allowed-tools: Read Grep
+allowed-tools: Read Grep Bash(python3 scripts/score_subject_line.py:*)
 license: MIT
 
 ---
@@ -39,7 +39,7 @@ suggest 3-5 subject lines spanning at least 2 frameworks.
 - No emojis (deliverability)
 - No `Re:` / `Fwd:` fakes (banned by bulk-sender rules)
 - No clickbait ("You won't believe...", "This one trick...")
-- No spam triggers — load `references/spam-trigger-words.md` for the list
+- No spam triggers — `scripts/score_subject_line.py` checks the list (whole-word match)
 - Personalization (first name, company) where relevant — but not faked
 - Lowercase first letter often outperforms capitalized in B2B (test)
 
@@ -69,10 +69,19 @@ fit, not framework alphabetical.
 | 5 | Pain | "Q3 demand gen plan question" | Conservative; fits exec inboxes |
 ```
 
-### 3. Spam-trigger lint
+### 3. Score each subject
 
-After generating, lint each subject against
-`references/spam-trigger-words.md`. Flag any that hit known triggers.
+After generating, run every candidate through the deterministic scorer
+(scripts live at `<skill-dir>/../../scripts/`):
+
+```bash
+python3 scripts/score_subject_line.py --subject "<subject>" --framework <pain|curiosity|social-proof|direct> --format json
+```
+
+Drop any candidate under 70. A fake `Re:` / `Fwd:`, emoji, ALL CAPS, or
+clickbait caps the score at 49 however good the rest is. Show the score
+in the Notes column. If Bash is unavailable, apply the constraints above
+by hand and say the subjects were not machine-scored.
 
 ### 4. Critique mode
 
@@ -92,11 +101,11 @@ Better alternatives:
 
 ## References
 
-- `references/spam-trigger-words.md` — banned words / phrases that hurt
-  inbox placement
+- `../../scripts/score_subject_line.py` — the scorer; its `SPAM_WORDS`
+  and `CLICKBAIT_PATTERNS` lists are the subject-line lexicon
+- `../cold-email/references/banned-patterns.md` — banned subject patterns
 - The **25 High-Performing Subject Lines** PDF ships in
   [the free Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter) — 25
   patterns organized by framework with reply-rate notes from real
   campaigns
-- The full **Cold Email & Outreach Craft** course in The Compounding
-  Engine:
+- The full [Cold Email & Outreach Craft](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft) course.

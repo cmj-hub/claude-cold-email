@@ -13,7 +13,7 @@ before you contribute.
 - **Calibration improvements** to the scoring scripts — if you can
   show a case where the script scores wrong, that's gold.
 - **Cross-runtime ports** (Cursor, Gemini CLI, Codex) — see the
-  `Cross-runtime` section of the README.
+  Install section of the README.
 - **Translation** of the framework reference docs.
 
 ## What doesn't land
@@ -40,14 +40,27 @@ For Python scripts:
 ```bash
 # All scripts are zero-dep Python 3.8+ — just run them
 python3 scripts/<script>.py --help
+
+# What CI runs
+python3 scripts/validate-skill-frontmatter.py
+python3 scripts/check_refs.py
+python3 -m unittest discover -s tests
+bash scripts/smoke-test.sh          # needs `dig` and network for the DNS checks
 ```
+
+Layout: every skill is `skills/<name>/SKILL.md` (the plugin loader only
+scans `skills/`), the orchestrator is `skills/cold-email/`, and shared
+references live in `skills/cold-email/references/`.
 
 ## Pull-request checklist
 
 - [ ] Skill names follow the spec (lowercase, hyphens, ≤64 chars,
       directory matches `name:` in frontmatter)
 - [ ] Sub-skill descriptions include trigger phrases inline
-- [ ] If you touch a script, smoke-test it and paste output in the PR
+- [ ] If you touch a script, add or update a case in `tests/` and paste
+      the smoke-test output in the PR
+- [ ] Every path a skill tells the agent to load or run exists
+      (`python3 scripts/check_refs.py`)
 - [ ] If you add a new sub-skill, list it in the README catalog table
 - [ ] CHANGELOG.md updated
 - [ ] No new dependencies (any of: pip packages, npm packages, API
@@ -55,16 +68,18 @@ python3 scripts/<script>.py --help
 
 ## Reporting calibration issues with scoring scripts
 
-If a script (`spam_word_lint.py` / `score_psp.py` / `score_evp.py` /
-`score_post.py`) scores something obviously wrong:
+If a script (`spam_word_lint.py` / `score_subject_line.py` /
+`score_reply.py` / `score_list.py` / `check_deliverability.py`) scores
+something obviously wrong:
 
 1. Paste the input that produced the wrong score
 2. State your expected score + actual score
 3. Note which axis is mis-calibrated
 
-The scripts are calibrated against ~1,000 real B2B campaigns. New
-calibration cases add to the lexicons in version-controlled JSON, not
-to the script logic — keep the deterministic path stable.
+Each calibration fix lands with a test in `tests/test_scoring.py` that
+pins the input and the expected category or score. Lexicons are the
+lists at the top of each script; change those before changing scoring
+logic, and keep the deterministic path stable.
 
 ## License
 

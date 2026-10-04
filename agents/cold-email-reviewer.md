@@ -112,6 +112,6 @@ Rationale: <one sentence>
 
 ## References
 
-- `cold-email/references/jmc-framework.md` — the framework being scored
-- `cold-email/references/banned-patterns.md` — banned openers / closes
-- `skills/cold-email-subject-lines/references/spam-trigger-words.md`
+- `skills/cold-email/references/jmc-framework.md` — the framework being scored
+- `skills/cold-email/references/banned-patterns.md` — banned openers / closes
+- `scripts/spam_word_lint.py` and `scripts/score_subject_line.py` — the deterministic lexicons

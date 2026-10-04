@@ -77,7 +77,7 @@ URGENCY_TRIGGERS = [
 FREE_MONEY_TRIGGERS = [
     "free money", "free cash", "make money fast", "earn extra cash",
     "double your income", "make $", "no investment", "no risk",
-    "guaranteed income", "lifetime", "100% free", "100% guaranteed",
+    "guaranteed income", "lifetime deal", "lifetime access", "100% free", "100% guaranteed",
     "risk-free", "no obligation", "no catch", "no hidden costs",
     "free gift", "free trial", "free preview", "free access",
     "free leads", "free consultation",
@@ -105,10 +105,10 @@ FINANCIAL_TRIGGERS = [
 ]
 
 CLICKBAIT_PATTERNS = [
-    r"you won['']t believe",
+    r"you won['’]t believe",
     r"this one (trick|secret|tip|hack)",
     r"doctors hate",
-    r"what \w+ don['']t want you to know",
+    r"what \w+ don['’]t want you to know",
     r"the (secret|truth) (about|behind|to)",
     r"will (shock|amaze|surprise) you",
     r"\d+ (things|ways|reasons|tricks) (you|that) (need|must|should)",
@@ -143,6 +143,37 @@ EMOJI_RE = re.compile(
     r"]+",
     flags=re.UNICODE,
 )
+
+
+def phrase_pattern(phrase: str) -> "re.Pattern[str]":
+    """Match a lexicon phrase as whole words, so "credit" does not fire on
+    "accredited" and "urgent" does not fire on "insurgent". Edges that are
+    punctuation ("make $", "$$$") are matched as-is."""
+    left = r"(?<![a-z0-9])" if phrase[:1].isalnum() else ""
+    right = r"(?![a-z0-9])" if phrase[-1:].isalnum() else ""
+    return re.compile(left + re.escape(phrase) + right, flags=re.IGNORECASE)
+
+
+def shouty_caps(text: str) -> Optional[str]:
+    """Return a reason if `text` shouts, else None.
+
+    Short acronyms are normal in B2B (SDR, CRM, ARR, GTM), so a single
+    3-4 letter all-caps word does not count. Shouting is: an all-caps word
+    of 5+ letters, two all-caps words in a row, or a line that is mostly
+    capitals."""
+    words = text.split()
+    for i, word in enumerate(words):
+        letters = re.sub(r"[^A-Za-z]", "", word)
+        if len(letters) >= 5 and letters.isupper():
+            return f"all-caps word '{letters}'"
+        if len(letters) >= 3 and letters.isupper() and i + 1 < len(words):
+            nxt = re.sub(r"[^A-Za-z]", "", words[i + 1])
+            if len(nxt) >= 2 and nxt.isupper():
+                return f"all-caps run '{letters} {nxt}'"
+    letters = re.sub(r"[^A-Za-z]", "", text)
+    if len(letters) >= 8 and sum(c.isupper() for c in letters) / len(letters) > 0.6:
+        return "mostly capitals"
+    return None
 
 
 # ----------------------------------------------------------------------------
@@ -182,15 +213,13 @@ def scan_trigger_words(subject: str, body: str) -> AxisScore:
     """25 points. -3 per trigger word (subject), -1 per body trigger."""
     score = 25
     flags: List[Flag] = []
-    sub_lower = subject.lower()
-    body_lower = body.lower()
-
     for word in ALL_TRIGGER_WORDS:
-        if word in sub_lower:
+        pattern = phrase_pattern(word)
+        if pattern.search(subject):
             score -= 3
             flags.append(Flag("trigger-words", "subject", word, "critical"))
         # Count body matches (cap one per word).
-        if word in body_lower:
+        if pattern.search(body):
             score -= 1
             flags.append(Flag("trigger-words", "body", word, "warning"))
 
@@ -198,13 +227,14 @@ def scan_trigger_words(subject: str, body: str) -> AxisScore:
 
 
 def scan_all_caps(subject: str, body: str) -> AxisScore:
-    """15 points. -10 if subject has CAPS sequences ≥3 chars, -1 per body line."""
+    """15 points. -10 if the subject shouts (see shouty_caps), -1 per all-caps body line."""
     score = 15
     flags: List[Flag] = []
 
-    if re.search(r"[A-Z]{3,}", subject):
+    reason = shouty_caps(subject)
+    if reason:
         score -= 10
-        flags.append(Flag("all-caps", "subject", "≥3 consecutive caps", "critical"))
+        flags.append(Flag("all-caps", "subject", reason, "critical"))
 
     for i, line in enumerate(body.splitlines(), start=1):
         # Skip lines with mostly punctuation / whitespace
@@ -315,6 +345,9 @@ def scan_link_image_ratio(body: str) -> AxisScore:
 # ----------------------------------------------------------------------------
 
 def lint(subject: str, body: str) -> LintResult:
+    # Phone keyboards send curly apostrophes; the lexicon is written straight.
+    subject = subject.replace("\u2019", "'")
+    body = body.replace("\u2019", "'")
     axes = [
         scan_trigger_words(subject, body),
         scan_all_caps(subject, body),

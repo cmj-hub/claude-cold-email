@@ -2,7 +2,7 @@
 name: cold-email-list-quality
 description: Score a cold-email prospect list 0-100 across dedup, role-fit (vs brand-config.icp), signal freshness, email-validity heuristics, exclusion-criteria match, and company-stage match. Returns the score, list of rows to remove, and a fix recommendation. Loaded by cold-email-weekly-rhythm on Monday's list refresh. Operates on CSV or JSONL; no external services.
 user-invocable: false
-allowed-tools: Read Write Grep
+allowed-tools: Read Write Grep Bash(python3 scripts/score_list.py:*)
 license: MIT
 
 ---
@@ -24,7 +24,8 @@ Loaded by:
 The skill accepts:
 
 - **CSV** with at minimum: `email`, optional `first_name`, `last_name`,
-  `role`, `company`, `signal`, `signal_date`, `linkedin_url`
+  `role`, `company`, `signal`, `signal_date` (YYYY-MM-DD), `linkedin_url`,
+  `stage`, `industry`
 - **JSONL** with same fields
 
 If `brand-config.json` is loaded, the skill cross-references
@@ -88,15 +89,16 @@ per week.
 
 ## Send the cleaned list
 
-The skill writes `<file>.cleaned.csv` and `<file>.removed.csv` to the
-project root. Operator can review before importing into Smartlead /
-Instantly / etc.
+With `--write`, the script writes `<file>.cleaned.csv` and
+`<file>.removed.csv` (with a `removal_reason` column) next to the input.
+Ask before writing. The operator reviews both before importing into
+Smartlead / Instantly / etc.
 ```
 
 ## What gets flagged automatically
 
 ### Dedup
-- Same email → duplicate (remove all but oldest)
+- Same email → duplicate (keep the first row, remove the rest)
 - Same `linkedin_url` → duplicate (remove all but most-recent signal)
 - Same `first_name + last_name + company` → near-duplicate (warn,
   don't auto-remove — might be father/son etc.)
@@ -129,31 +131,50 @@ Instantly / etc.
 - Each row scored against each `exclusion_criteria` entry
 - Examples: "Pre-PMF (<$2M ARR)", "Enterprise-only ACV >$100k",
   "Government/regulated industries"
-- Uses heuristic + (optional) external enrichment data if present in row
+- Matches whole words from each criterion (text in parentheses is ignored)
+  against the row's `company`, `industry`, `stage`, `segment`, `notes`,
+  `signal`, and `tags` columns
 
 ### Company-stage match
-- Derive stage from signal (e.g., "Series B announced" → stage = Series B)
-- Match against ICP segment description
+- Read the row's `stage` column (Seed, Series A-F, Growth, Public)
+- Match against the stage named in `icp.segment` ("Series-B SaaS" → Series B)
+- Out-of-stage rows are a warning, not an automatic removal
 - Out-of-stage rows flagged
 
 ## Implementation
 
-Backed by `scripts/score_list.py` (Python 3.8+, no external deps —
-uses csv stdlib).
+Backed by `scripts/score_list.py` (Python 3.8+, stdlib only, no network).
+`scripts/` is at the pack root — `<skill-dir>/../../scripts/`.
 
 ```bash
-python3 ../../scripts/score_list.py \
+python3 scripts/score_list.py \
     --input prospects.csv \
-    --brand-config ../../brand-config.json \
-    --format text
+    --brand-config brand-config.json \
+    --format json
+# add --write to produce prospects.cleaned.csv + prospects.removed.csv
 ```
 
-(Note: `score_list.py` ships in the next release — for v0.2.0 this
-skill describes the contract; the deterministic script ships Wave 2.)
+Try it on the bundled sample: `examples/prospects.csv`.
+
+How the script scores:
+
+- Each axis earns its points in proportion to the rows that pass it.
+  An axis with nothing to judge (no brand-config, no `signal_date` or
+  `stage` column) is `n/a` and left out — never counted as a pass.
+- The overall score is half the axis points and half the share of rows
+  that survive cleaning, so a list where most rows fail *something*
+  cannot score well.
+- Exit 0 at 75+, 1 below, 2 on bad input.
+- Signal freshness uses today's date; pass `--today YYYY-MM-DD` to
+  re-score against a fixed date.
+
+What the script does **not** do: stage inference from free-text signals,
+external enrichment, or SMTP mailbox verification. Say so when those
+matter for the decision.
 
 ## References
 
 - `brand-config.json` — ICP, exclusion, role targets, PSP signal anchors
 - `../cold-email-weekly-rhythm/SKILL.md` — Monday's caller
-- Send-volume math: `warm_up_status` table in
-  `cold-email-deliverability/SKILL.md`
+- `../../scripts/score_list.py` — the scorer
+- Send-volume math: warm-up rows in `../cold-email-deliverability/SKILL.md`

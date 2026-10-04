@@ -206,7 +206,10 @@ Save to `brand-config.operations`.
 ### Step 8 — Write the files
 
 Write `brand-config.json` + `SOUL.md` at the project root with the
-captured data. Show the operator a preview:
+captured data. Start `brand-config.json` with the `"$schema"` line from
+`brand-config.example.json` so editors validate it against
+`brand-config.schema.json`. Leave a field empty rather than inventing a
+value the operator did not give. Show the operator a preview:
 
 ```
 ✓ brand-config.json (24 fields populated)
@@ -252,6 +255,7 @@ edge cases:
 ## References
 
 - `../../brand-config.example.json` — full template
+- `../../brand-config.schema.json` — field definitions and required keys
 - `../../SOUL.md` — voice template
 - `../../AGENTS.md` — behavior rules
 - Sister skills:

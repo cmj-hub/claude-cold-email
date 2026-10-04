@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Smoke-test the 5 deterministic scripts in claude-cold-email.
+# Smoke-test the deterministic scripts in claude-cold-email.
 # Each must exit cleanly on known input and produce expected output shape.
 #
-# Runs in CI under GitHub Actions (Ubuntu, Python 3.12, FFmpeg pre-installed).
+# Runs in CI under GitHub Actions (Ubuntu, Python 3.12, dig pre-installed).
 
 set -euo pipefail
 
@@ -47,6 +47,22 @@ check "buy-signal reply" \
   python3 scripts/score_reply.py \
     --body "Sounds interesting — send me the case study and what dates work next week?" \
     --minutes-since-send 27
+
+echo ""
+echo "=== score_list.py ==="
+# The sample list is built to fail: exit 1 with a JSON report, not exit 2.
+set +e
+python3 scripts/score_list.py --input examples/prospects.csv \
+  --brand-config brand-config.example.json --today 2026-10-04 --format json > /dev/null
+rc=$?
+set -e
+if [ "$rc" -eq 1 ]; then
+  echo "  ✓ sample list scored and flagged for cleaning"
+  PASSED=$((PASSED + 1))
+else
+  echo "  ✗ sample list should exit 1 (got $rc)"
+  FAILED=$((FAILED + 1))
+fi
 
 echo ""
 echo "=== check_deliverability.py ==="

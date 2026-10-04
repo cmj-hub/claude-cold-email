@@ -26,10 +26,36 @@ jobs:
       - name: Validate SKILL.md frontmatter
         run: python3 scripts/validate-skill-frontmatter.py
 
+      - name: Every SKILL.md lives under skills/ (plugin loader only scans there)
+        run: |
+          stray=$(find . -name SKILL.md -not -path './skills/*' -not -path './.git/*' -not -path './node_modules/*')
+          if [ -n "$stray" ]; then
+            echo "  ✗ SKILL.md outside skills/ will not load as a plugin skill:"
+            echo "$stray"
+            exit 1
+          fi
+          echo "  ✓ $(find skills -name SKILL.md | wc -l) skills under skills/"
+
+      - name: Check file references in skills, agents, and docs
+        run: python3 scripts/check_refs.py
+
       - name: Validate brand-config.example.json
         run: |
           if [ -f brand-config.example.json ]; then
-            python3 -c "import json,sys; json.load(open('brand-config.example.json')); print('  ✓ brand-config.example.json is valid JSON')"
+            python3 - <<'PY'
+          import json
+          cfg = json.load(open("brand-config.example.json"))
+          schema = json.load(open("brand-config.schema.json"))
+          def check(node, sch, path):
+              for key in sch.get("required", []):
+                  if key not in node:
+                      raise SystemExit(f"  ✗ brand-config.example.json missing {path}{key}")
+              for key, sub in sch.get("properties", {}).items():
+                  if key in node and isinstance(node[key], dict) and sub.get("type") == "object":
+                      check(node[key], sub, f"{path}{key}.")
+          check(cfg, schema, "")
+          print("  ✓ brand-config.example.json is valid JSON with every required schema key")
+          PY
           else
             echo "  (no brand-config.example.json — skip)"
           fi
@@ -47,11 +73,11 @@ jobs:
           print(f'  ✓ plugin.json valid: name={d[\"name\"]}, version={d[\"version\"]}')
           "
 
-      - name: Validate install.sh + install.ps1 syntax
+      - name: Validate shell script syntax
         run: |
-          if [ -f install.sh ]; then
-            bash -n install.sh && echo "  ✓ install.sh: bash syntax OK"
-          fi
+          for f in install.sh scripts/*.sh; do
+            bash -n "$f" && echo "  ✓ $f: bash syntax OK"
+          done
 
   lint-python:
     name: Lint Python scripts
@@ -67,7 +93,7 @@ jobs:
         run: |
           shopt -s nullglob
           fails=0
-          for f in scripts/*.py; do
+          for f in scripts/*.py tests/*.py; do
             if python3 -m py_compile "$f" 2>&1; then
               echo "  ✓ $f"
             else
@@ -93,6 +119,19 @@ jobs:
             fi
           done
           if [ "$fails" -gt 0 ]; then exit 1; fi
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests/
+        run: python3 -m unittest discover -s tests -v
 
   smoke-test:
     name: Smoke-test scoring scripts

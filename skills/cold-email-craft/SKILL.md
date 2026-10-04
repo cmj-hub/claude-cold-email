@@ -2,7 +2,7 @@
 name: cold-email-craft
 description: Draft a single signal-anchored cold email or a 3-touch follow-up sequence using the JMC framework — <90 words, binary CTA, no banned openers. Anchors on a Pain Signal Profile (not demographics). Loaded by the main cold-email skill when the user asks to write or sequence outreach. Includes the surgical "rewrite the weakest line" mode for ship-or-cut review.
 user-invocable: false
-allowed-tools: Read Write Grep
+allowed-tools: Read Write Grep Bash(python3 scripts/spam_word_lint.py:*) Bash(python3 scripts/score_subject_line.py:*)
 license: MIT
 
 ---
@@ -54,10 +54,11 @@ Before generating, validate:
 
 ### 3. Generate
 
-Use the canonical template from `references/copy-frameworks.md`:
+Use the canonical template (the full prompt is in
+`../cold-email/references/jmc-framework.md`):
 
 ```
-Subject: <see references/subject-line-patterns.md>
+Subject: <from cold-email-subject-lines>
 
 {firstName} —
 
@@ -86,6 +87,17 @@ After generating, verify:
 - [ ] Subject ≤7 words, no clickbait
 
 If any check fails, regenerate that block before showing the user.
+
+When Bash is available, also run the deterministic gates from the
+main skill's self-check rubric (scripts live at `<skill-dir>/../../scripts/`):
+
+```bash
+python3 scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json   # need ≥75
+python3 scripts/score_subject_line.py --subject "<subject>" --format json              # need ≥70
+```
+
+Before drafting, check the draft against `brand-config.tone.banned_phrases`
+and the SOUL.md "never" list, not just the framework bans.
 
 ### 5. Offer the "rewrite the weakest line" pass
 
@@ -119,7 +131,6 @@ wordCount, framework: { signal, pain, evp, ask } }`.
 
 ## Reference
 
-- `references/copy-frameworks.md` — canonical templates
-- `../../cold-email/references/jmc-framework.md` — full framework
-- `../../cold-email/references/banned-patterns.md` — what NOT to write
-- `../../cold-email/references/binary-ctas.md` — 30 binary CTA patterns
+- `../cold-email/references/jmc-framework.md` — full framework
+- `../cold-email/references/banned-patterns.md` — what NOT to write
+- `../cold-email/references/binary-ctas.md` — 30 binary CTA patterns
