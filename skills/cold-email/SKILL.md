@@ -138,6 +138,8 @@ regenerated, not shown with a caveat.
 
 **Deterministic checks — run when Bash is available**
 
+- `score_letter.py` on the signal + body: exit 0 (signal quoted, no
+  demographics, under 90 words, one yes/no ask)
 - `cold-email-spam-lint` on subject + body: score 75 or higher
 - `cold-email-subject-lines` scorer on the subject: score 70 or higher
 
@@ -156,6 +158,7 @@ script. All scripts are Python 3.8+ stdlib only; DNS checks need `dig`.
 
 | Script | Used by |
 |---|---|
+| `score_letter.py` | `cold-email-craft`, self-check (before the spam lint) |
 | `spam_word_lint.py` | `cold-email-spam-lint`, self-check |
 | `score_subject_line.py` | `cold-email-subject-lines`, self-check |
 | `score_reply.py` | `cold-email-reply-scoring` |

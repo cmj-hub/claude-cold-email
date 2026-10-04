@@ -40,7 +40,7 @@ recipient's signal + pain.
 18. "If <pain> isn't on the roadmap right now, no worries — should I follow up in Q4?"
 19. "Should I keep these coming, or close the loop?"
 20. "Reply 'keep' to stay on the list, anything else and I'll stop reaching out."
-21. "If this isn't your priority right now, who is the right person?"
+21. "If this isn't your priority right now, should I ask someone else on your team?"
 
 ## Question-as-ask (works when audience needs a softer entry)
 

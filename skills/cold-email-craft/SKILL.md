@@ -2,7 +2,7 @@
 name: cold-email-craft
 description: "Draft a single signal-anchored cold email or the Day 3 / 7 / 14 follow-up sequence using the JMC framework: under 90 words, binary CTA, no banned openers, anchored on a Pain Signal Profile rather than demographics. Includes the \"rewrite the weakest line\" mode. Use when the operator asks to write, rewrite, or sequence cold outreach; loaded by the main cold-email skill. Not for give-first offer emails (sales-offer)."
 user-invocable: false
-allowed-tools: Read Write Grep Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*)
+allowed-tools: Read Write Grep Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_letter.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*)
 license: MIT
 models: ""
 
@@ -90,9 +90,17 @@ After generating, verify:
 If any check fails, regenerate that block before showing the user.
 
 When Bash is available, also run the deterministic gates from the
-main skill's self-check rubric (scripts live at `<skill-dir>/../../scripts/`):
+main skill's self-check rubric, in this order. First the letter gate:
+write `letter.json` with `public_signal` (the signal as the operator
+gave it) and `letter` (the body), then run `score_letter.py`. It
+refuses, listing every reason, when the signal is missing, no 3-word
+run of it is quoted verbatim, the letter leans on demographics
+("VPs of Marketing at Series B companies", "companies like yours",
+"hope you're well"), the body is 90 words or more, or the ask is not
+one yes/no question. Fix every reason, then lint:
 
 ```bash
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_letter.py --file letter.json                                    # need exit 0
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py --subject "<subject>" --body "<body>" --format json   # need ≥75
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py --subject "<subject>" --format json              # need ≥70
 ```
