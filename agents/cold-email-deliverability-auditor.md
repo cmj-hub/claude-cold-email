@@ -1,12 +1,9 @@
 ---
 name: cold-email-deliverability-auditor
 description: >
-  Email deliverability specialist agent. Runs DNS lookups for SPF, DKIM,
-  DMARC, MX, and reverse DNS. Checks against public blacklist APIs (Spamhaus,
-  SURBL) over DNS. Validates bulk-sender compliance for Google / Yahoo
-  (Feb 2024) and Microsoft (May 2025). No paid APIs. Use when the operator
-  asks to "check deliverability", "audit DNS", "is my domain ready",
-  "DMARC compliance", "SPF check", "DKIM check", or "domain reputation".
+  Deliverability specialist: SPF, DKIM, DMARC, MX, reverse DNS, and
+  blacklist checks over DNS, plus bulk-sender rules. No paid APIs. Use when
+  the operator asks if a sending domain is ready or why mail lands in spam.
 tools:
   - Read
   - Bash

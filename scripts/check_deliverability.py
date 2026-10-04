@@ -7,6 +7,11 @@ and bulk-sender compliance (Google/Yahoo/Microsoft Feb 2024 rules).
 USAGE:
     python3 check_deliverability.py --domain outreach.acme.com
     python3 check_deliverability.py --domain ... --selector google
+    python3 check_deliverability.py --file examples/domain.json   # {"domain": "", "selector": ""}
+    python3 check_deliverability.py --stdin < examples/domain.json
+
+Output is text by default; --json (or --format json) prints one JSON
+object. Each failing check reads "- what is wrong → what to change".
 
 Uses `dig` for every lookup, blacklists included (Spamhaus DBL and SURBL
 are DNS zones). No HTTP calls, no paid services.
@@ -418,6 +423,7 @@ def run_all(domain: str, selector: str) -> dict:
         "fixes": _fix_order(checks),
         "unverified": [{"id": c.id, "name": c.name, "detail": c.detail}
                        for c in checks if c.passing is None],
+        "next": NEXT_OK if score >= 85 else NEXT_FIX,
     }
 
 
@@ -429,12 +435,34 @@ def _all_known(values: Tuple[Optional[bool], ...]) -> Optional[bool]:
     return True
 
 
+FIX_BY_ID = {
+    1: "publish a TXT record 'v=spf1 include:<your inbox provider> ~all'",
+    2: "add your inbox provider's include: to the SPF record",
+    3: "flatten or drop SPF includes until there are 10 lookups or fewer",
+    4: "turn on DKIM signing at your inbox provider and publish its TXT record (pass --selector)",
+    5: "rotate to a 2048-bit DKIM key",
+    6: "publish _dmarc TXT 'v=DMARC1; p=none; rua=mailto:<you>' to start",
+    7: "move DMARC to p=quarantine once reports are clean",
+    8: "add rua=mailto:<address> to the DMARC record",
+    9: "add MX records for the sending domain",
+    10: "ask the mail host to set a PTR that matches the forward A record",
+    11: "stop sending from this domain; request delisting and find the cause",
+    12: "publish both SPF and DKIM",
+    13: "publish a DMARC record (p=none is the floor)",
+    14: "add a one-click List-Unsubscribe header in your sending tool",
+    15: "check Google Postmaster Tools; keep complaints under 0.3%",
+}
+NEXT_OK = "Next: score the send list (/cold-email:cold-email list)."
+NEXT_FIX = "Next: fix the lines above and run this again."
+
+
 def _fix_order(checks: List[Check]) -> List[dict]:
     """Order failing checks by severity → fix order."""
     severity_order = {"critical": 0, "important": 1, "nice-to-have": 2}
     failing = [c for c in checks if c.passing is False]
     failing.sort(key=lambda c: (severity_order.get(c.severity, 3), c.id))
-    return [{"id": c.id, "name": c.name, "severity": c.severity, "detail": c.detail}
+    return [{"id": c.id, "name": c.name, "severity": c.severity, "detail": c.detail,
+             "fix": FIX_BY_ID.get(c.id, "fix the record and re-run")}
             for c in failing]
 
 
@@ -455,8 +483,7 @@ def format_text(result: dict) -> str:
         lines.append("")
         lines.append("## Fix order")
         for f in result["fixes"]:
-            lines.append(f"  [{f['severity'].upper()}] {f['name']}")
-            lines.append(f"    → {f['detail']}")
+            lines.append(f"- [{f['severity'].upper()}] {f['name']}: {f['detail']} → {f['fix']}")
 
     if result["unverified"]:
         lines.append("")
@@ -464,18 +491,64 @@ def format_text(result: dict) -> str:
         for u in result["unverified"]:
             lines.append(f"  ? {u['name']}")
             lines.append(f"    → {u['detail']}")
+    lines.append("")
+    lines.append(result["next"])
     return "\n".join(lines)
 
 
+def _read_json_input(path: Optional[str]) -> Optional[dict]:
+    """JSON object from a file or stdin; None (after an error line) on bad input."""
+    try:
+        if path:
+            with open(path, "rb") as handle:
+                raw = handle.read(100_001)
+        else:
+            raw = sys.stdin.buffer.read(100_001)
+    except OSError:
+        print("error: cannot read file", file=sys.stderr)
+        return None
+    if len(raw) > 100_000:
+        print("error: input is too large", file=sys.stderr)
+        return None
+    try:
+        data = json.loads(raw.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        print("error: invalid JSON", file=sys.stderr)
+        return None
+    if not isinstance(data, dict):
+        print("error: JSON must be an object", file=sys.stderr)
+        return None
+    return data
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="example: python3 scripts/check_deliverability.py --file examples/domain.json   # needs dig",
+    )
     parser.add_argument("--domain", default="", help="Sending domain")
     parser.add_argument("--selector", default="default", help="DKIM selector (default: 'default')")
+    parser.add_argument("--file", default=None, help='JSON file {"domain": "", "selector": ""}')
+    parser.add_argument("--stdin", action="store_true", help='Read JSON {"domain": "", "selector": ""} from stdin')
+    parser.add_argument("--json", action="store_true", help="Print one JSON object")
     parser.add_argument("--format", default="text", choices=["text", "json"])
     args = parser.parse_args()
 
-    domain = args.domain.strip().lower().rstrip(".")
-    selector = args.selector.strip().lower().rstrip(".")
+    raw_domain, raw_selector = args.domain, args.selector
+    if args.file or args.stdin:
+        if args.file and args.stdin:
+            print("error: pass --file or --stdin, not both", file=sys.stderr)
+            return 2
+        payload = _read_json_input(args.file)
+        if payload is None:
+            return 2
+        raw_domain = payload.get("domain") if isinstance(payload.get("domain"), str) else ""
+        sel = payload.get("selector")
+        raw_selector = sel if isinstance(sel, str) and sel.strip() else raw_selector
+
+    domain = raw_domain.strip().lower().rstrip(".")
+    selector = raw_selector.strip().lower().rstrip(".")
     if not domain:
         print("--domain required.", file=sys.stderr)
         return 2
@@ -489,7 +562,7 @@ def main() -> int:
         print("error: `dig` is required (macOS: brew install bind; Debian/Ubuntu: "
               "apt install dnsutils). No checks were run.", file=sys.stderr)
         return 2
-    if args.format == "json":
+    if args.json or args.format == "json":
         print(json.dumps(result, indent=2))
     else:
         print(format_text(result))

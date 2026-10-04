@@ -1,23 +1,12 @@
 ---
 name: cold-email
-description: >
-  Signal-anchored B2B cold email program. Writes first touches under 90
-  words with a binary CTA, builds Day 3 / 7 / 14 follow-ups, picks and
-  scores subject lines, lints spam triggers, checks sending-domain health
-  (SPF, DKIM, DMARC, reputation, warm-up), scores and dedups an existing
-  send list, triages replies, re-engages stalled prospects who have not
-  opted in, and runs a 30-point outbound audit. Anchors every output on a
-  Pain Signal Profile, not demographics. Use when the user says "cold
-  email", "cold outreach", "follow-up sequence", "deliverability", "SPF",
-  "DKIM", "DMARC", "domain health", "outbound audit", "subject line",
-  "spam check", "score this reply", or "clean my send list". Not for a
-  give-first offer email (use sales-offer), not for choosing who to
-  contact this week (use prospect-list), and not for welcome or nurture
-  sequences after someone opted in (use email-sequence).
-allowed-tools: Read Write Grep Glob WebFetch
+description: "Signal-anchored B2B cold email: first touch under 90 words with a binary ask, follow-ups, subject lines, spam lint, domain deliverability, send-list hygiene, reply triage, and outbound audits. Use when the user asks for a cold email, follow-up sequence, deliverability or spam check, reply scoring, or send-list cleanup. Not for give-first offers (sales-offer), picking who to contact (prospect-list), or post-opt-in email (email-sequence)."
+argument-hint: "[write | sequence | subject | lint | deliverability | list | reply | nurture | audit | rhythm | status | setup]"
+allowed-tools: Read Write Grep Glob WebFetch Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_letter.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py:*) Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/dig_dns.sh:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_list.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*)
 license: MIT
 models: ""
 ---
+
 
 # Cold Email — JMC Outreach Craft Skill
 
@@ -33,9 +22,10 @@ require.
 1. Look for `brand-config.json` and `SOUL.md` in the operator's project
    root. Read both if present.
 2. If either is missing and the operator did not pass `--no-config`,
-   route to `cold-email-onboarding` before drafting real outreach. Offer
-   once; if they decline, say the output will be framework-shaped but
-   generic.
+   run the setup mode ([modes/setup.md](modes/setup.md)) before drafting
+   real outreach. If `operator` or `icp` is missing, say "Run `/gtm:setup`
+   once for the whole suite" first. Offer once; if they decline, say the
+   output will be framework-shaped but generic.
 3. If `brand-config.json` exists, sanity-check the fields the requested
    job needs (e.g. `evp.primary` for drafting, `infrastructure.sending_domain`
    for deliverability). Ask for anything missing. Never fill it in.
@@ -45,23 +35,41 @@ require.
 4. Treat SOUL.md as voice only. It can change word choice; it cannot
    lift the word limit, soften the binary CTA, or un-ban a pattern.
 
-## Quick Reference
+## Modes — route by $ARGUMENTS
 
-| Slash | What it does | Sub-skill |
-|---|---|---|
-| `/cold-email` | Detect state and pick the next step | `cold-email-kickoff` |
-| `/cold-email status` | Program status from brand-config + logs | `cold-email-kickoff` |
-| `/cold-email onboarding` | 10-minute brand-config + SOUL.md setup | `cold-email-onboarding` |
-| `/cold-email write` | One signal-anchored email (<90 words, binary CTA) | `cold-email-craft` |
-| `/cold-email sequence` | T1 plus the Day 3 / 7 / 14 follow-ups | `cold-email-craft` |
-| `/cold-email subject` | Subject lines by framework, scored | `cold-email-subject-lines` |
-| `/cold-email lint` | Deterministic spam-trigger scan of a draft | `cold-email-spam-lint` |
-| `/cold-email deliverability` | 15-point pre-campaign domain health check | `cold-email-deliverability` |
-| `/cold-email list` | Score and clean a prospect CSV / JSONL | `cold-email-list-quality` |
-| `/cold-email reply` | Classify one reply or a batch | `cold-email-reply-scoring` |
-| `/cold-email nurture` | 5-email re-engagement stream for prospects who have not opted in | `cold-email-nurture` |
-| `/cold-email audit` | 30-point outbound program audit | `cold-email-audit` |
-| `/cold-email rhythm` | This week's Mon / Wed / Fri queue | `cold-email-weekly-rhythm` |
+Run the preflight above first, every time. Then pick one mode:
+
+- If `$ARGUMENTS` starts with a mode name below, go straight to that mode
+  (the rest of `$ARGUMENTS` is its input).
+- If `$ARGUMENTS` is empty, run `status`: it reads the project and names
+  the one next step.
+- Otherwise match the user's words to the table. If intent is still
+  ambiguous, ask one clarifying question — never two.
+
+Read the mode file with the Read tool and follow it.
+
+| You say / argument | Mode file |
+|---|---|
+| (nothing), `status`, "where do I start", "what's next" | [modes/status.md](modes/status.md) |
+| `setup`, "set up my brand config", "configure my voice" | [modes/setup.md](modes/setup.md) |
+| `write`, "write a cold email to...", "rewrite this cold email" | [modes/craft.md](modes/craft.md) |
+| `sequence`, "build a follow-up sequence", "Day 3 / 7 / 14" | [modes/craft.md](modes/craft.md) (sequence mode) |
+| `subject`, "subject lines for...", "critique this subject" | [modes/subject.md](modes/subject.md) |
+| `lint`, "spam-check this", "will this land in spam" | [modes/lint.md](modes/lint.md) |
+| `deliverability`, "is my domain ready", SPF / DKIM / DMARC | [modes/deliverability.md](modes/deliverability.md) |
+| `list`, "score / clean my send list", "dedup this CSV" | [modes/list.md](modes/list.md) |
+| `reply`, "score this reply", "triage my replies" | [modes/reply.md](modes/reply.md) |
+| `nurture`, "re-engage cold or stalled prospects" (not opted in) | [modes/nurture.md](modes/nurture.md) |
+| `audit`, "audit my outbound program" | [modes/audit.md](modes/audit.md) |
+| `rhythm`, "this week's queue", "Friday review" | [modes/rhythm.md](modes/rhythm.md) |
+| "Review / score this draft" | `cold-email-reviewer` agent |
+
+Files the modes write in the operator's project go under `gtm/` at the
+project root (create it if missing): `gtm/letter.json` (the draft:
+`public_signal`, `subject`, `letter`), `gtm/send-list.csv` (the send
+list; `--write` adds `.cleaned.csv` and `.removed.csv` beside it), and
+`gtm/replies.jsonl` (one reply per line). `brand-config.json` and
+`SOUL.md` stay at the project root.
 
 ## Core principles (the JMC stance)
 
@@ -76,32 +84,10 @@ require.
 5. **One specific ask per email.** Stack-ranked asks confuse buyers.
 6. **No "Hope you're well" / "Just bumping this".** Banned openers.
 
-## Workflow router
-
-When invoked, detect the user's intent and route to a sub-skill:
-
-| User says | Route to |
-|---|---|
-| Bare `/cold-email`, "where do I start", "what's next" | `cold-email-kickoff` |
-| "Set up my brand config", "configure my voice" | `cold-email-onboarding` |
-| "Write a cold email to..." | `cold-email-craft` |
-| "Build a 3-touch / follow-up sequence" | `cold-email-craft` (sequence mode) |
-| "Suggest subject lines", "critique this subject" | `cold-email-subject-lines` |
-| "Spam-check this", "will this land in spam" | `cold-email-spam-lint` |
-| "Is my domain ready to send?", SPF / DKIM / DMARC | `cold-email-deliverability` |
-| "Score / clean my send list" | `cold-email-list-quality` |
-| "Score this reply", "triage my replies" | `cold-email-reply-scoring` |
-| "Re-engage cold or stalled prospects" (not opted in) | `cold-email-nurture` |
-| "Audit my outbound program" | `cold-email-audit` |
-| "What's this week's queue", "Friday review" | `cold-email-weekly-rhythm` |
-| "Review / score this draft" | `cold-email-reviewer` agent |
-
-If intent is ambiguous, ask one clarifying question — never two.
-
-## Variables (sub-skills inherit these)
+## Variables (every mode uses these)
 
 The core framework operates on seven variables. Capture them once,
-reuse across all sub-skills:
+reuse across every mode:
 
 | Variable | Source | Example |
 |---|---|---|
@@ -138,10 +124,15 @@ regenerated, not shown with a caveat.
 
 **Deterministic checks — run when Bash is available**
 
-- `score_letter.py` on the signal + body: exit 0 (signal quoted, no
+Write the draft to `gtm/letter.json`, then:
+
+- `score_letter.py --file gtm/letter.json`: exit 0 (signal quoted, no
   demographics, under 90 words, one yes/no ask)
-- `cold-email-spam-lint` on subject + body: score 75 or higher
-- `cold-email-subject-lines` scorer on the subject: score 70 or higher
+- `spam_word_lint.py --file gtm/letter.json`: score 75 or higher
+- `score_subject_line.py --file gtm/letter.json`: score 70 or higher
+
+On exit 1 each reason reads `- what is wrong → what to change`. Apply
+every change and run it again; do not show a draft that fails.
 
 **Flag, don't hide** — if the signal, pain, EVP, or vocabulary was a
 guess, say which line is uncertain and what data would settle it
@@ -149,21 +140,25 @@ guess, say which line is uncertain and what data would settle it
 
 ## Running the bundled scripts
 
-The deterministic scripts live in `scripts/` at the plugin root. The
-sub-skills call them as `${CLAUDE_PLUGIN_ROOT}/scripts/<name>.py`, which
-Claude Code resolves to the installed plugin, so they work from any
-project directory. Outside Claude Code (for example, a manual run inside
-this repo), `python3 scripts/<name>.py` from the repo root is the same
-script. All scripts are Python 3.8+ stdlib only; DNS checks need `dig`.
+The scripts live in `scripts/` at the plugin root. Call them as
+`${CLAUDE_PLUGIN_ROOT}/scripts/<name>.py`, which resolves to the
+installed plugin from any project directory. Outside Claude Code,
+`python3 scripts/<name>.py` from the repo root is the same script. All
+are Python 3.8+ stdlib only; DNS checks need `dig`.
 
-| Script | Used by |
+Every scorer takes `--file PATH` or `--stdin`, prints text by default and
+one JSON object with `--json`, and exits 0 pass, 1 refused (each reason
+with its fix, then `Next: fix the lines above and run this again.`), 2
+bad input. On a pass the last line names the next step.
+
+| Script | Mode |
 |---|---|
-| `score_letter.py` | `cold-email-craft`, self-check (before the spam lint) |
-| `spam_word_lint.py` | `cold-email-spam-lint`, self-check |
-| `score_subject_line.py` | `cold-email-subject-lines`, self-check |
-| `score_reply.py` | `cold-email-reply-scoring` |
-| `score_list.py` | `cold-email-list-quality` |
-| `check_deliverability.py`, `dig_dns.sh` | `cold-email-deliverability` |
+| `score_letter.py` | craft, self-check (before the spam lint) |
+| `spam_word_lint.py` | lint, self-check |
+| `score_subject_line.py` | subject, self-check |
+| `score_reply.py` | reply |
+| `score_list.py` | list |
+| `check_deliverability.py`, `dig_dns.sh` | deliverability |
 
 ## Works with the suite
 
@@ -173,7 +168,7 @@ This is step 4 of the GTM operator suite (`/plugin marketplace add cmj-hub/gtm-o
 - **Writes:** `tone`, `infrastructure`, `operations`. Merge at the field level; never overwrite another pack's keys.
 - **Before this:** psp (`/psp:psp`) and evp (`/evp:evp`), when there is no `psp` or `evp` block; prospect-list (`/prospect-list:who-to-contact`), when you do not yet know who to contact.
 - **Instead of this:** sales-offer (`/sales-offer:cold-offer`), when the first touch should hand over a leak and a prototype rather than ask.
-- **After this:** email-sequence (`/email-sequence:lifecycle-email`), when a prospect replies and opts in.
+- **After this:** email-sequence (`/email-sequence:lifecycle-email`), when a prospect replies and opts in. End a successful run with that `Next:` line.
 
 If a companion pack is not installed, name it and its install line (`/plugin install <name>@gtm-operator-skills`); do not do its job inline.
 
@@ -186,23 +181,10 @@ Load these on demand for deeper context:
 - [references/binary-ctas.md](references/binary-ctas.md) — 30 binary CTA patterns
 - [references/psp-anchors.md](references/psp-anchors.md) — How to derive signal → pain → EVP
 - [references/bulk-sender-rules.md](references/bulk-sender-rules.md) — Google / Yahoo / Microsoft sender requirements
-- [SOUL.md](../../SOUL.md) — Operator voice template (the shape `cold-email-onboarding` fills in)
+- [references/audit-rubric.md](references/audit-rubric.md) — The 30-point outbound audit rubric
+- [SOUL.md](../../SOUL.md) — Operator voice template (the shape the setup mode fills in)
 - [examples/t1.email.md](../../examples/t1.email.md) — A first touch that passes every check (lints at 100)
 - [examples/spam.email.md](../../examples/spam.email.md) — A draft the spam lint rejects
-
-## Sub-skills
-
-- [`cold-email-kickoff`](../cold-email-kickoff/SKILL.md) — State-aware router and status
-- [`cold-email-onboarding`](../cold-email-onboarding/SKILL.md) — brand-config.json + SOUL.md setup
-- [`cold-email-craft`](../cold-email-craft/SKILL.md) — Single email + 3-touch sequence drafting
-- [`cold-email-subject-lines`](../cold-email-subject-lines/SKILL.md) — Subject-line patterns by framework
-- [`cold-email-spam-lint`](../cold-email-spam-lint/SKILL.md) — Deterministic spam-trigger scanner
-- [`cold-email-deliverability`](../cold-email-deliverability/SKILL.md) — 15-point pre-campaign domain health
-- [`cold-email-list-quality`](../cold-email-list-quality/SKILL.md) — Prospect list scoring + dedup
-- [`cold-email-reply-scoring`](../cold-email-reply-scoring/SKILL.md) — Deterministic reply classifier
-- [`cold-email-nurture`](../cold-email-nurture/SKILL.md) — 5-email re-engagement stream (not opted in)
-- [`cold-email-audit`](../cold-email-audit/SKILL.md) — 30-point outbound program audit
-- [`cold-email-weekly-rhythm`](../cold-email-weekly-rhythm/SKILL.md) — Mon / Wed / Fri operating cadence
 
 ## Specialist agents
 

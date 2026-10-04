@@ -8,12 +8,16 @@ no external services.
 
 USAGE:
     python3 score_reply.py --body "..." [--minutes-since-send 27]
-    python3 score_reply.py --stdin             # JSON {"body":"","minutes_since_send":N}
-    python3 score_reply.py --batch path.jsonl  # one JSON object per line
+    python3 score_reply.py --stdin                  # JSON {"body":"","minutes_since_send":N}
+    python3 score_reply.py --file gtm/replies.jsonl # one JSON object per line
+                                                    # (--batch is the old name)
+
+Output is text by default; --json (or --format json) prints JSON. Every
+result ends with the next step for that category.
 
 EXIT CODES:
-    0  success
-    2  bad input
+    0  success (classification is not a pass/fail gate)
+    2  bad input (never echoed)
 
 NO network calls. NO LLM. NO external libraries.
 """
@@ -314,6 +318,22 @@ def classify(body: str, minutes_since_send: Optional[int] = None) -> ReplyScore:
 # Output
 # ----------------------------------------------------------------------------
 
+NEXT_BY_CATEGORY = {
+    "buy-signal": "Next: reply within 4 hours with the calendar link; when they opt in, hand off to /email-sequence:lifecycle-email.",
+    "positive": "Next: reply within 4 hours with the one proof they asked for; when they opt in, hand off to /email-sequence:lifecycle-email.",
+    "neutral": "Next: add them to the re-engagement stream (/cold-email:cold-email nurture).",
+    "not-interested": "Next: suppress the address and log the reason. Do not follow up.",
+    "auto-reply": "Next: skip it; resend after the date in the auto-reply.",
+}
+NEXT_REVIEW = "Next: read it yourself before routing (low confidence)."
+
+
+def next_step(result: ReplyScore) -> str:
+    if result.needs_review:
+        return NEXT_REVIEW
+    return NEXT_BY_CATEGORY.get(result.category, NEXT_REVIEW)
+
+
 def format_text(result: ReplyScore) -> str:
     lines = [
         f"# Reply scoring",
@@ -337,11 +357,13 @@ def format_text(result: ReplyScore) -> str:
         lines.append("## Why")
         for c in result.contributions:
             lines.append(f"  [{c.category}] +{c.weight} from pattern: {c.pattern}")
+    lines.append("")
+    lines.append(next_step(result))
     return "\n".join(lines)
 
 
 def format_json(result: ReplyScore) -> str:
-    return json.dumps(asdict(result), indent=2)
+    return json.dumps(dict(asdict(result), next=next_step(result)), indent=2)
 
 
 def iter_batch(path: str) -> Iterable[Tuple[Optional[str], ReplyScore]]:
@@ -366,8 +388,13 @@ def iter_batch(path: str) -> Iterable[Tuple[Optional[str], ReplyScore]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="example: python3 scripts/score_reply.py --file examples/replies.jsonl   # exit 0, one row per reply",
+    )
     parser.add_argument("--body", default="", help="Reply body")
+    parser.add_argument("--json", action="store_true", help="Print JSON")
     parser.add_argument(
         "--minutes-since-send",
         type=int,
@@ -380,10 +407,13 @@ def main() -> int:
         help='Read JSON {"body":"","minutes_since_send":N} from stdin',
     )
     parser.add_argument(
-        "--batch",
+        "--file",
+        dest="batch",
+        metavar="PATH",
         default=None,
         help="JSONL file with one reply per line",
     )
+    parser.add_argument("--batch", dest="batch", default=None, help=argparse.SUPPRESS)
     parser.add_argument(
         "--format",
         default="text",
@@ -392,11 +422,15 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    as_json = args.json or args.format == "json"
+    if args.batch and args.stdin:
+        print("error: pass --file or --stdin, not both", file=sys.stderr)
+        return 2
     if args.batch:
         results = []
         for label, score in iter_batch(args.batch):
-            results.append({"id": label, **asdict(score)})
-        if args.format == "json":
+            results.append({"id": label, **asdict(score), "next": next_step(score)})
+        if as_json:
             print(json.dumps(results, indent=2))
         else:
             print(f"# Batch reply scoring — {len(results)} replies")
@@ -408,6 +442,12 @@ def main() -> int:
                     f"{r['category'].ljust(18)} {str(r['confidence']).ljust(6)} "
                     f"{'⚠️' if r['needs_review'] else '✓'}"
                 )
+            print("")
+            print("Per reply:")
+            for i, r in enumerate(results, start=1):
+                print(f"  {i}. {r['next'][len('Next: '):]}")
+            print("")
+            print("Next: route each reply as listed above.")
         return 0
 
     if args.stdin:
@@ -419,11 +459,11 @@ def main() -> int:
         mins = args.minutes_since_send
 
     if not body:
-        print("No body provided. Use --body, --stdin, or --batch.", file=sys.stderr)
+        print("No body provided. Use --body, --stdin, or --file.", file=sys.stderr)
         return 2
 
     result = classify(body, mins)
-    if args.format == "json":
+    if as_json:
         print(format_json(result))
     else:
         print(format_text(result))

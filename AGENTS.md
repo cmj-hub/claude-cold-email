@@ -25,7 +25,7 @@ output. Never let SOUL override the framework's banned-patterns list.
 ### 1. Always read brand-config.json + SOUL.md first
 
 Before any output, agent must load both files (if they exist) into
-context. If either is missing, route to `cold-email-onboarding` —
+context. If either is missing, run the setup mode (`skills/cold-email/modes/setup.md`) —
 don't generate generic output.
 
 ### 2. Refuse to write generic output
@@ -62,12 +62,12 @@ Never connect to send APIs without explicit per-call authorization.
 
 ### 7. Subagents stay in their lane
 
-When the orchestrator routes to a sub-skill, the sub-skill owns the
-workflow. Other sub-skills should not interject mid-flow.
+When the skill routes to a mode, that mode owns the workflow. Other
+modes do not interject mid-flow.
 
 ### 8. Respect rate limits
 
-When using `cold-email-deliverability` against blacklist APIs, respect
+When running the deliverability mode against blacklist zones, respect
 their rate limits. Default to 1 lookup per second. Cache results.
 
 ### 9. Log decisions for audit
@@ -101,7 +101,7 @@ invocation:
 1. Welcome message: "I see you've installed claude-cold-email but
    haven't set up your brand-config or voice yet. Want me to walk you
    through it now? (~10 minutes)"
-2. If yes → invoke `skills/cold-email-onboarding`
+2. If yes → run `/cold-email:cold-email setup` (`skills/cold-email/modes/setup.md`)
 3. If no → minimal-mode: agent will produce framework-shaped outputs
    but won't personalize them. Warn the operator that the output will
    be generic.

@@ -16,14 +16,15 @@ to answer. Refuses, listing every reason, when:
      open question ("what do you think?", "let me know your thoughts?")
 
 USAGE:
-    python3 score_letter.py --file draft.json [--json]
-    python3 score_letter.py --stdin < draft.json
+    python3 score_letter.py --file gtm/letter.json [--json]
+    python3 score_letter.py --stdin < gtm/letter.json
 
-Draft JSON: {"public_signal": "...", "letter": "..."}
+Draft JSON: {"public_signal": "...", "letter": "..."} (other keys, such as
+"subject", are ignored).
 
 EXIT CODES:
-    0   ok — prints the letter and the lint line
-    1   refused — prints every reason
+    0   ok — prints the letter, the lint line, and the next step
+    1   refused — prints every reason as "- what is wrong → what to change"
     2   bad input (never echoed)
 
 NO network calls. NO LLM. Does not send.
@@ -166,6 +167,28 @@ def ask_problem(letter: str) -> str:
     return ""
 
 
+NEXT_OK = "Next: spam-lint the subject and body (/cold-email:cold-email lint)."
+NEXT_FIX = "Next: fix the lines above and run this again."
+
+FIXES = [
+    ("missing public signal", "add public_signal: what they did, in their own words"),
+    ("missing letter", "add the letter body"),
+    ("signal not quoted", f"quote at least {SIGNAL_SPAN} words of the signal verbatim in the first line"),
+    ("demographic email", "cut that line; open on what they did, not who they are"),
+    ("letter is", f"cut to under {MAX_WORDS} words; drop the weakest line"),
+    ("no binary ask", "end with one yes/no question, e.g. 'Worth 15 minutes Thursday?'"),
+    ("more than one ask", "keep one question and cut the rest"),
+    ("ask is open-ended", "rewrite the ask so it can be answered yes or no"),
+]
+
+
+def fix_for(reason: str) -> str:
+    for prefix, fix in FIXES:
+        if reason.startswith(prefix):
+            return fix
+    return "rewrite that line"
+
+
 def check(data: dict) -> dict:
     signal = nonempty_text(data.get("public_signal"))
     letter = nonempty_text(data.get("letter"))
@@ -190,11 +213,20 @@ def check(data: dict) -> dict:
         if problem:
             reasons.append(problem)
 
-    return {"ok": not reasons, "reasons": reasons, "word_count": count}
+    return {
+        "ok": not reasons,
+        "reasons": reasons,
+        "word_count": count,
+        "fixes": [fix_for(r) for r in reasons],
+        "next": NEXT_FIX if reasons else NEXT_OK,
+    }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Score one signal-anchored letter")
+    parser = argparse.ArgumentParser(
+        description="Score one signal-anchored letter",
+        epilog="example: python3 scripts/score_letter.py --file examples/letter-good.json   # exit 0",
+    )
     parser.add_argument("--file", help="Path to a JSON draft")
     parser.add_argument("--stdin", action="store_true", help="Read the JSON draft from stdin")
     parser.add_argument("--json", action="store_true", help="Print the result as JSON")
@@ -215,10 +247,12 @@ def main() -> int:
     elif result["ok"]:
         print(nonempty_text(data.get("letter")))
         print(f"lint: {result['word_count']} words")
+        print(result["next"])
     else:
         print("refused:")
-        for reason in result["reasons"]:
-            print(f"  - {reason}")
+        for reason, fix in zip(result["reasons"], result["fixes"]):
+            print(f"- {reason} → {fix}")
+        print(result["next"])
     return 0 if result["ok"] else 1
 
 

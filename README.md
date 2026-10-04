@@ -6,6 +6,25 @@
 
 A cold email is a short note to someone who has not asked to hear from you, anchored to a public signal.
 
+## In 60 seconds
+
+```text
+/plugin marketplace add cmj-hub/gtm-operator-skills
+/plugin install cold-email@gtm-operator-skills
+/cold-email:cold-email
+```
+
+Or score the sample without an agent:
+
+```bash
+python3 scripts/score_letter.py --file examples/letter-good.json          # exit 0, prints the letter, "lint: 34 words", and the next step
+python3 scripts/score_letter.py --file examples/letter-demographic.json   # exit 1: - signal not quoted: no 3-word run of public_signal appears in the letter → quote at least 3 words of the signal verbatim in the first line
+```
+
+Part of the GTM operator suite — `/plugin install gtm@gtm-operator-skills` installs all ten.
+
+One command, many modes: `/cold-email:cold-email [write | sequence | subject | lint | deliverability | list | reply | nurture | audit | rhythm | status | setup]`. With no argument it reads your project and names the next step. Moved in 0.7: the old sub-skills (`cold-email-craft`, `cold-email-spam-lint`, ...) are now modes of this one skill, so type `/cold-email:cold-email lint` instead of naming a sub-skill. Drafts and lists live in `gtm/` at your project root (`gtm/letter.json`, `gtm/send-list.csv`, `gtm/replies.jsonl`).
+
 > "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
 
 A cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.
@@ -38,24 +57,16 @@ npx skills add cmj-hub/claude-cold-email --all -g --full-depth
 npx skills add cmj-hub/claude-cold-email --skill '*' -g --full-depth -y -a claude-code
 ```
 
-Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, `cline`, or `opencode`.
-
-### Claude Code only
-
-```text
-/plugin marketplace add cmj-hub/gtm-operator-skills
-/plugin install cold-email@gtm-operator-skills
-```
+Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, `cline`, or `opencode`. For Claude Code, use the two lines under "In 60 seconds".
 
 ## What you walk out with in 15 minutes
 
 Artifact: `examples/t1.email.md`.
 
 ```bash
-python3 scripts/spam_word_lint.py \
-  --subject "Pipeline gap after the Q3 hire freeze?" \
-  --body "Sarah — saw you posted the Demand Gen Lead role four days ago. Pipeline gap is usually upstream of an SDR hire. Worth 15 min Thursday to walk through?"
-python3 scripts/score_subject_line.py --subject "Pipeline gap after the Q3 freeze?" --framework pain
+python3 scripts/spam_word_lint.py --file examples/t1.email.md                      # exit 0: Score: 100/100 — Ship
+python3 scripts/spam_word_lint.py --file examples/spam.email.md                    # exit 1: every flag with its fix
+python3 scripts/score_subject_line.py --file examples/t1.email.md --framework pain # exit 0: 100/100
 python3 scripts/score_letter.py --file examples/letter-good.json        # exit 0: signal quoted, one yes/no ask
 python3 scripts/score_letter.py --file examples/letter-demographic.json # exit 1: refused, every reason listed
 ```
@@ -109,7 +120,7 @@ Next: [Email sequence](https://github.com/cmj-hub/claude-email-sequence)
 
 ## Privacy and security
 
-The scripts are stdlib Python and run locally on the drafts and lists you pass them. The only network traffic is DNS: `check_deliverability.py` and `dig_dns.sh` run `dig` against the sending domain you name and its mail host, plus the Spamhaus DBL and SURBL blacklist zones. Three skills and one agent may use WebFetch to open a public page you point them at. No telemetry, no credentials, and nothing is sent: you send. See [SECURITY.md](SECURITY.md).
+The scripts are stdlib Python and run locally on the drafts and lists you pass them. The only network traffic is DNS: `check_deliverability.py` and `dig_dns.sh` run `dig` against the sending domain you name and its mail host, plus the Spamhaus DBL and SURBL blacklist zones. The skill and one agent may use WebFetch to open a public page you point them at. No telemetry, no credentials, and nothing is sent: you send. See [SECURITY.md](SECURITY.md).
 
 ## License
 
