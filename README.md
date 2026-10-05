@@ -23,6 +23,8 @@ python3 scripts/score_letter.py --file examples/letter-demographic.json   # exit
 
 Part of the GTM operator suite — `/plugin install gtm@gtm-operator-skills` installs all ten.
 
+Add the [gtm-operator mod](https://github.com/cmj-hub/gtm-operator-claude-mod) to see the suite's next step above your prompt and keep `brand-config.json` from being overwritten: `/plugin install gtm-operator@gtm-operator-skills`.
+
 One command, many modes: `/cold-email:cold-email [write | sequence | subject | lint | deliverability | list | reply | nurture | audit | rhythm | status | setup]`. With no argument it reads your project and names the next step. Moved in 0.7: the old sub-skills (`cold-email-craft`, `cold-email-spam-lint`, ...) are now modes of this one skill, so type `/cold-email:cold-email lint` instead of naming a sub-skill. Drafts and lists live in `gtm/` at your project root (`gtm/letter.json`, `gtm/send-list.csv`, `gtm/replies.jsonl`).
 
 > "VP of Marketing at Series B" is not a reason to write. A job post four days ago is.
