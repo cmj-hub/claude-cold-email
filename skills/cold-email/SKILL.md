@@ -85,6 +85,9 @@ list; `--write` adds `.cleaned.csv` and `.removed.csv` beside it), and
 4. **<90 words for the first touch.** Anything longer signals desperation.
 5. **One specific ask per email.** Stack-ranked asks confuse buyers.
 6. **No "Hope you're well" / "Just bumping this".** Banned openers.
+7. **Found is not sendable until verify = deliverable.** A scraped or
+   enriched address stays off the send list until verification returns
+   deliverable. Catch-all, unknown, and invalid are not "valid."
 
 ## Variables (every mode uses these)
 
