@@ -81,6 +81,12 @@ It will not send the email. It will not ingest your CRM. It will not warm a doma
 
 This pack drafts and scores. It will not pick this quarter's PSP, ingest your CRM, or update when Gmail changes the spam window. Those are judgement calls and live data. This pack gives you the instrument and the rubric; you bring the account.
 
+## The data step this pack leaves to you
+
+This pack drafts and lints. Verifying that an address is deliverable before you send is a separate job.
+
+Run [Verify an email](https://thegtmdirectory.com/jobs/verify-an-email) on The GTM Directory. Found is not sendable until verify = deliverable. Catch-all, unknown, and invalid stay off the send list.
+
 ## Does this send the email for me?
 
 No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack.
