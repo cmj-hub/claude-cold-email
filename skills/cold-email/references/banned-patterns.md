@@ -16,14 +16,16 @@ an alternative.
 | "I saw your company is growing" | Vague | Quote the specific signal (funding, hire, launch) |
 | "Quick question" | Almost always not quick | State the actual question in the subject |
 | "Hi there" | No personalization | First name |
-| "Hey <name>!" with exclamation | Forced familiarity | "<Name> —" |
+| "Hey <name>!" with exclamation | Forced familiarity | "<Name>," |
+| "Congratulations on..." / "Congrats on the raise" | Flattery opener; reads as a template | State the signal plainly: "The $48M courthouse award adds..." |
+| Words in quote marks the source never said | A made-up quote is an invented fact | Quote only exact source words, or drop the marks |
 
 ## Banned closes / CTAs
 
 | Banned | Why | Use instead |
 |---|---|---|
 | "Let me know your thoughts" | Open-ended; no commitment | Binary, time-bound ask |
-| "Happy to chat whenever" | No anchor | "15 min Thursday at 11am PT?" |
+| "Happy to chat whenever" | No anchor | "Worth a look?" (a day only if the operator gave one) |
 | "Interested?" | Single word; low effort | Specific binary ask |
 | "Would love to learn more" | Vague | "Should I send the case study?" |
 | "Let me know if..." | Conditional + open | Direct binary |
@@ -34,7 +36,7 @@ an alternative.
 |---|---|---|
 | "Just bumping this" | Filler, no new value | Drop a new insight or case |
 | "Following up on my last email" | Self-referential | Quote a new signal or peer outcome |
-| "Did you get a chance to..." | Passive-aggressive | "If <pain> isn't on the roadmap, no worries — should I close the loop?" |
+| "Did you get a chance to..." | Passive-aggressive | "If <pain> isn't on the roadmap, should I close the loop?" |
 | "Just checking in" | Empty | Reframe the pain from a different angle |
 | "Wanted to make sure you saw this" | Implies sender importance | Drop the most useful 1-liner you've got |
 
@@ -47,6 +49,8 @@ an alternative.
 | Bullet lists of features | Features are not signals |
 | Phrases like "synergy", "leverage" (as verb), "circle back" | Tells the reader you're not paying attention |
 | Sentences starting with "I" | Move recipient to subject of sentence |
+| Invented specifics: a meeting day, an attachment, a write-up or a sample the operator never mentioned | The reader takes them as promises |
+| Em dashes in greeting, sign-off or body | A machine-written tell |
 | Generic personalization tokens that didn't merge ("Hi {{firstName}}") | Auto-rejects |
 
 ## Banned subject-line patterns

@@ -52,8 +52,9 @@ a thing they did.
 - "I saw your company is growing"
 - "I came across your LinkedIn"
 
-The opener line **names the signal verbatim**. No paraphrase, no
-"impressive growth," no "great team."
+The opener line **names the signal in the source's words**. No
+"impressive growth," no "great team." Quotation marks go only around
+words the source really contains.
 
 ### 2. Pain (the implication)
 
@@ -105,10 +106,10 @@ A binary CTA gives the recipient exactly two options: yes or no. Not
 
 **Good binary CTAs:**
 
-- "Worth 15 minutes Thursday at 11am PT?"
-- "Want me to send the case study?"
-- "Should I introduce you to <name> who solved exactly this?"
-- "Open to a 10-minute walkthrough Tuesday?"
+- "Worth a look?"
+- "Is <their pain, in their words> on your list this quarter?"
+- "Want me to send the case study?" (only if it exists)
+- "Worth 15 minutes Thursday at 11am PT?" (only with the operator's real availability)
 
 **Bad CTAs:**
 
@@ -124,7 +125,7 @@ A binary CTA gives the recipient exactly two options: yes or no. Not
 | Opener (Signal) | 1 sentence | Quotes the signal verbatim |
 | Pain | 1 sentence | In their language |
 | EVP | 1 sentence | ≤22 words |
-| Ask | 1 sentence | Binary, time-bound where possible |
+| Ask | 1 sentence | Binary; a day or time only from the operator |
 | Total | <90 words | Strict |
 
 ## Banned patterns
@@ -140,7 +141,8 @@ The skill refuses to produce these; if user requests them, push back:
 - Multi-paragraph value-prop monologues
 - Stacked questions ("Are you A? Or B? Or C?")
 - Assumed first-name-basis ("Hey Sarah! How's it going?")
-- "Quick question" (opener — almost always not quick)
+- "Quick question" (opener; almost always not quick)
+- "Congratulations on..." (flattery opener, any touch)
 
 ## The signal-anchored opener prompt
 
@@ -156,7 +158,7 @@ Constraints:
 - <90 words total
 - Quote the signal verbatim in line 1
 - One sentence per block (signal / pain / EVP / ask)
-- Binary CTA, time-bound where possible
+- One yes/no question; no invented day, time or asset
 - No "Hope you're well", no "Just wanted to"
 - Sign as {senderName}
 ```
@@ -168,9 +170,9 @@ When the first touch gets no reply, the JMC sequence is:
 | Day | Touch | Shape |
 |---|---|---|
 | 0 | T1 — Signal-anchored opener (above) | Full framework |
-| 3 | T2 — 1-line case study | "<peer company> hit <outcome> in <timeframe>. Open to a 15-min walkthrough?" |
+| 3 | T2 — 1-line case study | "<peer company> hit <outcome> in <timeframe>. Worth comparing to how you run it today?" |
 | 7 | T3 — Different angle on the same PSP | Same pain, different framing (cost / risk / opportunity-cost) |
-| 14 | T4 — Binary close | "If <pain> isn't on the roadmap right now, no worries — should I follow up in Q4? Or close the loop?" |
+| 14 | T4 — Binary close | "If <pain> isn't on the roadmap right now, should I close the loop?" |
 
 Each touch <70 words. No "just bumping this" anywhere.
 

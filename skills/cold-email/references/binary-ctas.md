@@ -6,15 +6,25 @@ these is yes/no answerable, which is the JMC standard.
 Use these as inspiration, not verbatim — adapt the wording to the
 recipient's signal + pain.
 
-## Time-bound binary asks (highest-converting)
+## Interest asks (the default when you have no availability)
 
-1. "Worth 15 minutes Thursday at 11am PT?"
-2. "Open to a 10-minute walkthrough Tuesday?"
-3. "Up for a 20-minute working session next week?"
-4. "Can I grab 15 minutes on Friday?"
-5. "Quick 10-minute call Thursday morning?"
+1. "Worth a look?"
+2. "Is <their pain, in their words> on your list this quarter?"
+3. "Worth comparing against how you run <process> today?"
+4. "Is this worth a conversation?"
+5. "Should I send how it handles <their system> specifically?" (only if
+   the operator can send that)
 
-## Resource-offer binary asks
+## Time-bound asks (only with the operator's real availability)
+
+Use these only when the operator gave you days or times
+(`availability` in `gtm/letter.json`). A made-up "Thursday" reads as
+a template and the scorer refuses it.
+
+- "Worth 15 minutes <day the operator offered>?"
+- "Open to a 10-minute walkthrough <day the operator offered>?"
+
+## Resource-offer binary asks (only for assets that exist)
 
 6. "Want me to send the <peer> case study?"
 7. "Should I send the 3-page write-up?"
@@ -60,18 +70,19 @@ recipient's signal + pain.
 ## What makes these work
 
 - **Yes or no answerable**. No "share your thoughts."
-- **Time-bound where possible**. "Thursday at 11am PT" beats "sometime
-  next week."
+- **Time-bound only with real availability**. A real "Thursday at 11am
+  PT" from the operator beats "sometime next week"; an invented one
+  reads as a template.
 - **One specific ask**. Not stacked.
 - **Low cost to reply**. The recipient should be able to answer in
   ≤5 words.
 
 ## What kills binary CTAs
 
-- Trailing softeners: "Worth 15 minutes Thursday — but no pressure, of
-  course, totally understand if not." Cut everything after the question.
+- Trailing softeners: "Worth a look? No pressure, of course, totally
+  understand if not." Cut everything after the question.
 - Multiple options: "Could do Thursday or Friday or Monday next week,
-  or whenever else works for you." Pick one specific time.
+  or whenever else works for you." Pick one.
 - Hedging language: "Would it possibly be of interest..." Just ask.
 - Stacking: "Worth a chat? Or should I send the doc? Or both?" Pick one.
 

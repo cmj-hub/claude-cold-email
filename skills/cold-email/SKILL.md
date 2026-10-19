@@ -80,8 +80,10 @@ list; `--write` adds `.cleaned.csv` and `.removed.csv` beside it), and
    into a shape you can ship.
 2. **No demographics in the opener.** "VP of Marketing at Series B SaaS"
    isn't a signal. "Just posted a job for a Demand Gen Lead" is.
-3. **Binary CTAs only.** "Worth 15 minutes Thursday?" not "Let me know
-   if you'd like to learn more."
+3. **Binary CTAs only.** "Worth a look?" or "Is the 12-day close on
+   your list this quarter?" not "Let me know if you'd like to learn
+   more." Name a day or time only when the operator gave you their
+   availability; never invent a slot.
 4. **<90 words for the first touch.** Anything longer signals desperation.
 5. **One specific ask per email.** Stack-ranked asks confuse buyers.
 6. **No "Hope you're well" / "Just bumping this".** Banned openers.
@@ -114,8 +116,16 @@ regenerated, not shown with a caveat.
 **Hard checks — first touch**
 
 - [ ] Body under 90 words (T2/T3 under 70, T4 under 60)
-- [ ] Line 1 quotes the signal verbatim, and the signal is something
-      they *did*, not who they *are*
+- [ ] Line 1 names the signal in the source's own words, and the signal
+      is something they *did*, not who they *are*
+- [ ] Quotation marks only around words the source itself quotes or
+      contains; a paraphrase is never dressed as a quote
+- [ ] No day, time, asset or offer the operator did not give you (no
+      "Thursday", no "the attached sample", no "a short write-up")
+- [ ] No congratulation, compliment or "saw that you" opener, in any touch
+- [ ] Plain salutation and sign-off (`Dana,` and `[Your name]` when the
+      sender is not given); no em dashes; no notes to the operator
+      unless something was refused
 - [ ] Pain is one sentence in the buyer's vocabulary
       (`brand-config.psp.vocabulary` when present)
 - [ ] EVP is 22 words or fewer, names one outcome and one tradeoff

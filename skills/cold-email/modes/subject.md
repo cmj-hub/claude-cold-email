@@ -25,7 +25,7 @@ Suggests or critiques subject lines across four framework families (pain, curios
 | **Pain** | Audience is problem-aware | "Pipeline gap after the Q3 hire freeze?" |
 | **Curiosity** | Audience needs a hook before they'll open | "What <peer company> tried after their Series B" |
 | **Social proof** | Audience trusts other companies more than vendors | "How <peer> hit 40% reply rate" |
-| **Direct** | Audience is short on time, you have a clear ask | "15 min Thursday re: demand gen?" |
+| **Direct** | Audience is short on time, you have a clear ask | "15 min re: demand gen?" |
 
 The skill's job: given a draft cold email (or a target audience + EVP),
 suggest 3-5 subject lines spanning at least 2 frameworks.
@@ -63,7 +63,7 @@ fit, not framework alphabetical.
 | 1 | Pain | "Pipeline gap after the freeze?" | Anchors PSP directly; for problem-aware audience |
 | 2 | Social proof | "How <peer> hit 40% reply rate" | Best if you have the case study |
 | 3 | Curiosity | "<peer> tried this after Series B" | If audience is skeptical of direct claims |
-| 4 | Direct | "15 min Thursday re: demand gen?" | If they're warm or you have signal-based timing |
+| 4 | Direct | "15 min re: demand gen?" | If they're warm or you have signal-based timing |
 | 5 | Pain | "Q3 demand gen plan question" | Conservative; fits exec inboxes |
 ```
 
