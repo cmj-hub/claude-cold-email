@@ -87,7 +87,7 @@ We help <ICP segment> hit <outcome> without <obvious tradeoff>.
 
 **Examples:**
 
-- "We help Series-B SaaS hit pipeline targets without hiring 2 more SDRs."
+- "We help Series-B SaaS rebuild first-touch email around public signals without changing their sequencer."
 - "We help PLG teams convert free users to enterprise without breaking
   the self-serve motion."
 

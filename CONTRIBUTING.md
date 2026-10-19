@@ -5,21 +5,21 @@ before you contribute.
 
 ## What kinds of contributions land
 
-- **Bug reports** — open an issue with a reproducible case. The
+- **Bug reports**: open an issue with a reproducible case. The
   scripts in `scripts/` are deterministic, so bugs there are usually
   one-line fixes.
 - **New modes** that extend the existing framework. Discuss in
   an issue first if it's a substantial addition.
-- **Calibration improvements** to the scoring scripts — if you can
+- **Calibration improvements** to the scoring scripts: if you can
   show a case where the script scores wrong, that's gold.
-- **Cross-runtime ports** (Cursor, Gemini CLI, Codex) — see the
+- **Cross-runtime ports** (Cursor, Gemini CLI, Codex): see the
   Install section of the README.
 - **Translation** of the framework reference docs.
 
 ## What doesn't land
 
 - Renaming the JMC framework concepts (Signal → Pain → EVP → Ask, the
-  5 Schwartz tiers, the 4 content pillars) — these are course-anchored.
+  5 Schwartz tiers, the 4 content pillars): these are course-anchored.
 - Adding LLM calls inside the skills. The whole point is that the
   skills are deterministic.
 - Adding paid-API dependencies to scripts. Scripts must work zero-dep.
@@ -38,7 +38,7 @@ cd <this-repo>
 For Python scripts:
 
 ```bash
-# All scripts are zero-dep Python 3.8+ — just run them
+# All scripts are zero-dep Python 3.8+: just run them
 python3 scripts/<script>.py --help
 
 # What CI runs
@@ -97,5 +97,5 @@ license already on this repo.
 
 ## About
 
-Built by [Jay Mount Consulting](https://jaymountconsulting.com).
-Part of the JMC public-build spine — see [/build](https://jaymountconsulting.com/build).
+Built by [JMC Go-to-Market Systems](https://jaymountconsulting.com).
+Part of the JMC public-build spine: see [/build](https://jaymountconsulting.com/build).

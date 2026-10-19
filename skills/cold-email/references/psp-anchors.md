@@ -65,8 +65,9 @@ Shape: **For `<ICP>`, in `<pain>`, we ship `<specific outcome>` without
 | Tradeoff | The cost they expected to pay and won't | Missing — then it's a claim, not a value prop |
 | Proof | A real case the operator gave you (`evp.proof`) | Anything you made up |
 
-Example: "For Series-B SaaS in a pipeline gap, we ship 14+ SQLs/month
-without hiring 2 more SDRs." (17 words)
+Example (fictional): "For Series-B SaaS in a pipeline gap, we cut
+first-touch drafting to one day a week without changing the sequencer."
+(21 words)
 
 ## 4. Ask — the binary that follows
 
