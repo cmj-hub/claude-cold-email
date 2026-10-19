@@ -21,7 +21,7 @@ python3 scripts/score_letter.py --file examples/letter-good.json          # exit
 python3 scripts/score_letter.py --file examples/letter-demographic.json   # exit 1: - signal not quoted: no 3-word run of public_signal appears in the letter → quote at least 3 words of the signal verbatim in the first line
 ```
 
-Part of the GTM operator suite — `/plugin install gtm@gtm-operator-skills` installs all ten.
+Part of the GTM operator suite: `/plugin install gtm@gtm-operator-skills` installs all ten.
 
 Add the [gtm-operator mod](https://github.com/cmj-hub/gtm-operator-claude-mod) to see the suite's next step above your prompt and keep `brand-config.json` from being overwritten: `/plugin install gtm-operator@gtm-operator-skills`.
 
@@ -40,12 +40,12 @@ The sample T1 in `examples/t1.email.md` lints at **100**. `URGENT! ACT NOW 🚀 
 The build guide teaches a human. The pack teaches an agent.
 
 <p align="center">
-  <img src="./assets/demo.gif" alt="Cold email skill — sample T1 scores 100" width="100%">
+  <img src="./assets/demo.gif" alt="Cold email skill: sample T1 scores 100" width="100%">
 </p>
 
-## What this replaces
+## What it covers
 
-The drafting stack an $80K SDR owns on a slow week — not the send, not the domain warm, not the close. Framework plus ~$130/mo in sending tools is the rest of the motion you already have.
+The drafting and checking side of cold email: first touch, follow-ups, subject lines, spam lint, deliverability checks, send-list cleanup and reply triage. Sending, domain warm-up and the close stay with you and your sending tools.
 
 ## Install
 
@@ -89,7 +89,7 @@ Run [Verify an email](https://thegtmdirectory.com/jobs/verify-an-email) on The G
 
 ## Does this send the email for me?
 
-No. It drafts and lints. You send — or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack.
+No. It drafts and lints. You send, or your sequencer does. Live send, reply write-back, and CRM ingest are out of scope for a skill pack.
 
 ## What is a binary CTA?
 
@@ -101,23 +101,23 @@ The linter catches the word list, ALL CAPS, emoji, fake threading, and link pile
 
 ## On the site
 
-- [Cold Email pack](https://jaymountconsulting.com/skills/claude-cold-email) — this pack's page
-- [Skill packs catalog](https://jaymountconsulting.com/skills) — install paths + every pack
-- [Course twin](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft) — human build guide for this pack
+- [Cold Email pack](https://jaymountconsulting.com/skills/claude-cold-email): this pack's page
+- [Skill packs catalog](https://jaymountconsulting.com/skills): install paths + every pack
+- [Course twin](https://jaymountconsulting.com/learn/courses/cold-email-outreach-craft): human build guide for this pack
 
 ## Free, no signup
 
-- **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)** — the same job as this pack, hosted. No account, no key.
+- **[Cold Email Linter](https://jaymountconsulting.com/tools/cold-email-linter)**: the same job as this pack, hosted. No account, no key.
 - [Cold Email & Outreach Craft framework](https://jaymountconsulting.com/frameworks/cold-email-outreach-craft)
 - [Prompt Library](https://jaymountconsulting.com/resources/prompt-library)
 
 ## Free, by email
 
-[**Growth Audit**](https://jaymountconsulting.com/growth-audit) — where your go-to-market stack is leaking, sent to your inbox.
+[**Growth Audit**](https://jaymountconsulting.com/growth-audit): where your go-to-market stack is leaking, sent to your inbox.
 
 That one does ask for an email, and it enrols you in a short follow-up on the same topic. Unsubscribe whenever.
 
-[**The Friday Signal**](https://jaymountconsulting.com/newsletter/signal): free emails on building GTM systems that compound. No pitch in it. One click unsubscribes.
+[**The Friday Signal**](https://jaymountconsulting.com/newsletter/signal): free emails on building GTM systems. No pitch in it. One click unsubscribes.
 
 
 ## Next
@@ -136,4 +136,6 @@ MIT. See [LICENSE](./LICENSE).
 
 ## About
 
-Built by [Jay Mount Consulting](https://jaymountconsulting.com).
+All sample companies, people, results and figures in this repo are fictional.
+
+Built by [JMC Go-to-Market Systems](https://jaymountconsulting.com).

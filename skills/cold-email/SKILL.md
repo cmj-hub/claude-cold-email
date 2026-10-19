@@ -103,7 +103,7 @@ reuse across every mode:
 | `company` | Same | Acme Cloud |
 | `signal` | Public signal — job post, funding, product launch, leadership change | "Just posted 'Senior Demand Gen Lead' role on LinkedIn 4 days ago" |
 | `pain` | Pain Signal Profile — what the signal implies | "Pipeline gap; existing demand gen motion isn't producing enough SQLs" |
-| `evp` | Your one-line value prop in their words | "We help Series-B SaaS hit pipeline targets without hiring 2 more SDRs" |
+| `evp` | Your one-line value prop in their words | "We help Series-B SaaS rebuild first-touch email around public signals without changing their sequencer" |
 | `senderName` | You (`brand-config.operator.name`) | Jay |
 
 If any are missing, ask the user — don't fabricate.

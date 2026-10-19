@@ -80,7 +80,7 @@ If yes, read [setup.md](setup.md) and follow it. If no, say what minimum mode pr
 Brand config:      yes  brand-config.json (operator, icp, tone, infrastructure, operations)
 Voice (SOUL.md):   yes  8 phrases used, 6 refused, 5 stories
 PSP:               yes  Series-B SaaS pipeline-gap pain
-EVP:               yes  Tier 3: "For Series-B SaaS, in a pipeline gap, we ship 14+ SQLs/month without hiring 2 SDRs"
+EVP:               yes  Tier 3: "For a Series-B SaaS team in a pipeline gap, we rebuild first-touch email around public signals without changing their sequencer."
 Infrastructure:    yes  outreach.acmecloud.com (ramped 60+ days, DMARC quarantine)
 Deliverability:    yes  last audited 2026-09-20 — 94/100
 Send list:         yes  gtm/send-list.csv — 82/100

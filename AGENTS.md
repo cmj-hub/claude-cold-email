@@ -112,4 +112,4 @@ No telemetry. No outbound calls except:
 - DNS lookups (the deliverability skill)
 - Public blacklist APIs (the deliverability skill, when requested)
 
-The pack does not call back to Jay Mount Consulting servers.
+The pack does not call back to JMC Go-to-Market Systems servers.

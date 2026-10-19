@@ -113,10 +113,8 @@ already promised.
 
 ## [0.3.0] — 2026-09-08
 
-Public magnet pass. Instrument stays public. First loop is 15 minutes.
-
 ### Added
-- Definition-first README (GEO paragraph, 15-minute artifact, FAQ H2s, current Pass price).
+- Definition-first README (GEO paragraph, 15-minute artifact, FAQ H2s).
 - Cross-agent installer: `npx skills add cmj-hub/claude-cold-email --all -g --full-depth` (Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, OpenCode, Antigravity, Goose, and the rest of the skills CLI list). Fallback copies into well-known `*/skills` dirs.
 - `package.json` (`jmc-cold-email`) so `npm install github:cmj-hub/claude-cold-email` and `npx jmc-cold-email` work. Not published to npmjs.com.
 - `examples/` golden good/bad pair for the first loop.
@@ -159,7 +157,7 @@ sub-skill count and adds real Python/Bash scoring (not pure prose).
   - `score_reply.py` — regex + feature-engineered reply classifier (no LLM, <10ms per reply)
   - `dig_dns.sh` — POSIX bash for SPF / DKIM / DMARC / MX / reverse DNS lookups
   - `check_deliverability.py` — 15-check deliverability scoring with public blacklist heuristic
-- README rewrite with cost-replacement positioning ("Replace an $80K SDR with the JMC framework + ~$130/mo in tools")
+- README rewrite (cost positioning, since removed)
 - Cross-skill dependency mermaid diagram
 - Repo-structure table showing the full layout
 

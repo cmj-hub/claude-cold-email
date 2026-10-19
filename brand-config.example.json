@@ -33,10 +33,10 @@
 
   "evp": {
     "tier": 3,
-    "primary": "For Series-B SaaS in a pipeline gap, we ship 14+ SQLs/month without hiring 2 more SDRs.",
-    "outcome": "14+ SQLs per month",
-    "tradeoff": "without hiring 2 more SDRs",
-    "proof": "Series-B SaaS company hit 14 SQLs in 30 days from a PSP rewrite. Case study: jaymountconsulting.com/case-studies/series-b-saas-14-sqls"
+    "primary": "For a Series-B SaaS team in a pipeline gap, we rebuild first-touch email around public signals without changing their sequencer.",
+    "outcome": "<your outcome, as a number and a unit of time>",
+    "tradeoff": "without changing their sequencer",
+    "proof": "<a real result you can cite, with its source> (fictional example; replace with yours). Case study: <your case study URL>"
   },
 
   "tone": {

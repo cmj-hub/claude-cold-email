@@ -65,7 +65,8 @@ framework's banned-patterns list. E.g.:>
 ## Stories I lean on
 
 <3-5 stories or receipts you reference often. These become the "case
-study" reservoir the skill pulls from when it needs proof. E.g.:>
+study" reservoir the skill pulls from when it needs proof. Fictional
+examples; replace them with your own:>
 
 - The Series-B SaaS that hit 14 SQLs in 30 days from a PSP rewrite
 - The bootstrapped agency that went from 2% to 11% reply rate by
