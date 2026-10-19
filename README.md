@@ -93,7 +93,7 @@ No. It drafts and lints. You send — or your sequencer does. Live send, reply w
 
 ## What is a binary CTA?
 
-A yes/no ask. "Worth 15 minutes Thursday?" is binary. "Let me know if you'd like to learn more" is not. One ask per email. Stacked asks confuse the person who has to answer at 11am.
+A yes/no ask. "Worth a look?" is binary. "Let me know if you'd like to learn more" is not. One ask per email. Stacked asks confuse the person who has to answer at 11am.
 
 ## Will this get me marked as spam?
 

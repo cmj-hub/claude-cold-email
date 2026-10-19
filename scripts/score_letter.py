@@ -14,13 +14,18 @@ to answer. Refuses, listing every reason, when:
   4. the letter is 90 words or more
   5. the ask is not binary: no question, more than one question, or an
      open question ("what do you think?", "let me know your thoughts?")
+  6. the letter names a day or time ("Thursday", "11am") that is in
+     neither the signal nor `availability` (an invented meeting slot)
+  7. the letter opens on a stock line ("Congratulations on...")
+  8. words inside quotation marks are not in the signal (a made-up quote)
 
 USAGE:
     python3 score_letter.py --file gtm/letter.json [--json]
     python3 score_letter.py --stdin < gtm/letter.json
 
-Draft JSON: {"public_signal": "...", "letter": "..."} (other keys, such as
-"subject", are ignored).
+Draft JSON: {"public_signal": "...", "letter": "..."}. Optional
+"availability" holds the times the sender offered ("Thursday 11am PT").
+Other keys, such as "subject", are ignored.
 
 EXIT CODES:
     0   ok — prints the letter, the lint line, and the next step
@@ -73,6 +78,14 @@ OPEN_PHRASE_RE = re.compile(
     r"\blet me know\b|\bthoughts\b|\bhappy to chat\b|\bwould love to\b|\bwhat do you think\b",
     re.IGNORECASE,
 )
+# A day or time the sender would have to have offered.
+TIME_RE = re.compile(
+    r"\b(?:mon|tues|wednes|thurs|fri|satur|sun)days?\b|\btomorrow\b|"
+    r"\b\d{1,2}(?::\d{2})?\s?(?:am|pm)\b",
+    re.IGNORECASE,
+)
+STOCK_OPENER_RE = re.compile(r"^\W*(?:congrat\w*|kudos|big news|exciting news)\b", re.IGNORECASE | re.MULTILINE)
+QUOTE_RE = re.compile(r'"([^"\n]+)"|“([^”\n]+)”')
 SENTENCE_RE = re.compile(r"[^.!?\n]+[.!?]*")
 WORD_RE = re.compile(r"[a-z0-9]+(?:['’][a-z]+)?")
 
@@ -146,6 +159,31 @@ def signal_quoted(signal: str, letter: str) -> bool:
     return any(tuple(sig[i:i + n]) in body_runs for i in range(len(sig) - n + 1))
 
 
+def invented_times(letter: str, allowed: str) -> List[str]:
+    """Days or times in the letter that the signal and availability lack."""
+    ok = {m.group(0).lower().replace(" ", "") for m in TIME_RE.finditer(allowed)}
+    found = []
+    for match in TIME_RE.finditer(letter):
+        token = match.group(0).lower().replace(" ", "")
+        if token not in ok and token not in found:
+            found.append(token)
+    return found
+
+
+def made_up_quotes(signal: str, letter: str) -> List[str]:
+    """Quoted runs of 3+ words whose words are not in the signal, in order."""
+    sig = " " + " ".join(words(signal)) + " "
+    bad = []
+    for match in QUOTE_RE.finditer(letter):
+        quoted = match.group(1) or match.group(2)
+        for part in re.split(r"\.\.\.|…", quoted):
+            run_words = words(part)
+            if len(run_words) >= SIGNAL_SPAN and " " + " ".join(run_words) + " " not in sig:
+                bad.append(quoted.strip())
+                break
+    return bad
+
+
 def questions(letter: str) -> List[str]:
     return [s.strip() for s in SENTENCE_RE.findall(letter) if s.strip().endswith("?")]
 
@@ -176,9 +214,12 @@ FIXES = [
     ("signal not quoted", f"quote at least {SIGNAL_SPAN} words of the signal verbatim in the first line"),
     ("demographic email", "cut that line; open on what they did, not who they are"),
     ("letter is", f"cut to under {MAX_WORDS} words; drop the weakest line"),
-    ("no binary ask", "end with one yes/no question, e.g. 'Worth 15 minutes Thursday?'"),
+    ("no binary ask", "end with one yes/no question, e.g. 'Worth a look?'"),
     ("more than one ask", "keep one question and cut the rest"),
     ("ask is open-ended", "rewrite the ask so it can be answered yes or no"),
+    ("invented time", "cut the day or time, or put the slots the sender offered in availability"),
+    ("stock opener", "open on what they did, in the signal's words"),
+    ("quote not in signal", "drop the quotation marks, or quote words the signal really contains"),
 ]
 
 
@@ -212,6 +253,14 @@ def check(data: dict) -> dict:
         problem = ask_problem(letter)
         if problem:
             reasons.append(problem)
+        times = invented_times(letter, signal + " " + nonempty_text(data.get("availability")))
+        if times:
+            reasons.append(f"invented time: {', '.join(times)} is not in the signal or availability")
+        if STOCK_OPENER_RE.search(letter):
+            reasons.append("stock opener: the letter opens on a congratulation, not the signal")
+        if signal:
+            for quoted in made_up_quotes(signal, letter):
+                reasons.append(f"quote not in signal: '{quoted[:60]}'")
 
     return {
         "ok": not reasons,

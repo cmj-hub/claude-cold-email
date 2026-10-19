@@ -49,7 +49,7 @@ Before generating, validate:
 - **Pain** uses their language, not yours. No "synergy" / "optimize" /
   "leverage".
 - **EVP** is ≤22 words, has one specific outcome, one tradeoff.
-  Use only an outcome and a tradeoff the operator gave (or `evp.outcome` / `evp.tradeoff`). If none was given, drop the tradeoff clause and say so under the draft. Never write one in to fill the shape.
+  Use only an outcome and a tradeoff the operator gave (or `evp.outcome` / `evp.tradeoff`). If none was given, drop the tradeoff clause; do not add a note about it. Never write one in to fill the shape.
 
 ### 3. Generate
 
@@ -59,18 +59,35 @@ Use the canonical template (the full prompt is in
 ```
 Subject: <from the subject mode>
 
-{firstName} —
+{firstName},
 
-<Quote the signal verbatim, 1 sentence.>
+<The signal, in the source's own words, 1 sentence.>
 
 <Pain in their language, 1 sentence.>
 
-<EVP, ≤22 words.>
+<EVP, ≤22 words. One proof line only if the operator gave one.>
 
-<Binary CTA, time-bound.>
+<One yes/no question.>
 
-— {senderName}
+{senderName}
 ```
+
+Rules the template does not show:
+
+- **Quote marks mean quoted.** Put words in quotation marks only when
+  the source shows them as the prospect's exact words. Otherwise name
+  where it came from and use its words without quote marks ("Your AP
+  Specialist posting says the team processes roughly 400 invoices a
+  week by hand").
+- **The ask.** Default to an interest question tied to the pain
+  ("Worth a look?", "Is the 12-day close on your list this
+  quarter?"). Ask for a meeting with a day or time only when the
+  operator gave availability; never invent one. Never offer a sample,
+  write-up or case study the operator has not said exists.
+- **Missing sender.** Sign `[Your name]` and move on. Do not add notes
+  explaining what was missing; add one line only if you refused or
+  changed the task.
+- **No em dashes** in the greeting, sign-off or body.
 
 ### 4. Self-check against constraints
 
@@ -79,8 +96,10 @@ After generating, verify:
 - [ ] Total word count <90
 - [ ] No banned openers ("Hope you're well", "Just wanted to")
 - [ ] No banned closes ("Let me know your thoughts", "Happy to chat")
-- [ ] Binary CTA (yes/no answerable)
-- [ ] Signal is quoted verbatim (not paraphrased)
+- [ ] Binary CTA (yes/no answerable), with no invented day or time
+- [ ] Signal is named in the source's words; quote marks only around
+      words the source really contains
+- [ ] No congratulation or compliment opener
 - [ ] Pain uses recipient's language
 - [ ] EVP ≤22 words
 - [ ] Subject ≤7 words, no clickbait
@@ -124,12 +143,16 @@ When the user asks for a sequence, generate all four touches at once:
 | Day | Touch | Length | Shape |
 |---|---|---|---|
 | 0 | T1 | <90 words | Full signal-anchored opener (above) |
-| 3 | T2 | <70 words | 1-line case study + binary close |
+| 3 | T2 | <70 words | A second signal or a 1-line case study the operator gave, + binary close |
 | 7 | T3 | <70 words | Different angle on same PSP (cost / risk / opportunity-cost) |
 | 14 | T4 | <60 words | Binary close: continue or close the loop |
 
-Each touch references the same signal but reframes the pain. No
-"following up on my last email" anywhere.
+Each touch references the same signal but reframes the pain. If the
+operator gave a second signal (a post, a contract win), the follow-up
+opens on it plainly, not with "Congratulations on". Each touch asks a
+different yes/no question; never repeat the T1 ask. No "following up
+on my last email" anywhere. If the user asks for a follow-up on a
+different day than the table, use their day.
 
 ## Output format
 

@@ -60,7 +60,7 @@ class ScoreLetter(unittest.TestCase):
     def test_role_alone_is_not_demographic(self):
         code, out = score(
             "Your VP of Sales posted it: Acme posted a Demand Gen Lead role four days ago. "
-            "Worth 15 minutes Thursday?"
+            "Worth a look?"
         )
         self.assertEqual(code, 0, out)
 
@@ -70,17 +70,17 @@ class ScoreLetter(unittest.TestCase):
             "We help companies like yours.",
             "Just bumping this.",
         ):
-            code, out = score(f"{SIGNAL} {line} Worth 15 minutes Thursday?")
+            code, out = score(f"{SIGNAL} {line} Worth a look?")
             self.assertEqual(code, 1, line)
             self.assertTrue(any(r.startswith("demographic email") for r in out["reasons"]), line)
 
     def test_paraphrased_signal_refused(self):
-        code, out = score("Saw you are hiring for demand. Worth 15 minutes Thursday?")
+        code, out = score("Saw you are hiring for demand. Worth a look?")
         self.assertEqual(code, 1)
         self.assertTrue(out["reasons"][0].startswith("signal not quoted"))
 
     def test_three_word_span_is_enough(self):
-        code, out = score("Saw the Demand Gen Lead post. Worth 15 minutes Thursday?")
+        code, out = score("Saw the Demand Gen Lead post. Worth a look?")
         self.assertEqual(code, 0, out)
 
     def test_ask_must_be_binary(self):
@@ -103,6 +103,34 @@ class ScoreLetter(unittest.TestCase):
         code, out = score(SIGNAL + " word" * 85 + " Want the page?")
         self.assertEqual(code, 1)
         self.assertTrue(any("must be under 90" in r for r in out["reasons"]))
+
+    def test_invented_day_refused(self):
+        code, out = score(f"{SIGNAL} Worth 15 minutes Thursday?")
+        self.assertEqual(code, 1)
+        self.assertTrue(any(r.startswith("invented time") for r in out["reasons"]), out)
+
+    def test_day_from_availability_or_signal_passes(self):
+        draft = {"public_signal": SIGNAL, "availability": "Thursday 11am PT",
+                 "letter": f"{SIGNAL} Worth 15 minutes Thursday at 11am PT?"}
+        result = run(["--stdin", "--json"], stdin=json.dumps(draft))
+        self.assertEqual(result.returncode, 0, result.stdout)
+        code, out = score("Acme posted the role on Monday. Saw it Monday. Worth a look?",
+                          signal="Acme posted the role on Monday.")
+        self.assertEqual(code, 0, out)
+
+    def test_congratulation_opener_refused(self):
+        code, out = score(f"Congratulations on the new contract. {SIGNAL} Worth a look?")
+        self.assertEqual(code, 1)
+        self.assertTrue(any(r.startswith("stock opener") for r in out["reasons"]), out)
+        code, out = score(f"Dana,\n\nCongratulations on the new contract. {SIGNAL} Worth a look?")
+        self.assertTrue(any(r.startswith("stock opener") for r in out["reasons"]), out)
+
+    def test_quote_marks_need_source_words(self):
+        code, out = score(f'{SIGNAL} You said "pipeline is the only thing that matters." Worth a look?')
+        self.assertEqual(code, 1)
+        self.assertTrue(any(r.startswith("quote not in signal") for r in out["reasons"]), out)
+        code, out = score('Your post: “posted a Demand Gen Lead role”. Worth a look?')
+        self.assertEqual(code, 0, out)
 
     def test_bad_json_hides_input(self):
         bad = run(["--stdin"], stdin='{"letter": "' + CELL)
