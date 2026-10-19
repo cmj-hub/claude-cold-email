@@ -122,6 +122,8 @@ class ScoreLetter(unittest.TestCase):
         code, out = score(f"Congratulations on the new contract. {SIGNAL} Worth a look?")
         self.assertEqual(code, 1)
         self.assertTrue(any(r.startswith("stock opener") for r in out["reasons"]), out)
+        code, out = score(f"Dana,\n\nCongratulations on the new contract. {SIGNAL} Worth a look?")
+        self.assertTrue(any(r.startswith("stock opener") for r in out["reasons"]), out)
 
     def test_quote_marks_need_source_words(self):
         code, out = score(f'{SIGNAL} You said "pipeline is the only thing that matters." Worth a look?')

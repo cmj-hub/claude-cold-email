@@ -84,7 +84,7 @@ TIME_RE = re.compile(
     r"\b\d{1,2}(?::\d{2})?\s?(?:am|pm)\b",
     re.IGNORECASE,
 )
-STOCK_OPENER_RE = re.compile(r"^\W*(?:congrat\w*|kudos|big news|exciting news)\b", re.IGNORECASE)
+STOCK_OPENER_RE = re.compile(r"^\W*(?:congrat\w*|kudos|big news|exciting news)\b", re.IGNORECASE | re.MULTILINE)
 QUOTE_RE = re.compile(r'"([^"\n]+)"|“([^”\n]+)”')
 SENTENCE_RE = re.compile(r"[^.!?\n]+[.!?]*")
 WORD_RE = re.compile(r"[a-z0-9]+(?:['’][a-z]+)?")

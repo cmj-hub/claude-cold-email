@@ -122,7 +122,7 @@ A binary CTA gives the recipient exactly two options: yes or no. Not
 
 | Block | Length | Rule |
 |---|---|---|
-| Opener (Signal) | 1 sentence | Quotes the signal verbatim |
+| Opener (Signal) | 1 sentence | Names the signal in the source's words |
 | Pain | 1 sentence | In their language |
 | EVP | 1 sentence | ≤22 words |
 | Ask | 1 sentence | Binary; a day or time only from the operator |
