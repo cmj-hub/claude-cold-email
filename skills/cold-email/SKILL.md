@@ -2,7 +2,7 @@
 name: cold-email
 description: "Signal-anchored B2B cold email: first touch under 90 words with a binary ask, follow-ups, subject lines, spam lint, domain deliverability, send-list hygiene, reply triage, and outbound audits. Use when the user asks for a cold email, follow-up sequence, deliverability or spam check, reply scoring, or send-list cleanup. Not for give-first offers (sales-offer), picking who to contact (prospect-list), or post-opt-in email (email-sequence)."
 argument-hint: "[write | sequence | subject | lint | deliverability | list | reply | nurture | audit | rhythm | status | setup]"
-allowed-tools: Read Write Grep Glob WebFetch Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_letter.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py:*) Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/dig_dns.sh:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_list.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*)
+allowed-tools: Read Write(./gtm/**) Grep Glob WebFetch Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_letter.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/spam_word_lint.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_subject_line.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/check_deliverability.py:*) Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/dig_dns.sh:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_list.py:*) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score_reply.py:*) Bash(dig:*) Bash(host:*) Bash(nslookup:*)
 license: MIT
 models: ""
 ---
