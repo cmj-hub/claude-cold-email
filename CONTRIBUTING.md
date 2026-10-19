@@ -98,4 +98,3 @@ license already on this repo.
 ## About
 
 Built by [JMC Go-to-Market Systems](https://jaymountconsulting.com).
-Part of the JMC public-build spine: see [/build](https://jaymountconsulting.com/build).

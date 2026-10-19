@@ -171,7 +171,7 @@ sub-skill count and adds real Python/Bash scoring (not pure prose).
 
 ## [0.1.0] — 2026-05-23
 
-Initial release. Wave 1 of the JMC public-build spine.
+Initial release.
 
 ### Added
 - Main `cold-email/` orchestrator skill (Claude Code Agent Skills spec)
