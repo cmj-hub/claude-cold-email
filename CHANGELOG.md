@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — public sample withdrawal
+
+- Removed bundled CSV datasets and references. Private-input CLI support remains.
+- Replaced fixture-dependent checks with newly authored native in-memory test records and mocked I/O; no replacement dataset or CSV sample is published.
+
 ## [0.7.0] — 2026-10-04
 
 One skill, eleven modes. Always-on cost drops from about 2,435 tokens to about 335 (180 for the skill, 160 for the two agents, whose descriptions are shorter).
@@ -96,7 +101,7 @@ already promised.
 - `scripts/score_list.py` — the list scorer `cold-email-list-quality`
   described but did not ship: dedup, role-fit, signal freshness, email
   validity, exclusions, company stage; `--write` splits cleaned / removed
-  CSVs. Sample input: `examples/prospects.csv`.
+  private inputs. The former bundled sample was subsequently withdrawn.
 - `brand-config.schema.json` (the example's `$schema` pointed at a file
   that did not exist).
 - `references/psp-anchors.md`, `references/bulk-sender-rules.md`,

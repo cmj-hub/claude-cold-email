@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from native_test_support import run_native, prospect_rows
+
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "examples"
 CANARY = "super-secret-token"
@@ -126,8 +128,8 @@ class List(unittest.TestCase):
     ARGS = ["--brand-config", str(ROOT / "brand-config.example.json"), "--today", "2026-10-04"]
 
     def test_file_and_input_alias_match(self):
-        new = run("score_list.py", ["--file", str(EXAMPLES / "prospects.csv"), "--json", *self.ARGS])
-        old = run("score_list.py", ["--input", str(EXAMPLES / "prospects.csv"), "--format", "json", *self.ARGS])
+        new = run_native("score_list.py", ["--file", "private-input", "--json", *self.ARGS], prospect_rows())
+        old = run_native("score_list.py", ["--input", "private-input", "--format", "json", *self.ARGS], prospect_rows())
         self.assertEqual(new.returncode, 1)
         self.assertEqual(json.loads(new.stdout), json.loads(old.stdout))
         data = json.loads(new.stdout)
@@ -135,8 +137,7 @@ class List(unittest.TestCase):
         self.assertEqual(data["next"], NEXT_FIX)
 
     def test_stdin_and_refusal_lines(self):
-        text = (EXAMPLES / "prospects.csv").read_text(encoding="utf-8")
-        result = run("score_list.py", ["--stdin", *self.ARGS], stdin=text)
+        result = run_native("score_list.py", ["--stdin", *self.ARGS], prospect_rows())
         self.assertEqual(result.returncode, 1)
         rows = [l for l in result.stdout.splitlines() if l.startswith("- row ")]
         self.assertTrue(rows)
@@ -144,7 +145,7 @@ class List(unittest.TestCase):
         self.assertEqual(last_line(result), NEXT_FIX)
 
     def test_stdin_write_is_bad_input(self):
-        result = run("score_list.py", ["--stdin", "--write"], stdin="email\na@b.example\n")
+        result = run_native("score_list.py", ["--stdin", "--write"], prospect_rows())
         self.assertEqual(result.returncode, 2)
 
 
@@ -183,7 +184,8 @@ class Help(unittest.TestCase):
                        "score_reply.py", "score_list.py", "check_deliverability.py"):
             result = run(script, ["--help"])
             self.assertEqual(result.returncode, 0, script)
-            self.assertIn("examples/", result.stdout.split("example:")[-1], script)
+            expected_input = "/path/to/your-private-input.csv" if script == "score_list.py" else "examples/"
+            self.assertIn(expected_input, result.stdout.split("example:")[-1], script)
 
 
 if __name__ == "__main__":
