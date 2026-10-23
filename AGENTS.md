@@ -113,3 +113,7 @@ No telemetry. No outbound calls except:
 - Public blacklist APIs (the deliverability skill, when requested)
 
 The pack does not call back to JMC Go-to-Market Systems servers.
+
+## Public sample and data policy (Jay, 2026-10-23)
+
+Do not commit or distribute CSV files, proprietary datasets or bulk data exports in any format. Never repackage withdrawn rows as JSON, Markdown or XLSX. A CSV for Jay requires his explicit approval after inspecting its exact contents; do not create sample/export files automatically. Scorers may still read the operator's own private inputs. Tests use native fictional dictionaries and mocked file/parser contracts, without serializing a CSV sample or creating a CSV file.

@@ -72,19 +72,8 @@ check "sample reply batch" \
 
 echo ""
 echo "=== score_list.py ==="
-# The sample list is built to fail: exit 1 with a JSON report, not exit 2.
-set +e
-python3 scripts/score_list.py --file examples/prospects.csv \
-  --brand-config brand-config.example.json --today 2026-10-04 --json > /dev/null
-rc=$?
-set -e
-if [ "$rc" -eq 1 ]; then
-  echo "  ✓ sample list scored and flagged for cleaning"
-  PASSED=$((PASSED + 1))
-else
-  echo "  ✗ sample list should exit 1 (got $rc)"
-  FAILED=$((FAILED + 1))
-fi
+check "list CLI and scoring contracts with native in-memory test data" \
+  python3 -m unittest discover -s tests -p test_cli.py
 
 echo ""
 echo "=== check_deliverability.py ==="

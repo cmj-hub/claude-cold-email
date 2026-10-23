@@ -535,8 +535,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="example: python3 scripts/score_list.py --file examples/prospects.csv "
-               "--brand-config brand-config.example.json --today 2026-10-04   # exit 1, rows to remove",
+        epilog="example: python3 scripts/score_list.py --file /path/to/your-private-input.csv "
+               "--brand-config brand-config.json --json",
     )
     parser.add_argument("--file", dest="input", metavar="PATH", default=None, help="Prospect list (.csv or .jsonl)")
     parser.add_argument("--input", dest="input", default=None, help=argparse.SUPPRESS)

@@ -9,6 +9,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from native_test_support import run_native, prospect_rows, module
+from unittest.mock import MagicMock, patch
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
@@ -103,10 +106,9 @@ class ReplyScoring(unittest.TestCase):
 
 class ListScoring(unittest.TestCase):
     def score(self, *extra):
-        result = run("score_list.py", [
-            "--input", str(ROOT / "examples" / "prospects.csv"),
-            "--today", "2026-10-04", "--format", "json", *extra,
-        ])
+        result = run_native("score_list.py", [
+            "--input", "private-input", "--today", "2026-10-04", "--format", "json", *extra,
+        ], prospect_rows())
         self.assertIn(result.returncode, (0, 1), result.stderr)
         return json.loads(result.stdout)
 
@@ -127,29 +129,28 @@ class ListScoring(unittest.TestCase):
         self.assertEqual(na, {"role-fit", "exclusion", "company-stage"})
 
     def test_write_splits_files(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            src = Path(tmp) / "list.csv"
-            src.write_text(
-                "email,role\nsam@acme.example,VP Demand Gen\nsam@acme.example,VP Demand Gen\n",
-                encoding="utf-8",
-            )
-            result = run("score_list.py", ["--input", str(src), "--write"])
-            self.assertIn(result.returncode, (0, 1), result.stderr)
-            cleaned = (Path(tmp) / "list.cleaned.csv").read_text(encoding="utf-8").splitlines()
-            removed = (Path(tmp) / "list.removed.csv").read_text(encoding="utf-8").splitlines()
-        self.assertEqual(len(cleaned), 2)
-        self.assertEqual(len(removed), 2)
-        self.assertIn("removal_reason", removed[0])
+        target = module("score_list.py")
+        rows = prospect_rows()[:2]
+        header = list(rows[0])
+        result = target.score_rows(rows, header, {}, target.dt.date(2026, 10, 4))
+        cleaned, removed = MagicMock(), MagicMock()
+        with patch.object(Path, "open", MagicMock()), patch.object(target.csv, "DictWriter", side_effect=[cleaned, removed]) as writer:
+            paths = target.write_split(Path("private-input.csv"), rows, header, result)
+        self.assertEqual(tuple(p.name for p in paths), ("private-input.cleaned.csv", "private-input.removed.csv"))
+        cleaned.writeheader.assert_called_once()
+        removed.writeheader.assert_called_once()
+        cleaned.writerow.assert_called_once_with(rows[0])
+        self.assertEqual(removed.writerow.call_args.args[0]["email"], rows[1]["email"])
+        self.assertIn("removal_reason", removed.writerow.call_args.args[0])
+        self.assertEqual(writer.call_args_list[1].kwargs["fieldnames"], header + ["removal_reason"])
 
     def test_bad_input(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "x.csv"
-            path.write_text("name\nx\n", encoding="utf-8")
-            result = run("score_list.py", ["--input", str(path)])
-            self.assertEqual(result.returncode, 2)
-            missing = run("score_list.py", ["--input", str(Path(tmp) / "none.csv")])
-            self.assertEqual(missing.returncode, 2)
-            self.assertNotIn("Traceback", missing.stderr)
+        result = run_native("score_list.py", ["--input", "private-input"], [{"name": "synthetic"}])
+        self.assertEqual(result.returncode, 2)
+        missing = run("score_list.py", ["--input", str(ROOT / "none.csv")])
+        self.assertEqual(missing.returncode, 2)
+        self.assertNotIn("Traceback", missing.stderr)
+
 
 
 class Deliverability(unittest.TestCase):

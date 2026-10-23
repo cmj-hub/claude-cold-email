@@ -27,7 +27,7 @@ The skill accepts:
   `stage`, `industry`
 - **JSONL** with same fields
 
-Save the operator's list as `gtm/send-list.csv` (create `gtm/` if missing) unless they point at another file.
+Use the operator's existing private input path. Do not create a sample or export a CSV automatically. For Jay, creating any CSV requires his explicit approval after inspecting the exact contents.
 
 If `brand-config.json` is loaded, the skill cross-references
 `icp.segment`, `icp.role_targets`, `icp.exclusion_criteria`, and
@@ -45,6 +45,8 @@ If `brand-config.json` is loaded, the skill cross-references
 | Company-stage match | 10 | Company stage (from signal or heuristic) matches ICP segment |
 
 ## Output
+
+Illustrative output format only: these are fictional formatting examples, not research findings or a prospect dataset. The free-mail entry is an operator-supplied placeholder.
 
 ```markdown
 # List Quality Score — <file>
@@ -64,10 +66,10 @@ If `brand-config.json` is loaded, the skill cross-references
 
 | Row | Email | Reason |
 |---|---|---|
-| 12 | sarah@gmail.com | Free-email domain (B2B) |
-| 14 | info@acme.com | Role-account email |
-| 22 | mike@acme.com (Engineering Manager) | Role outside ICP (target: VP+) |
-| 27 | jane@beta.com | Signal stale (45 days) |
+| 12 | `<operator-supplied free-mail address>` | Free-email domain (B2B) |
+| 14 | info@organization.example | Role-account email |
+| 22 | person@organization.example (Engineering Manager) | Role outside ICP (target: VP+) |
+| 27 | person@another.example | Signal stale (45 days) |
 | ... |
 
 ## Fix recommendations (in order)
@@ -126,7 +128,7 @@ Smartlead / Instantly / etc.
   proton.me, icloud.com, aol.com, gmx.com)
 - Role-account patterns (info@, sales@, support@, hello@, contact@,
   marketing@, hr@, jobs@, careers@, admin@)
-- Plus-extension addresses (alex+marketing@acme.com) — flag as warn
+- Plus-extension addresses (person+marketing@organization.example) — flag as warn
 
 ### Exclusion match
 - Each row scored against each `exclusion_criteria` entry
@@ -158,7 +160,7 @@ Every row to remove carries a `fix` (text: `- row N: email — reason →
 fix`). Exit 1 ends with "Next: fix the lines above and run this again."
 Exit 0 ends with `Next: /cold-email:cold-email write`.
 
-Try it on the bundled sample: `examples/prospects.csv`.
+Bundled prospect datasets are not distributed. See `examples/README.md` for the input contract; use only the operator's own private input.
 
 How the script scores:
 
