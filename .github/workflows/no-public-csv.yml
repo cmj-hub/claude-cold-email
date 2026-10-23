@@ -1,0 +1,14 @@
+name: No public CSV files
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  no-public-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Reject tracked CSV filenames without reading data
+        run: python3 .github/scripts/check_no_public_csv.py
