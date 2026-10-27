@@ -1,8 +1,10 @@
 # JMC skill-pack Release
-# Triggered by pushing a tag matching v*.*.*
-# Creates a GitHub Release with notes from CHANGELOG.md.
-#
-# No secrets required beyond the auto-provided GITHUB_TOKEN.
+# Triggered by pushing a tag matching v*.*.* (it must equal package.json's version).
+# 1. Creates a GitHub Release with notes from CHANGELOG.md.
+# 2. Stages the pack on npm as @jmc-gtm/<repo> through npm trusted publishing (OIDC):
+#    no npm token is stored anywhere. The trusted publisher (this repo + this file +
+#    environment npm) may only stage; a maintainer approves each staged release on
+#    npmjs.com with 2FA before it goes live.
 name: Release
 
 on:
@@ -11,12 +13,14 @@ on:
       - "v*.*.*"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   release:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -56,3 +60,27 @@ jobs:
           else
             gh release create "$TAG" --title "$TAG" --notes-file release-notes.md
           fi
+
+  npm:
+    name: Stage npm release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1+; `npm stage` needs 11.21.
+      - run: npm install -g npm@11.21.0
+      - name: Tag matches package.json and plugin.json versions
+        run: |
+          test "v$(node -p 'require("./package.json").version')" = "$GITHUB_REF_NAME"
+          test "v$(node -p 'require("./.claude-plugin/plugin.json").version')" = "$GITHUB_REF_NAME"
+      # No dependencies and no install scripts: the tarball is the plugin itself.
+      - run: npm pack --dry-run
+      - run: npm stage publish .
