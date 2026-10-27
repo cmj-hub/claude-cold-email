@@ -1,19 +1,38 @@
 {
-  "name": "jmc-cold-email",
-  "version": "0.7.0",
+  "name": "@jmc-gtm/claude-cold-email",
+  "version": "0.7.1",
   "description": "A JMC cold email is four jobs in under 90 words: a verbatim public signal, the pain that signal implies, a 22-word EVP, and a binary ask. Demographics are not a signal.",
   "license": "MIT",
-  "bin": {
-    "jmc-cold-email": "./install.sh"
+  "author": "JMC Go-to-Market Systems",
+  "homepage": "https://github.com/cmj-hub/claude-cold-email#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmj-hub/claude-cold-email.git"
   },
-  "scripts": {
-    "install-skills": "npx -y skills add cmj-hub/claude-cold-email --all -g --copy --full-depth",
-    "smoke": "bash scripts/smoke-test.sh"
+  "bugs": {
+    "url": "https://github.com/cmj-hub/claude-cold-email/issues"
   },
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "cursor",
+    "codex",
+    "grok",
+    "b2b",
+    "outbound",
+    "cold-email",
+    "deliverability",
+    "b2b-sales",
+    "pain-signal-profile",
+    "follow-up-sequence",
+    "spam-lint"
+  ],
   "files": [
+    ".claude-plugin",
     "skills",
-    "scripts",
     "agents",
+    "scripts",
     "examples",
     "AGENTS.md",
     "SOUL.md",
@@ -21,27 +40,14 @@
     "brand-config.schema.json",
     "README.md",
     "LICENSE",
-    "install.sh",
-    "install.ps1"
+    "CHANGELOG.md",
+    "!scripts/install.sh",
+    "!scripts/install.ps1",
+    "!scripts/smoke-test.sh",
+    "!scripts/validate-skill-frontmatter.py"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cmj-hub/claude-cold-email.git"
-  },
-  "homepage": "https://jaymountconsulting.com/skills",
-  "bugs": {
-    "url": "https://github.com/cmj-hub/claude-cold-email/issues"
-  },
-  "keywords": [
-    "agent-skills",
-    "claude-code",
-    "cursor",
-    "codex",
-    "grok",
-    "b2b",
-    "outbound"
-  ],
-  "engines": {
-    "node": ">=18"
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   }
 }
